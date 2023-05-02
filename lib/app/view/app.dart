@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/counter/counter.dart';
 import 'package:pump_progress_frontend/l10n/l10n.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -29,7 +30,7 @@ class App extends StatelessWidget {
             ),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const CounterPage(),
+            onGenerateRoute: PumpProgressRouter.onGenerateRoute,
           ),
         ));
 

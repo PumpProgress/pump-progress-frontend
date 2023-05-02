@@ -6,8 +6,6 @@ import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 import 'package:pump_progress_frontend/repositories/models/user.dart';
 
-enum AuthenticationStatus { unknown, authenticated, unauthenticated }
-
 class PumpProgressRepository {
   PumpProgressRepository();
   final pumpProgressApiProvider = PumpProgressApiProvider();

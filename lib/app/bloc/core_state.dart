@@ -1,5 +1,7 @@
 part of 'core_bloc.dart';
 
+enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+
 @immutable
 abstract class CoreState {
   final AuthenticationStatus status;
