@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/data/local_storage/local_storage.dart';
+import 'package:pump_progress_frontend/data/local_storage/local_storage_hive.dart';
 import 'package:pump_progress_frontend/features/login/bloc/login_bloc.dart';
+import 'package:pump_progress_frontend/features/login/view/login_form.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(
+    return BlocListener<CoreBloc, CoreState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        print(state);
+        if (state.status == AuthenticationStatus.authenticated) {
+          context.read<CoreBloc>().add(const CoreInit());
           Navigator.pushReplacementNamed(context, '/');
         }
       },
@@ -22,13 +28,9 @@ class LoginPage extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: BlocProvider(
             create: (context) {
-              return LoginBloc(
-                // userRepository: RepositoryProvider.of<UserRepository>(context),
-              );
+              return LoginBloc(HiveStorage());
             },
-            child: 
-              const LoginForm();
-            ),
+            child: const LoginForm(),
           ),
         ),
       ),
