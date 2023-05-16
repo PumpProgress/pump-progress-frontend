@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
-import 'package:pump_progress_frontend/data/local_storage/local_storage.dart';
 import 'package:pump_progress_frontend/data/local_storage/local_storage_hive.dart';
 import 'package:pump_progress_frontend/features/login/bloc/login_bloc.dart';
 import 'package:pump_progress_frontend/features/login/view/login_form.dart';
+import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -28,7 +28,10 @@ class LoginPage extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: BlocProvider(
             create: (context) {
-              return LoginBloc(HiveStorage());
+              return LoginBloc(
+                localStorage: HiveStorage(),
+                pumpProgressRepository: PumpProgressRepository(),
+              );
             },
             child: const LoginForm(),
           ),

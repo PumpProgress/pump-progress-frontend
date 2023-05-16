@@ -14,3 +14,10 @@ class CoreInit extends CoreEvent {
   @override
   List<Object> get props => [];
 }
+
+class CoreLogout extends CoreEvent {
+  const CoreLogout();
+
+  @override
+  List<Object> get props => [];
+}

@@ -17,19 +17,15 @@ class HiveStorage implements LocalStorage {
   }
 
   @override
-  Future<void> delete(LocalStorageKey key) {
+  Future<void> delete(String key) {
     box!.delete(key);
     return Future<void>.value();
   }
 
   @override
-  Future<String>? read(LocalStorageKey key) {
+  Future<String>? read(String key) {
     try {
-      final response = box!.get('key') as String?;
-      // if (response == null) {
-      //   throw GeneralException('Ocurrió un error recuperando los datos', '000',
-      //       StackTrace.current);
-      // }
+      final response = box!.get(key) as String?;
       print(response);
       return response == null ? null : Future<String>.value(response);
     } catch (e) {
@@ -39,8 +35,8 @@ class HiveStorage implements LocalStorage {
   }
 
   @override
-  Future<void> write(LocalStorageKey key, String value) {
-    box!.put('key', value);
+  Future<void> write(String key, String value) {
+    box!.put(key, value);
     return Future<void>.value();
   }
 }

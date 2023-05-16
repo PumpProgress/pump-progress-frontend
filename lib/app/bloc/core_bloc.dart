@@ -13,39 +13,31 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreBloc(this.localStorage) : super(const CoreState()) {
     print('cre bkic created');
     on<CoreInit>(_onCoreInit);
+    on<CoreLogout>(_onCoreLogout);
   }
 
   final LocalStorage localStorage;
 
   Future<void> _onCoreInit(CoreInit event, Emitter<CoreState> emit) async {
     try {
-      print('core bloc on core Init');
       final token = await localStorage.read(
         LocalStorageKey.jwt,
       );
-      if (token == 'token') {
-        print('auth');
+      print('token:');
+      print(token);
+      if (token != null) {
         emit(state.copyWith(status: AuthenticationStatus.authenticated));
         return;
       }
-      print('un auth');
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     } catch (e) {
       print(e);
-      print('un auth');
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     }
   }
 
-  Future<void> _onValidateToken(CoreInit event, Emitter<CoreState> emit) async {
-    print('core bloc on core Init');
-    final token = await localStorage.read(
-      LocalStorageKey.jwt,
-    );
-    if (token == 'token') {
-      emit(state.copyWith(status: AuthenticationStatus.authenticated));
-      return;
-    }
+  Future<void> _onCoreLogout(CoreLogout event, Emitter<CoreState> emit) async {
+    await localStorage.delete(LocalStorageKey.jwt);
     emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
   }
 }

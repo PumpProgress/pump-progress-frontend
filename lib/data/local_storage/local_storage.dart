@@ -1,7 +1,11 @@
 abstract class LocalStorage {
-  Future<void> write(LocalStorageKey key, String value);
-  Future<String>? read(LocalStorageKey key);
-  Future<void> delete(LocalStorageKey key);
+  Future<void> write(String key, String value);
+  Future<String>? read(String key);
+  Future<void> delete(String key);
 }
 
-enum LocalStorageKey { jwt }
+abstract class LocalStorageKey {
+  static const jwt = 'jwt';
+}
+
+// enum LocalStorageKey { jwt }

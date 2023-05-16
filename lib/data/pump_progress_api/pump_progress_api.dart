@@ -21,9 +21,10 @@ class PumpProgressApiProvider {
   Future<AuthLogInResponse> authLogIn(AuthLogInBody body) async {
     try {
       final response =
-          await dioClient.dio.post<String>('auth/log-in', data: body.toJson());
+          await dioClient.dio.post<String>('/auth/log-in', data: body.toJson());
       return AuthLogInResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
+      print(error);
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -35,7 +36,7 @@ class PumpProgressApiProvider {
   Future<ExerciseGetResponse> getExercises() async {
     try {
       final response = await dioClient.dio.get<String>(
-        'exercises',
+        '/exercises',
       );
       return ExerciseGetResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
@@ -63,7 +64,7 @@ class PumpProgressApiProvider {
   Future<MeSetsGetResponse> getMySets() async {
     try {
       final response = await dioClient.dio.get<String>(
-        'me/sets',
+        '/me/sets',
       );
       return MeSetsGetResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
@@ -76,7 +77,7 @@ class PumpProgressApiProvider {
   Future<MeSetPostResponse> postMySet(MeSetBodyPost body) async {
     try {
       final response =
-          await dioClient.dio.post<String>('exercises', data: body.toJson());
+          await dioClient.dio.post<String>('/exercises', data: body.toJson());
       return MeSetPostResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
       (error.error is GeneralException)
@@ -90,7 +91,7 @@ class PumpProgressApiProvider {
   ) async {
     try {
       final response = await dioClient.dio
-          .post<String>('me/add-favorite-exercise', data: body.toJson());
+          .post<String>('/me/add-favorite-exercise', data: body.toJson());
       return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
       (error.error is GeneralException)
@@ -104,7 +105,7 @@ class PumpProgressApiProvider {
   ) async {
     try {
       final response = await dioClient.dio
-          .post<String>('me/remove-favorite-exercise', data: body.toJson());
+          .post<String>('/me/remove-favorite-exercise', data: body.toJson());
       return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
       (error.error is GeneralException)
