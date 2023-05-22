@@ -51,7 +51,7 @@ class PumpProgressApiProvider {
   Future<MeGetResponse> getMe() async {
     try {
       final response = await dioClient.dio.get<String>(
-        'me',
+        '/me',
       );
       return MeGetResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
