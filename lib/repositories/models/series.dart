@@ -1,12 +1,6 @@
 import 'dart:convert';
 
 class Series {
-  final String id;
-  final String userId;
-  final String exerciseId;
-  final int repetitions;
-  final double weight;
-  final DateTime createdAt;
   Series({
     required this.id,
     required this.userId,
@@ -15,6 +9,25 @@ class Series {
     required this.weight,
     required this.createdAt,
   });
+  factory Series.fromJson(String source) =>
+      Series.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory Series.fromMap(Map<String, dynamic> map) {
+    return Series(
+      id: map['id'] as String,
+      userId: map['userId'] as String,
+      exerciseId: map['exerciseId'] as String,
+      repetitions: map['repetitions'] as int,
+      weight: map['weight'] as double,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+    );
+  }
+  final String id;
+  final String userId;
+  final String exerciseId;
+  final int repetitions;
+  final double weight;
+  final DateTime createdAt;
 
   Series copyWith({
     String? id,
@@ -45,21 +58,7 @@ class Series {
     };
   }
 
-  factory Series.fromMap(Map<String, dynamic> map) {
-    return Series(
-      id: map['id'] as String,
-      userId: map['userId'] as String,
-      exerciseId: map['exerciseId'] as String,
-      repetitions: map['repetitions'] as int,
-      weight: map['weight'] as double,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory Series.fromJson(String source) =>
-      Series.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

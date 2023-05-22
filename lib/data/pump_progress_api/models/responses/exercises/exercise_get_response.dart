@@ -2,17 +2,28 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise_api.dart';
 
 @immutable
 class ExerciseGetResponse {
-  final List<Exercise> data;
   const ExerciseGetResponse({
     required this.data,
   });
+  factory ExerciseGetResponse.fromJson(String source) =>
+      ExerciseGetResponse.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory ExerciseGetResponse.fromMap(Map<String, dynamic> map) {
+    return ExerciseGetResponse(
+      data: List<ExerciseAPI>.from(
+        map['data']?.map((x) => ExerciseAPI.fromMap(x as Map<String, dynamic>))
+            as Iterable<dynamic>,
+      ),
+    );
+  }
+  final List<ExerciseAPI> data;
 
   ExerciseGetResponse copyWith({
-    List<Exercise>? data,
+    List<ExerciseAPI>? data,
   }) {
     return ExerciseGetResponse(
       data: data ?? this.data,
@@ -25,18 +36,7 @@ class ExerciseGetResponse {
     };
   }
 
-  factory ExerciseGetResponse.fromMap(Map<String, dynamic> map) {
-    return ExerciseGetResponse(
-      data: List<Exercise>.from(
-          map['data']?.map((x) => Exercise.fromMap(x as Map<String, dynamic>))
-              as Iterable<dynamic>),
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory ExerciseGetResponse.fromJson(String source) =>
-      ExerciseGetResponse.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'ExerciseGetResponse(data: $data)';

@@ -22,9 +22,9 @@ class PumpProgressApiProvider {
     try {
       final response =
           await dioClient.dio.post<String>('/auth/log-in', data: body.toJson());
+
       return AuthLogInResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
-      print(error);
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);

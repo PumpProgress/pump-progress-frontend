@@ -10,7 +10,6 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        print(state);
         if (state.status == LoginStatus.success) {
           context.read<CoreBloc>().add(const CoreInit());
           Navigator.pushReplacementNamed(context, '/');
@@ -33,13 +32,7 @@ class LoginForm extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(flex: 3),
-              Text(
-                'PumpProgress',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(color: Colors.black87),
-              ),
+              const Text('PumpProgress'),
 
               const Spacer(
                 flex: 2,

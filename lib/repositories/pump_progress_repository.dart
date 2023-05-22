@@ -1,8 +1,9 @@
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/auth_log_in/auth_log_in_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_sets_body_post.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_update_favorite_exercises_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise_api.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
+import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 import 'package:pump_progress_frontend/repositories/models/user.dart';
 
@@ -21,7 +22,10 @@ class PumpProgressRepository {
 
   Future<List<Exercise>> getExercises() async {
     final data = await pumpProgressApiProvider.getExercises();
-    return data.data;
+
+    final exercise =
+        data.data.map((e) => Exercise.fromJson(e.toJson())).toList();
+    return exercise;
   }
 
   Future<User> getMe() async {
@@ -33,8 +37,7 @@ class PumpProgressRepository {
   Future<List<Series>> getMySets() async {
     final data = await pumpProgressApiProvider.getMySets();
 
-    List<Series> sets =
-        data.data.map((e) => Series.fromJson(e.toJson())).toList();
+    final sets = data.data.map((e) => Series.fromJson(e.toJson())).toList();
 
     return sets;
   }

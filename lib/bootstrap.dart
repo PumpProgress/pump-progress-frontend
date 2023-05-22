@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pump_progress_frontend/data/local_storage/local_storage_hive.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -27,6 +29,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   };
 
   Bloc.observer = const AppBlocObserver();
+  await Hive.initFlutter();
   await HiveStorage().init();
 
   await runZonedGuarded(
