@@ -23,7 +23,10 @@ class App extends StatelessWidget {
       providers: providers,
       child: BlocProvider<CoreBloc>(
         create: (context) {
-          return CoreBloc(localStorage)..add(const CoreInit());
+          return CoreBloc(
+              localStorage: localStorage,
+              pumpProgressRepository: context.read<PumpProgressRepository>())
+            ..add(const CoreInit());
         },
         child: MaterialApp(
           theme: ThemeData(

@@ -25,7 +25,7 @@ class PumpProgressApiDio {
   static const baseUrl = urlProd;
 
   static final options = BaseOptions(
-    baseUrl: urlDev,
+    baseUrl: urlProd,
   );
 }
 
