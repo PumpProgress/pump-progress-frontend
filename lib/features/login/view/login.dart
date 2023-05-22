@@ -13,7 +13,6 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<CoreBloc, CoreState>(
       listener: (context, state) {
-        print(state);
         if (state.status == AuthenticationStatus.authenticated) {
           context.read<CoreBloc>().add(const CoreInit());
           Navigator.pushReplacementNamed(context, '/');
@@ -30,7 +29,7 @@ class LoginPage extends StatelessWidget {
             create: (context) {
               return LoginBloc(
                 localStorage: HiveStorage(),
-                pumpProgressRepository: PumpProgressRepository(),
+                pumpProgressRepository: context.read<PumpProgressRepository>(),
               );
             },
             child: const LoginForm(),

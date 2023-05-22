@@ -36,13 +36,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     try {
-      print(state);
       final data = await pumpProgressRepository.authLogIn(
         email: state.email,
         password: state.password,
       );
 
-      print(data);
       await localStorage.write(LocalStorageKey.jwt, data);
       emit(
         state.copyWith(status: LoginStatus.success),

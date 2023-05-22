@@ -9,6 +9,7 @@ import 'package:pump_progress_frontend/repositories/pump_progress_repository.dar
 class App extends StatelessWidget {
   const App({super.key});
   static const router = PumpProgressRouter();
+  // await HiveStorage().inits();
   static final localStorage = HiveStorage();
 
   @override

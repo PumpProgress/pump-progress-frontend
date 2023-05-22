@@ -26,10 +26,8 @@ class HiveStorage implements LocalStorage {
   Future<String>? read(String key) {
     try {
       final response = box!.get(key) as String?;
-      print(response);
       return response == null ? null : Future<String>.value(response);
     } catch (e) {
-      print(e);
       throw e;
     }
   }

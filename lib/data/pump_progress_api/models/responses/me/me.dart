@@ -4,16 +4,29 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class Me {
-  final String id;
-  final String name;
-  final String email;
-  final List<String> favoriteExercises;
-  Me({
+  const Me({
     required this.id,
     required this.name,
     required this.email,
     required this.favoriteExercises,
   });
+
+  factory Me.fromJson(String source) =>
+      Me.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory Me.fromMap(Map<String, dynamic> map) {
+    return Me(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      favoriteExercises:
+          List<String>.from(map['favoriteExercises'] as Iterable<dynamic>),
+    );
+  }
+  final String id;
+  final String name;
+  final String email;
+  final List<String> favoriteExercises;
 
   Me copyWith({
     String? id,
@@ -38,20 +51,7 @@ class Me {
     };
   }
 
-  factory Me.fromMap(Map<String, dynamic> map) {
-    return Me(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      favoriteExercises:
-          List<String>.from(map['favoriteExercises'] as Iterable<dynamic>),
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory Me.fromJson(String source) =>
-      Me.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

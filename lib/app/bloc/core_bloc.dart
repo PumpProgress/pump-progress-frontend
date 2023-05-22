@@ -11,7 +11,6 @@ part 'core_state.dart';
 
 class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreBloc(this.localStorage) : super(const CoreState()) {
-    print('cre bkic created');
     on<CoreInit>(_onCoreInit);
     on<CoreLogout>(_onCoreLogout);
   }
@@ -23,15 +22,12 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
       final token = await localStorage.read(
         LocalStorageKey.jwt,
       );
-      print('token:');
-      print(token);
       if (token != null) {
         emit(state.copyWith(status: AuthenticationStatus.authenticated));
         return;
       }
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     } catch (e) {
-      print(e);
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     }
   }

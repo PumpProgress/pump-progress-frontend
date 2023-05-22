@@ -4,13 +4,7 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class MeSet {
-  final String id;
-  final String userId;
-  final String exerciseId;
-  final int repetitions;
-  final double weight;
-  final DateTime createdAt;
-  MeSet({
+  const MeSet({
     required this.id,
     required this.userId,
     required this.exerciseId,
@@ -18,6 +12,26 @@ class MeSet {
     required this.weight,
     required this.createdAt,
   });
+
+  factory MeSet.fromJson(String source) =>
+      MeSet.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  factory MeSet.fromMap(Map<String, dynamic> map) {
+    return MeSet(
+      id: map['id'] as String,
+      userId: map['userId'] as String,
+      exerciseId: map['exerciseId'] as String,
+      repetitions: (map['repetitions']) as int,
+      weight: map['weight'] as double,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+    );
+  }
+  final String id;
+  final String userId;
+  final String exerciseId;
+  final int repetitions;
+  final double weight;
+  final DateTime createdAt;
 
   MeSet copyWith({
     String? id,
@@ -48,21 +62,7 @@ class MeSet {
     };
   }
 
-  factory MeSet.fromMap(Map<String, dynamic> map) {
-    return MeSet(
-      id: map['id'] as String,
-      userId: map['userId'] as String,
-      exerciseId: map['exerciseId'] as String,
-      repetitions: (map['repetitions']) as int,
-      weight: map['weight'] as double,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory MeSet.fromJson(String source) =>
-      MeSet.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
