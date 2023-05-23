@@ -16,7 +16,7 @@ class Home extends StatelessWidget {
           create: (context) => HomeExercisesBloc(
             pumpProgressRepository: context.read<PumpProgressRepository>(),
             me: context.read<CoreBloc>().state.user,
-          )..add(const UpdateExerciseListEvent('')),
+          )..add(const HardFetchExerciseListEvent()),
         )
       ],
       child: DefaultTabController(

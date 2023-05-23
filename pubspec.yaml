@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   bloc: ^8.1.1
+  build_runner: ^2.3.3
   cookie_jar: ^4.0.2
   dio: ^5.0.0
   dio_cookie_manager: ^3.0.0
@@ -20,6 +21,7 @@ dependencies:
   formz: ^0.6.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  hive_generator: ^2.0.0
   intl: ^0.17.0
 
 dev_dependencies:

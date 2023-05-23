@@ -1,8 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/adapters.dart';
+
+part 'exercise.g.dart';
 
 @immutable
+@HiveType(typeId: 0)
 class Exercise {
   const Exercise({
     required this.id,
@@ -11,9 +15,16 @@ class Exercise {
     required this.muscles,
   });
 
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String category;
+
+  @HiveField(3)
   final List<String> muscles;
 
   Exercise copyWith({
