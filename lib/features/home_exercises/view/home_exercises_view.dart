@@ -22,7 +22,7 @@ class HomeExercises extends StatelessWidget {
             TextField(
               onChanged: (value) => context
                   .read<HomeExercisesBloc>()
-                  .add(UpdateExerciseListEvent(value)),
+                  .add(UpdatedSearchExerciseListEvent(value)),
               controller: searchEditingController,
               decoration: const InputDecoration(
                 labelText: 'Search',
@@ -38,7 +38,9 @@ class HomeExercises extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: state.itemsFiltered.length,
                 itemBuilder: (context, index) {
-                  return HomeExerciseItem(exercise: state.itemsFiltered[index]);
+                  return HomeExerciseItem(
+                    index: index,
+                  );
                   // ListTile(
                   //   title: Text('${state.itemsFiltered[index]}'),
                   // );

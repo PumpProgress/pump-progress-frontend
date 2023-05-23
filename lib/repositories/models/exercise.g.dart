@@ -21,13 +21,14 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       name: fields[1] as String,
       category: fields[2] as String,
       muscles: (fields[3] as List).cast<String>(),
+      isFavorite: fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Exercise obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       ..writeByte(2)
       ..write(obj.category)
       ..writeByte(3)
-      ..write(obj.muscles);
+      ..write(obj.muscles)
+      ..writeByte(4)
+      ..write(obj.isFavorite);
   }
 
   @override
