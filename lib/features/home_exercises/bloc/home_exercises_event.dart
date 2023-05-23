@@ -7,8 +7,8 @@ abstract class HomeExercisesEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class UpdateExerciseListEvent extends HomeExercisesEvent {
-  const UpdateExerciseListEvent(this.searchValue);
+class UpdatedSearchExerciseListEvent extends HomeExercisesEvent {
+  const UpdatedSearchExerciseListEvent(this.searchValue);
 
   final String searchValue;
 
@@ -18,4 +18,13 @@ class UpdateExerciseListEvent extends HomeExercisesEvent {
 
 class HardFetchExerciseListEvent extends HomeExercisesEvent {
   const HardFetchExerciseListEvent();
+}
+
+class HandleUpdateFavoriteExerciseEvent extends HomeExercisesEvent {
+  const HandleUpdateFavoriteExerciseEvent(this.index);
+
+  final int index;
+
+  @override
+  List<Object> get props => [index];
 }

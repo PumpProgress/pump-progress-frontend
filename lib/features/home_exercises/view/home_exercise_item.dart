@@ -1,33 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
 class HomeExerciseItem extends StatelessWidget {
-  const HomeExerciseItem({super.key, required this.exercise});
+  const HomeExerciseItem({
+    super.key,
+    required this.index,
+  });
 
-  final Exercise exercise;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text(exercise.name), const Icon(Icons.star)],
+    return BlocBuilder<HomeExercisesBloc, HomeExercisesState>(
+      builder: (context, state) {
+        final exercise = state.itemsFiltered[index];
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(exercise.name),
+                  FavIndicator(
+                    exercise: state.itemsFiltered[index],
+                    index: index,
+                  )
+                ],
+              ),
+              Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: exercise.muscles
+                    .map<Widget>(
+                      (m) => MuscleChip(
+                        muscle: m,
+                      ),
+                    )
+                    .toList(),
+              )
+            ],
           ),
-          Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: exercise.muscles
-                .map<Widget>(
-                  (m) => MuscleChip(
-                    muscle: m,
-                  ),
-                )
-                .toList(),
-          )
-        ],
-      ),
+        );
+      },
+    );
+  }
+}
+
+class FavIndicator extends StatelessWidget {
+  const FavIndicator({super.key, required this.exercise, required this.index});
+  final Exercise exercise;
+  final int index;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context
+          .read<HomeExercisesBloc>()
+          .add(HandleUpdateFavoriteExerciseEvent(index)),
+      child: exercise.isFavorite
+          ? const Icon(Icons.star_rounded)
+          : const Icon(Icons.star_outline_rounded),
     );
   }
 }

@@ -13,6 +13,7 @@ class Exercise {
     required this.name,
     required this.category,
     required this.muscles,
+    this.isFavorite = false,
   });
 
   @HiveField(0)
@@ -27,17 +28,22 @@ class Exercise {
   @HiveField(3)
   final List<String> muscles;
 
+  @HiveField(4)
+  final bool isFavorite;
+
   Exercise copyWith({
     String? id,
     String? name,
     String? category,
     List<String>? muscles,
+    bool? isFavorite,
   }) {
     return Exercise(
       id: id ?? this.id,
       name: name ?? this.name,
       category: category ?? this.category,
       muscles: muscles ?? this.muscles,
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 
@@ -47,15 +53,17 @@ class Exercise {
       'name': name,
       'category': category,
       'muscles': muscles,
+      'isFavorite': isFavorite,
     };
   }
 
   factory Exercise.fromMap(Map<String, dynamic> map) {
     return Exercise(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      category: map['category'] as String,
+      id: map['id'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      category: map['category'] as String? ?? '',
       muscles: List<String>.from(map['muscles'] as Iterable<dynamic>),
+      isFavorite: map['isFavorite'] as bool? ?? false,
     );
   }
 
@@ -66,7 +74,7 @@ class Exercise {
 
   @override
   String toString() {
-    return 'Exercise(id: $id, name: $name, category: $category, muscles: $muscles)';
+    return 'Exercise(id: $id, name: $name, category: $category, muscles: $muscles, isFavorite: $isFavorite)';
   }
 
   @override
@@ -77,11 +85,16 @@ class Exercise {
         other.id == id &&
         other.name == name &&
         other.category == category &&
-        listEquals(other.muscles, muscles);
+        listEquals(other.muscles, muscles) &&
+        other.isFavorite == isFavorite;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ name.hashCode ^ category.hashCode ^ muscles.hashCode;
+    return id.hashCode ^
+        name.hashCode ^
+        category.hashCode ^
+        muscles.hashCode ^
+        isFavorite.hashCode;
   }
 }

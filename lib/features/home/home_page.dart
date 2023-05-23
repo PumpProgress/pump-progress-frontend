@@ -15,7 +15,8 @@ class Home extends StatelessWidget {
         BlocProvider<HomeExercisesBloc>(
           create: (context) => HomeExercisesBloc(
             pumpProgressRepository: context.read<PumpProgressRepository>(),
-            me: context.read<CoreBloc>().state.user,
+            // me: context.read<CoreBloc>().state.user,
+            coreBloc: context.read<CoreBloc>(),
           )..add(const HardFetchExerciseListEvent()),
         )
       ],

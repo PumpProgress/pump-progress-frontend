@@ -10,14 +10,13 @@ abstract class CoreEvent extends Equatable {
 
 class CoreInit extends CoreEvent {
   const CoreInit();
-
-  @override
-  List<Object> get props => [];
 }
 
 class CoreLogout extends CoreEvent {
   const CoreLogout();
+}
 
-  @override
-  List<Object> get props => [];
+class CoreMeUpdated extends CoreEvent {
+  const CoreMeUpdated({required this.me});
+  final User me;
 }
