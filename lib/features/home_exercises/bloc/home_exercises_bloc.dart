@@ -86,7 +86,6 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
     Emitter<HomeExercisesState> emit,
   ) async {
     try {
-      final me = coreBloc.state.user;
       final oldExercise = state.itemsFiltered[event.index];
       final updatedExercise =
           oldExercise.copyWith(isFavorite: !oldExercise.isFavorite);
