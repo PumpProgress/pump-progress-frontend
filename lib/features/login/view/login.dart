@@ -28,7 +28,6 @@ class LoginPage extends StatelessWidget {
           child: BlocProvider(
             create: (context) {
               return LoginBloc(
-                localStorage: HiveStorage(),
                 pumpProgressRepository: context.read<PumpProgressRepository>(),
               );
             },

@@ -38,7 +38,7 @@ final authTokenInterceptor = InterceptorsWrapper(
         handler.next(options);
         return;
       }
-      final jwt = await storageUtil.read(LocalStorageKey.jwt);
+      final jwt = HiveStorage.authBox!.get(LocalStorageKey.jwt);
       if (jwt == null || jwt.isEmpty) {
         handler.next(options);
         return;

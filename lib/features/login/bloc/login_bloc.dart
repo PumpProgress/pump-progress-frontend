@@ -2,19 +2,20 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:pump_progress_frontend/data/local_storage/local_storage.dart';
+import 'package:pump_progress_frontend/data/local_storage/local_storage_hive.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc({required this.localStorage, required this.pumpProgressRepository})
+  LoginBloc({required this.pumpProgressRepository})
       : super(const LoginState()) {
     on<LoginUsernameChanged>(_onLoginUsernameChanged);
     on<LoginPasswordChanged>(_onLoginPasswordChanged);
     on<LoginSubmitted>(_onLoginSubmitted);
   }
-  final LocalStorage localStorage;
+
   final PumpProgressRepository pumpProgressRepository;
 
   Future<void> _onLoginUsernameChanged(
@@ -41,7 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: state.password,
       );
 
-      await localStorage.write(LocalStorageKey.jwt, data);
+      await HiveStorage.authBox!.put(LocalStorageKey.jwt, data);
       emit(
         state.copyWith(status: LoginStatus.success),
       );

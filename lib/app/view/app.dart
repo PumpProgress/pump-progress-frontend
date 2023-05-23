@@ -24,7 +24,6 @@ class App extends StatelessWidget {
       child: BlocProvider<CoreBloc>(
         create: (context) {
           return CoreBloc(
-              localStorage: localStorage,
               pumpProgressRepository: context.read<PumpProgressRepository>())
             ..add(const CoreInit());
         },

@@ -15,3 +15,7 @@ class UpdateExerciseListEvent extends HomeExercisesEvent {
   @override
   List<Object> get props => [searchValue];
 }
+
+class HardFetchExerciseListEvent extends HomeExercisesEvent {
+  const HardFetchExerciseListEvent();
+}
