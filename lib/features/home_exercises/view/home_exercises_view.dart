@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_item.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 
 class HomeExercises extends StatelessWidget {
@@ -37,9 +38,10 @@ class HomeExercises extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: state.itemsFiltered.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('${state.itemsFiltered[index]}'),
-                  );
+                  return HomeExerciseItem(exercise: state.itemsFiltered[index]);
+                  // ListTile(
+                  //   title: Text('${state.itemsFiltered[index]}'),
+                  // );
                 },
               ),
             ),
