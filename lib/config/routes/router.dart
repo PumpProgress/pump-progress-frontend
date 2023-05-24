@@ -39,3 +39,8 @@ class PumpProgressRouter {
     }
   }
 }
+
+class ExercisesPageArguments {
+  ExercisesPageArguments(this.exerciseId);
+  final String exerciseId;
+}

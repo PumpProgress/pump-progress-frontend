@@ -13,15 +13,11 @@ class ProtectedRoute extends StatelessWidget {
       listener: (context, state) {
         if (state.status == AuthenticationStatus.unauthenticated) {
           Navigator.popAndPushNamed(context, '/login');
-          // Navigator.pushReplacementNamed(context, '/login');
           return;
         }
       },
       child: BlocBuilder<CoreBloc, CoreState>(
         builder: (context, state) {
-          if (state.status == AuthenticationStatus.unauthenticated) {
-            // Navigator.pushReplacementNamed(context, '/login');
-          }
           switch (state.status) {
             case AuthenticationStatus.authenticated:
               return child;

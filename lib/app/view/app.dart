@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/data/local_storage/local_storage_hive.dart';
+
 import 'package:pump_progress_frontend/l10n/l10n.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
@@ -24,8 +25,8 @@ class App extends StatelessWidget {
       child: BlocProvider<CoreBloc>(
         create: (context) {
           return CoreBloc(
-              pumpProgressRepository: context.read<PumpProgressRepository>())
-            ..add(const CoreInit());
+            pumpProgressRepository: context.read<PumpProgressRepository>(),
+          )..add(const CoreInit());
         },
         child: MaterialApp(
           theme: ThemeData(
@@ -37,6 +38,7 @@ class App extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           onGenerateRoute: router.onGenerateRoute,
+          // home: Home(key: key),
         ),
       ),
     );

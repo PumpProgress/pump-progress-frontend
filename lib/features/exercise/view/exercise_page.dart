@@ -15,12 +15,15 @@ class ExercisePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(exerciseId);
-    return BlocProvider(
-      create: (context) => ExerciseBloc(
-        pumpProgressRepository: context.read<PumpProgressRepository>(),
-      )..add(LoadSeriesByExercise(exerciseId)),
-      child: Scaffold(
-        body: BlocBuilder<ExerciseBloc, ExerciseState>(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pump Progress'),
+      ),
+      body: BlocProvider(
+        create: (context) => ExerciseBloc(
+          pumpProgressRepository: context.read<PumpProgressRepository>(),
+        )..add(LoadSeriesByExercise(exerciseId)),
+        child: BlocBuilder<ExerciseBloc, ExerciseState>(
           builder: (context, state) {
             if (state.status == ExerciseStatus.loading) {
               return const LoadingPage();
@@ -33,9 +36,4 @@ class ExercisePage extends StatelessWidget {
       ),
     );
   }
-}
-
-class ExercisesPageArguments {
-  ExercisesPageArguments(this.exerciseId);
-  final String exerciseId;
 }

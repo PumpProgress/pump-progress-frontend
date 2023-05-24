@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
+import 'package:pump_progress_frontend/config/routes/router.dart';
+
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
@@ -19,15 +20,15 @@ class HomeExerciseItem extends StatelessWidget {
         final exercise = state.itemsFiltered[index];
         return Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: GestureDetector(
-            onTap: () => Navigator.pushNamed(
-              context,
-              ExercisePage.routeName,
-              arguments: ExercisesPageArguments(exercise.id),
-            ),
-            child: Row(
-              children: [
-                Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    '/exercises',
+                    arguments: ExercisesPageArguments(exercise.id),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -45,12 +46,12 @@ class HomeExerciseItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                FavIndicator(
-                  exercise: state.itemsFiltered[index],
-                  index: index,
-                ),
-              ],
-            ),
+              ),
+              FavIndicator(
+                exercise: state.itemsFiltered[index],
+                index: index,
+              ),
+            ],
           ),
         );
       },
