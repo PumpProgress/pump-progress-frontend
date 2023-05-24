@@ -1,7 +1,6 @@
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/auth_log_in/auth_log_in_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_sets_body_post.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_update_favorite_exercises_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise_api.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';

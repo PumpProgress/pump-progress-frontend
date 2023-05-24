@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
@@ -18,29 +19,38 @@ class HomeExerciseItem extends StatelessWidget {
         final exercise = state.itemsFiltered[index];
         return Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(exercise.name),
-                  FavIndicator(
-                    exercise: state.itemsFiltered[index],
-                    index: index,
-                  )
-                ],
-              ),
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: exercise.muscles
-                    .map<Widget>(
-                      (m) => MuscleChip(
-                        muscle: m,
-                      ),
-                    )
-                    .toList(),
-              )
-            ],
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(
+              context,
+              ExercisePage.routeName,
+              arguments: ExercisesPageArguments(exercise.id),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(exercise.name),
+                      Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: exercise.muscles
+                            .map<Widget>(
+                              (m) => MuscleChip(
+                                muscle: m,
+                              ),
+                            )
+                            .toList(),
+                      )
+                    ],
+                  ),
+                ),
+                FavIndicator(
+                  exercise: state.itemsFiltered[index],
+                  index: index,
+                ),
+              ],
+            ),
           ),
         );
       },
