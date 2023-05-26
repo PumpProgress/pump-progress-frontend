@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_gpt.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
 class HomeExerciseItem extends StatelessWidget {
@@ -18,7 +19,13 @@ class HomeExerciseItem extends StatelessWidget {
     return BlocBuilder<HomeExercisesBloc, HomeExercisesState>(
       builder: (context, state) {
         final exercise = state.itemsFiltered[index];
-        return Container(
+        return
+            // ExerciseWidget(
+            //   exerciseName: exercise.name,
+            //   muscles: exercise.muscles,
+            //   isLiked: exercise.isFavorite,
+            // );
+            Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Row(
             children: [
