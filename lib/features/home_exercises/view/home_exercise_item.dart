@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/config/routes/router.dart';
+
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_gpt.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
 class HomeExerciseItem extends StatelessWidget {
@@ -16,30 +19,45 @@ class HomeExerciseItem extends StatelessWidget {
     return BlocBuilder<HomeExercisesBloc, HomeExercisesState>(
       builder: (context, state) {
         final exercise = state.itemsFiltered[index];
-        return Container(
+        return
+            // ExerciseWidget(
+            //   exerciseName: exercise.name,
+            //   muscles: exercise.muscles,
+            //   isLiked: exercise.isFavorite,
+            // );
+            Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Column(
+          child: Row(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(exercise.name),
-                  FavIndicator(
-                    exercise: state.itemsFiltered[index],
-                    index: index,
-                  )
-                ],
+              Expanded(
+                child: InkWell(
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    '/exercises',
+                    arguments: ExercisesPageArguments(exercise.id),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(exercise.name),
+                      Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: exercise.muscles
+                            .map<Widget>(
+                              (m) => MuscleChip(
+                                muscle: m,
+                              ),
+                            )
+                            .toList(),
+                      )
+                    ],
+                  ),
+                ),
               ),
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: exercise.muscles
-                    .map<Widget>(
-                      (m) => MuscleChip(
-                        muscle: m,
-                      ),
-                    )
-                    .toList(),
-              )
+              FavIndicator(
+                exercise: state.itemsFiltered[index],
+                index: index,
+              ),
             ],
           ),
         );

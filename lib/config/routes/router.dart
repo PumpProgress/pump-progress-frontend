@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/routes/protected_route.dart';
 import 'package:pump_progress_frontend/features/error/error_page.dart';
+import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
 import 'package:pump_progress_frontend/features/home/home_page.dart';
 import 'package:pump_progress_frontend/features/login/login.dart';
 
@@ -21,6 +22,15 @@ class PumpProgressRouter {
           builder: (_) => const LoginPage(),
         );
 
+      case '/exercises':
+        final args = settings.arguments! as ExercisesPageArguments;
+        return MaterialPageRoute<void>(
+          settings: const RouteSettings(name: '/exercises'),
+          builder: (_) => ProtectedRoute(
+            child: ExercisePage(exerciseId: args.exerciseId),
+          ),
+        );
+
       default:
         return MaterialPageRoute<void>(
           settings: const RouteSettings(name: '/error'),
@@ -28,4 +38,9 @@ class PumpProgressRouter {
         );
     }
   }
+}
+
+class ExercisesPageArguments {
+  ExercisesPageArguments(this.exerciseId);
+  final String exerciseId;
 }
