@@ -18,11 +18,11 @@ class MeSet {
 
   factory MeSet.fromMap(Map<String, dynamic> map) {
     return MeSet(
-      id: map['id'] as String,
-      userId: map['userId'] as String,
-      exerciseId: map['exerciseId'] as String,
-      repetitions: (map['repetitions']) as int,
-      weight: map['weight'] as double,
+      id: map['id'].toString(),
+      userId: map['userId'].toString(),
+      exerciseId: map['exerciseId'].toString(),
+      repetitions: int.parse(map['repetitions'].toString()),
+      weight: double.parse(map['weight'].toString()),
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
     );
   }
