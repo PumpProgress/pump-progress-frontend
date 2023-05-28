@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 
 class SetsList extends StatelessWidget {
@@ -13,8 +14,16 @@ class SetsList extends StatelessWidget {
         shrinkWrap: true,
         itemCount: sets.length,
         itemBuilder: (context, index) {
+          final series = sets[index];
+
+          final formattedDate =
+              DateFormat.yMMMd().add_Hm().format(series.createdAt);
+          // return ListTile(
+          //   title: Text('${sets[index]}'),
+          // );
           return ListTile(
-            title: Text('${sets[index]}'),
+            title: Text('Weight: ${series.weight}'),
+            subtitle: Text('Reps: ${series.repetitions}\nDate: $formattedDate'),
           );
         },
       ),

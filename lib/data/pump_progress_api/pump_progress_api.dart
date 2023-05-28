@@ -61,10 +61,21 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<MeSetsGetResponse> getMySets() async {
+  Future<MeSetsGetResponse> getMySets(String? exerciseId) async {
     try {
+      const baseURL = '/me/sets';
+      // Set the query parameter(s)
+      final queryParameters = {
+        'exerciseId': exerciseId,
+      };
+
+      // Modify the URL with the query parameters
+      final url = Uri.parse(baseURL)
+          .replace(queryParameters: queryParameters)
+          .toString();
+
       final response = await dioClient.dio.get<String>(
-        '/me/sets',
+        url,
       );
       return MeSetsGetResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
@@ -77,7 +88,7 @@ class PumpProgressApiProvider {
   Future<MeSetPostResponse> postMySet(MeSetBodyPost body) async {
     try {
       final response =
-          await dioClient.dio.post<String>('/exercises', data: body.toJson());
+          await dioClient.dio.post<String>('/me/sets', data: body.toJson());
       return MeSetPostResponse.fromJson(response.data!);
     } on DioError catch (error, stackTrace) {
       (error.error is GeneralException)

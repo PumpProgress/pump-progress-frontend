@@ -33,8 +33,8 @@ class PumpProgressRepository {
     return User.fromJson(me.toJson());
   }
 
-  Future<List<Series>> getMySets() async {
-    final data = await pumpProgressApiProvider.getMySets();
+  Future<List<Series>> getMySets(String? exerciseId) async {
+    final data = await pumpProgressApiProvider.getMySets(exerciseId);
 
     final sets = data.data.map((e) => Series.fromJson(e.toJson())).toList();
 
