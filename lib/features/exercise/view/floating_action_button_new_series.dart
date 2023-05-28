@@ -9,13 +9,9 @@ class FloatingActionButtonNewSeries extends StatelessWidget {
 
   void _onClickHandler() {
     try {
-      print('presssed');
-
       final weight = double.parse(weightController.text);
       final reps = int.parse(repsController.text);
-      print('presssed2');
       saveExercise(reps, weight);
-
       weightController.clear();
       repsController.clear();
     } catch (e) {
@@ -26,6 +22,7 @@ class FloatingActionButtonNewSeries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      child: const Icon(Icons.add_rounded),
       onPressed: () => showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
