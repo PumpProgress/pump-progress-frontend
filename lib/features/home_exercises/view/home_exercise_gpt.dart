@@ -1,29 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/config/routes/router.dart';
+import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 
 class ExerciseWidget extends StatelessWidget {
-  final String exerciseName;
-  final List<String> muscles;
-  final bool isLiked;
-  final Function(bool)? onLikeToggle;
-
-  ExerciseWidget({
-    required this.exerciseName,
-    required this.muscles,
-    required this.isLiked,
-    this.onLikeToggle,
+  const ExerciseWidget({
+    super.key,
+    required this.index,
   });
+
+  final int index;
 
   @override
   Widget build(BuildContext context) {
+    final homeExercisesBloc = context.read<HomeExercisesBloc>();
+    final exercise = homeExercisesBloc.state.itemsFiltered[index];
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
+        onTap: () => Navigator.pushNamed(
+          context,
+          '/exercises',
+          arguments: ExercisesPageArguments(exercise.id),
+        ),
         title: Text(
-          exerciseName,
-          style: TextStyle(
+          exercise.name,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -33,17 +38,17 @@ class ExerciseWidget extends StatelessWidget {
           child: Wrap(
             spacing: 4.0,
             runSpacing: -8.0,
-            children: muscles
+            children: exercise.muscles
                 .map(
                   (muscle) => Chip(
                     label: Text(
                       muscle,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    backgroundColor: _getColorForMuscle(muscle),
+                    backgroundColor: Colors.blue.shade600,
                   ),
                 )
                 .toList(),
@@ -51,30 +56,16 @@ class ExerciseWidget extends StatelessWidget {
         ),
         trailing: IconButton(
           icon: Icon(
-            isLiked ? Icons.favorite : Icons.favorite_border,
-            color: isLiked ? Colors.red : Colors.grey,
+            exercise.isFavorite
+                ? Icons.star_rounded
+                : Icons.star_border_rounded,
+            color: exercise.isFavorite ? Colors.yellow.shade700 : Colors.grey,
           ),
-          onPressed:
-              onLikeToggle != null ? () => onLikeToggle!(!isLiked) : null,
+          onPressed: () => context
+              .read<HomeExercisesBloc>()
+              .add(HandleUpdateFavoriteExerciseEvent(index)),
         ),
       ),
     );
-  }
-
-  Color _getColorForMuscle(String muscle) {
-    final bluePalette = [
-      Colors.blue[400],
-      Colors.blue[600],
-      Colors.blue[800],
-    ];
-
-    final greyPalette = [
-      Colors.grey[400],
-      Colors.grey[600],
-      Colors.grey[800],
-    ];
-
-    final index = muscle.length % bluePalette.length;
-    return index % 2 == 0 ? bluePalette[index ~/ 2]! : greyPalette[index ~/ 2]!;
   }
 }
