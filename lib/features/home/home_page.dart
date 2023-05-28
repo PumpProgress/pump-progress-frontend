@@ -15,7 +15,6 @@ class Home extends StatelessWidget {
         BlocProvider<HomeExercisesBloc>(
           create: (context) => HomeExercisesBloc(
             pumpProgressRepository: context.read<PumpProgressRepository>(),
-            // me: context.read<CoreBloc>().state.user,
             coreBloc: context.read<CoreBloc>(),
           )..add(const HardFetchExerciseListEvent()),
         )
@@ -27,6 +26,22 @@ class Home extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Pump Progress'),
           ),
+          drawer: Drawer(
+            child: SafeArea(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  ListTile(
+                    title: const Text('Logout'),
+                    onTap: () {
+                      context.read<CoreBloc>().add(const CoreLogout());
+                    },
+                    leading: const Icon(Icons.power_settings_new_rounded),
+                  ),
+                ],
+              ),
+            ),
+          ),
           bottomNavigationBar: tabs(),
           body: TabBarView(
             children: [
@@ -34,11 +49,6 @@ class Home extends StatelessWidget {
               // Container(child: const Icon(Icons.directions_car)),
               Container(child: const Icon(Icons.directions_transit)),
             ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => context.read<CoreBloc>().add(const CoreLogout()),
-            tooltip: 'Logout',
-            child: const Icon(Icons.logout),
           ),
         ),
       ),
