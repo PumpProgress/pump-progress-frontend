@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         /*appBar: AppBar(
           title: Text('login'),
         ),*/

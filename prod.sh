@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-flutter run --flavor production --target lib/main_production.dart
+fvm flutter run --flavor production --target lib/main_production.dart
