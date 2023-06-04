@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/data/local_storage/local_storage_hive.dart';
 
@@ -29,12 +30,8 @@ class App extends StatelessWidget {
           )..add(const CoreInit());
         },
         child: MaterialApp(
-          theme: ThemeData(
-            appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
-            colorScheme: ColorScheme.fromSwatch(
-              accentColor: const Color(0xFF13B9FF),
-            ),
-          ),
+          // theme: GymAppTheme.themeData,
+          theme: ThemeData.dark(useMaterial3: true),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           onGenerateRoute: router.onGenerateRoute,

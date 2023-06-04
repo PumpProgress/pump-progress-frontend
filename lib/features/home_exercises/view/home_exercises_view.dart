@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_gpt.dart';
-import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_item.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/home_search_textbox.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 
 class HomeExercises extends StatelessWidget {
@@ -20,20 +20,22 @@ class HomeExercises extends StatelessWidget {
         }
         return Column(
           children: [
-            TextField(
-              onChanged: (value) => context
-                  .read<HomeExercisesBloc>()
-                  .add(UpdatedSearchExerciseListEvent(value)),
-              controller: searchEditingController,
-              decoration: const InputDecoration(
-                labelText: 'Search',
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                ),
-              ),
-            ),
+            SearchBarWithFilter(),
+            // TextField(
+            //   onChanged: (value) => context
+            //       .read<HomeExercisesBloc>()
+            //       .add(UpdatedSearchExerciseListEvent(value)),
+            //   controller: searchEditingController,
+            //   decoration: const InputDecoration(
+            //     labelText: 'Search',
+            //     hintText: 'Search',
+            //     prefixIcon: Icon(Icons.search),
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.all(Radius.circular(25)),
+            //     ),
+            //   ),
+            // ),
+
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
