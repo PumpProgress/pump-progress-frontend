@@ -20,22 +20,7 @@ class HomeExercises extends StatelessWidget {
         }
         return Column(
           children: [
-            SearchBarWithFilter(),
-            // TextField(
-            //   onChanged: (value) => context
-            //       .read<HomeExercisesBloc>()
-            //       .add(UpdatedSearchExerciseListEvent(value)),
-            //   controller: searchEditingController,
-            //   decoration: const InputDecoration(
-            //     labelText: 'Search',
-            //     hintText: 'Search',
-            //     prefixIcon: Icon(Icons.search),
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.all(Radius.circular(25)),
-            //     ),
-            //   ),
-            // ),
-
+            const SearchBarWithFilter(),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,

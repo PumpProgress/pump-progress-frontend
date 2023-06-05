@@ -37,8 +37,6 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     AddNewSeries event,
     Emitter<ExerciseState> emit,
   ) async {
-    print('event');
-    print(event);
     final series = await pumpProgressRepository.postMySet(
       exerciseId: event.exerciseId,
       repetitions: event.repetitions,

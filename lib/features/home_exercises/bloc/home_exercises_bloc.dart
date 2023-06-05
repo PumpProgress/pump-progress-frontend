@@ -31,15 +31,21 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
     try {
       final me = coreBloc.state.user;
       final exercises = HiveStorage.exerciseBox!.values;
-      print("user" + me.toJson());
 
-      final itemsFiltered =
-          getFilteredExercises(event.searchValue, exercises, me);
+      final itemsFiltered = getFilteredExercises(
+        event.searchValue,
+        event.selectedMuscles,
+        event.selectedCategories,
+        exercises,
+        me,
+      );
 
       emit(
         state.copyWith(
           itemsFiltered: itemsFiltered,
           searchValue: event.searchValue,
+          selectedMuscles: event.selectedMuscles,
+          selectedCategories: event.selectedCategories,
         ),
       );
     } catch (e) {
@@ -112,8 +118,13 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
         );
       }
 
-      final itemsFiltered =
-          getFilteredExercises(state.searchValue, exercises, meUpdated);
+      final itemsFiltered = getFilteredExercises(
+        state.searchValue,
+        state.selectedMuscles,
+        state.selectedCategories,
+        exercises,
+        meUpdated,
+      );
 
       coreBloc.add(CoreMeUpdated(me: meUpdated));
       emit(
@@ -127,23 +138,54 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
   }
 }
 
+List<Exercise> exercisesFilteredByFilters(
+  Iterable<Exercise> exercises,
+  List<String> selectedMuscles,
+  List<String> selectedCategories,
+) {
+  var response = exercises;
+  if (selectedMuscles.isNotEmpty) {
+    response = response.where(
+      (exercise) =>
+          exercise.muscles.any((muscle) => selectedMuscles.contains(muscle)),
+    );
+  }
+  if (selectedCategories.isNotEmpty) {
+    response = response
+        .where((exercise) => selectedCategories.contains(exercise.category));
+  }
+
+  return response.toList();
+}
+
 List<Exercise> getFilteredExercises(
   String searchValue,
+  List<String> selectedMuscles,
+  List<String> selectedCategories,
   Iterable<Exercise> exercises,
   User me,
 ) {
-  if (searchValue.isNotEmpty) {
-    return exercises
+  final filteredExercises = exercisesFilteredByFilters(
+    exercises,
+    selectedMuscles,
+    selectedCategories,
+  );
+  final favoriteExercises = filteredExercises
+      .where(
+        (exercise) => me.favoriteExercises
+            .any((favExerciseId) => favExerciseId == exercise.id),
+      )
+      .toList();
+
+  if (searchValue.isEmpty && favoriteExercises.isEmpty) {
+    return filteredExercises;
+  } else if (searchValue.isEmpty) {
+    return favoriteExercises;
+  } else {
+    return filteredExercises
         .where(
           (exercise) =>
               exercise.name.toLowerCase().contains(searchValue.toLowerCase()),
-        )
-        .toList();
-  } else {
-    return exercises
-        .where(
-          (exercise) => me.favoriteExercises
-              .any((favExerciseId) => favExerciseId == exercise.id),
         )
         .toList();
   }

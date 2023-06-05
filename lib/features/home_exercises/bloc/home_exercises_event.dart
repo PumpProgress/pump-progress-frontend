@@ -10,15 +10,15 @@ abstract class HomeExercisesEvent extends Equatable {
 }
 
 class UpdatedSearchExerciseListEvent extends HomeExercisesEvent {
-  const UpdatedSearchExerciseListEvent(
-    searchValue,
-    selectedMuscles,
-    selectedCategories,
-  );
+  const UpdatedSearchExerciseListEvent({
+    required this.searchValue,
+    required this.selectedMuscles,
+    required this.selectedCategories,
+  });
 
-  final String searchValue = '';
-  final List<String> selectedMuscles = emptyList;
-  final List<String> selectedCategories = emptyList;
+  final String searchValue;
+  final List<String> selectedMuscles;
+  final List<String> selectedCategories;
 
   @override
   List<Object> get props => [searchValue, selectedMuscles, selectedCategories];
