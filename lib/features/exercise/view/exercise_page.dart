@@ -15,15 +15,12 @@ class ExercisePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(exerciseId);
-
     return BlocProvider(
       create: (context) => ExerciseBloc(
         pumpProgressRepository: context.read<PumpProgressRepository>(),
       )..add(LoadSeriesByExercise(exerciseId)),
       child: BlocBuilder<ExerciseBloc, ExerciseState>(
         builder: (context, state) {
-          print(state);
           void saveExercise(int repetitions, double weight) {
             try {
               final exerciseBloc = context.read<ExerciseBloc>();
