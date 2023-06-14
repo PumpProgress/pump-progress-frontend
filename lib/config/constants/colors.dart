@@ -29,7 +29,7 @@ class GymAppTheme {
           color: Colors.white, // Texto secundario en blanco
           fontSize: 16,
         ),
-      ), colorScheme: const ColorScheme(background: Color(0xFF332200)),
+      ),
     );
   }
 }
