@@ -112,7 +112,7 @@ class SearchBarWithFilter extends StatelessWidget {
                     homeExerciseBloc.add(
                       UpdatedSearchExerciseListEvent(
                         searchValue: state.searchValue,
-                        selectedCategories: state.selectedCategories,
+                        selectedCategories: selectedCategories,
                         selectedMuscles: state.selectedMuscles,
                       ),
                     );
@@ -142,8 +142,3 @@ class SearchBarWithFilter extends StatelessWidget {
     );
   }
 }
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------
-
