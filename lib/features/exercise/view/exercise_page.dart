@@ -24,7 +24,6 @@ class ExercisePage extends StatelessWidget {
           void saveExercise(int repetitions, double weight) {
             try {
               final exerciseBloc = context.read<ExerciseBloc>();
-
               exerciseBloc.add(
                 AddNewSeries(
                   exerciseId: exerciseBloc.state.exerciseId,
@@ -40,7 +39,7 @@ class ExercisePage extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: const Text('Pump Progress'),
+              title: const Text('\$muscle name'),
             ),
             floatingActionButton:
                 FloatingActionButtonNewSeries(saveExercise: saveExercise),

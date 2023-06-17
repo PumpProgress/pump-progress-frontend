@@ -17,6 +17,7 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
     on<UpdatedSearchExerciseListEvent>(_onUpdatedSearchExerciseListEvent);
     on<HardFetchExerciseListEvent>(_onHardFetchExerciseListEvent);
     on<HandleUpdateFavoriteExerciseEvent>(_onHandleUpdateFavoriteExerciseEvent);
+    on<HandleToggleFiltersEvent>(_onHandleToggleFiltersEvent);
   }
 
   final PumpProgressRepository pumpProgressRepository;
@@ -119,6 +120,19 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
       coreBloc.add(CoreMeUpdated(me: meUpdated));
       emit(
         state.copyWith(itemsFiltered: itemsFiltered, items: state.items),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _onHandleToggleFiltersEvent(
+    HandleToggleFiltersEvent event,
+    Emitter<HomeExercisesState> emit,
+  ) async {
+    try {
+      emit(
+        state.copyWith(showFilters: !state.showFilters),
       );
     } catch (e) {
       print(e);

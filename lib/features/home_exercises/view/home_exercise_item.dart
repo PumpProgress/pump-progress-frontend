@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
-
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
-import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
-class HomeExerciseItem extends StatelessWidget {
-  const HomeExerciseItem({
+class ExerciseWidget extends StatelessWidget {
+  const ExerciseWidget({
     super.key,
     required this.index,
   });
@@ -15,76 +14,59 @@ class HomeExerciseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeExercisesBloc, HomeExercisesState>(
-      builder: (context, state) {
-        final exercise = state.itemsFiltered[index];
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Row(
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    '/exercises',
-                    arguments: ExercisesPageArguments(exercise.id),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(exercise.name),
-                      Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: exercise.muscles
-                            .map<Widget>(
-                              (m) => MuscleChip(
-                                muscle: m,
-                              ),
-                            )
-                            .toList(),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              FavIndicator(
-                exercise: state.itemsFiltered[index],
-                index: index,
-              ),
-            ],
+    final homeExercisesBloc = context.read<HomeExercisesBloc>();
+    final exercise = homeExercisesBloc.state.itemsFiltered[index];
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        onTap: () => Navigator.pushNamed(
+          context,
+          '/exercises',
+          arguments: ExercisesPageArguments(exercise.id),
+        ),
+        title: Text(
+          exercise.name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
           ),
-        );
-      },
-    );
-  }
-}
-
-class FavIndicator extends StatelessWidget {
-  const FavIndicator({super.key, required this.exercise, required this.index});
-  final Exercise exercise;
-  final int index;
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => context
-          .read<HomeExercisesBloc>()
-          .add(HandleUpdateFavoriteExerciseEvent(index)),
-      child: exercise.isFavorite
-          ? const Icon(Icons.star_rounded)
-          : const Icon(Icons.star_outline_rounded),
-    );
-  }
-}
-
-class MuscleChip extends StatelessWidget {
-  const MuscleChip({super.key, required this.muscle});
-  final String muscle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(right: 4),
-      child: Text(muscle),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Wrap(
+            spacing: 8.0,
+            runSpacing: -8.0,
+            children: exercise.muscles
+                .map(
+                  (muscle) => Chip(
+                    labelPadding: EdgeInsets.all(0.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    side: const BorderSide(
+                        color: PumpProgressColors.coral, width: 0.5),
+                    label: Text(
+                      muscle,
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+        trailing: IconButton(
+          icon: Icon(
+            exercise.isFavorite
+                ? Icons.star_rounded
+                : Icons.star_border_rounded,
+            color: PumpProgressColors.coral,
+          ),
+          onPressed: () => context
+              .read<HomeExercisesBloc>()
+              .add(HandleUpdateFavoriteExerciseEvent(index)),
+        ),
+      ),
     );
   }
 }

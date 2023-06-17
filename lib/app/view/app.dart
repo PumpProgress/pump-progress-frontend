@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/config/constants/theme.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -25,8 +26,9 @@ class App extends StatelessWidget {
           )..add(const CoreInit());
         },
         child: MaterialApp(
-          theme: ThemeData.dark(useMaterial3: true),
+          theme: theme,
           onGenerateRoute: router.onGenerateRoute,
+          debugShowCheckedModeBanner: false,
         ),
       ),
     );

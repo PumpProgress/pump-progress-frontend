@@ -22,33 +22,36 @@ class Home extends StatelessWidget {
       child: DefaultTabController(
         length: 2,
         animationDuration: const Duration(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Pump Progress'),
-          ),
-          drawer: Drawer(
-            child: SafeArea(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  ListTile(
-                    title: const Text('Logout'),
-                    onTap: () {
-                      context.read<CoreBloc>().add(const CoreLogout());
-                    },
-                    leading: const Icon(Icons.power_settings_new_rounded),
+        child: Container(
+          color: Theme.of(context).colorScheme.background,
+          child: SafeArea(
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Pump Progress'),
+              ),
+              drawer: Drawer(
+                child: SafeArea(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      ListTile(
+                        title: const Text('Logout'),
+                        onTap: () {
+                          context.read<CoreBloc>().add(const CoreLogout());
+                        },
+                        leading: const Icon(Icons.power_settings_new_rounded),
+                      ),
+                    ],
                   ),
+                ),
+              ),
+              bottomNavigationBar: tabs(),
+              body: const TabBarView(
+                children: [
+                  HomeExercises(),
                 ],
               ),
             ),
-          ),
-          bottomNavigationBar: tabs(),
-          body: const TabBarView(
-            children: [
-              HomeExercises(),
-
-              // Container(child: const Icon(Icons.directions_transit)),
-            ],
           ),
         ),
       ),
@@ -57,24 +60,12 @@ class Home extends StatelessWidget {
 }
 
 Widget tabs() {
-  return Container(
-    color: Colors.blue,
-    child: const TabBar(
-      // labelColor: Colors.white,
-      // unselectedLabelColor: Colors.white70,
-      // indicatorSize: TabBarIndicatorSize.tab,
-      // indicatorPadding: EdgeInsets.all(5.0),
-      // indicatorColor: Colors.blue,
-      tabs: [
-        Tab(
-          text: "Exercises",
-          icon: Icon(Icons.workspaces),
-        ),
-        // Tab(
-        //   text: "Calendar",
-        //   icon: Icon(Icons.calendar_today),
-        // ),
-      ],
-    ),
+  return const TabBar(
+    tabs: [
+      Tab(
+        text: "Exercises",
+        icon: Icon(Icons.workspaces),
+      ),
+    ],
   );
 }

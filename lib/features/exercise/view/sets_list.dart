@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pump_progress_frontend/features/exercise/view/exercise_series_item.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 
 class SetsList extends StatelessWidget {
@@ -21,9 +22,10 @@ class SetsList extends StatelessWidget {
           // return ListTile(
           //   title: Text('${sets[index]}'),
           // );
-          return ListTile(
-            title: Text('Weight: ${series.weight}'),
-            subtitle: Text('Reps: ${series.repetitions}\nDate: $formattedDate'),
+          return ExerciseSeriesItemWidget(
+            weight: series.weight,
+            reps: series.repetitions,
+            date: series.createdAt,
           );
         },
       ),
