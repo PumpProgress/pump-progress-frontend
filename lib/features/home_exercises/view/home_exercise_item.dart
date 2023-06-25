@@ -25,7 +25,8 @@ class ExerciseWidget extends StatelessWidget {
         onTap: () => Navigator.pushNamed(
           context,
           '/exercises',
-          arguments: ExercisesPageArguments(exercise.id),
+          arguments: ExercisesPageArguments(
+              exerciseId: exercise.id, exerciseName: exercise.name),
         ),
         title: Text(
           exercise.name,
