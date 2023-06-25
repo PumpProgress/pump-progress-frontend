@@ -5,8 +5,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Splash screen'),
-    );
+    return const FractionallySizedBox(
+        widthFactor: 0.7, child: Center(child: LinearProgressIndicator()));
   }
 }
