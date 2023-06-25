@@ -27,7 +27,10 @@ class PumpProgressRouter {
         return MaterialPageRoute<void>(
           settings: const RouteSettings(name: '/exercises'),
           builder: (_) => ProtectedRoute(
-            child: ExercisePage(exerciseId: args.exerciseId),
+            child: ExercisePage(
+              exerciseId: args.exerciseId,
+              exerciseName: args.exerciseName,
+            ),
           ),
         );
 
@@ -41,6 +44,10 @@ class PumpProgressRouter {
 }
 
 class ExercisesPageArguments {
-  ExercisesPageArguments(this.exerciseId);
+  ExercisesPageArguments({
+    required this.exerciseId,
+    required this.exerciseName,
+  });
   final String exerciseId;
+  final String exerciseName;
 }

@@ -7,9 +7,14 @@ import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
 class ExercisePage extends StatelessWidget {
-  const ExercisePage({super.key, required this.exerciseId});
+  const ExercisePage({
+    super.key,
+    required this.exerciseId,
+    required this.exerciseName,
+  });
 
   final String exerciseId;
+  final String exerciseName;
 
   static const routeName = '/exercises';
 
@@ -39,7 +44,7 @@ class ExercisePage extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: const Text('\$muscle name'),
+              title: Text(exerciseName),
             ),
             floatingActionButton:
                 FloatingActionButtonNewSeries(saveExercise: saveExercise),
