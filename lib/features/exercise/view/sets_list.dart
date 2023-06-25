@@ -16,12 +16,6 @@ class SetsList extends StatelessWidget {
         itemCount: sets.length,
         itemBuilder: (context, index) {
           final series = sets[index];
-
-          final formattedDate =
-              DateFormat.yMMMd().add_Hm().format(series.createdAt);
-          // return ListTile(
-          //   title: Text('${sets[index]}'),
-          // );
           return ExerciseSeriesItemWidget(
             weight: series.weight,
             reps: series.repetitions,

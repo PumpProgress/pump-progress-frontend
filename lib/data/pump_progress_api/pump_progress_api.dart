@@ -24,7 +24,7 @@ class PumpProgressApiProvider {
           await dioClient.dio.post<String>('/auth/log-in', data: body.toJson());
 
       return AuthLogInResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -39,7 +39,7 @@ class PumpProgressApiProvider {
         '/exercises',
       );
       return ExerciseGetResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -54,7 +54,7 @@ class PumpProgressApiProvider {
         '/me',
       );
       return MeGetResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -78,10 +78,12 @@ class PumpProgressApiProvider {
         url,
       );
       return MeSetsGetResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
+    } catch (err) {
+      throw GeneralException('An error ocurred', '000', StackTrace.current);
     }
   }
 
@@ -90,7 +92,7 @@ class PumpProgressApiProvider {
       final response =
           await dioClient.dio.post<String>('/me/sets', data: body.toJson());
       return MeSetPostResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -104,7 +106,7 @@ class PumpProgressApiProvider {
       final response = await dioClient.dio
           .post<String>('/me/add-favorite-exercise', data: body.toJson());
       return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -118,7 +120,7 @@ class PumpProgressApiProvider {
       final response = await dioClient.dio
           .post<String>('/me/remove-favorite-exercise', data: body.toJson());
       return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);

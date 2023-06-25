@@ -66,7 +66,7 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  weight.toString(),
+                  weight.toStringAsFixed(2),
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 const Text('kgs.')

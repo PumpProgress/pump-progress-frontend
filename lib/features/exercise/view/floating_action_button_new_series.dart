@@ -23,8 +23,7 @@ class FloatingActionButtonNewSeries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      child: const Icon(Icons.add_rounded),
-      shape: CircleBorder(),
+      shape: const CircleBorder(),
       onPressed: () => showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
@@ -40,7 +39,8 @@ class FloatingActionButtonNewSeries extends StatelessWidget {
                 children: [
                   TextField(
                     controller: weightController,
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     decoration: const InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       isDense: true,
@@ -85,6 +85,7 @@ class FloatingActionButtonNewSeries extends StatelessWidget {
           );
         },
       ),
+      child: const Icon(Icons.add_rounded),
     );
   }
 }
