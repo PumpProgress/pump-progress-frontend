@@ -14,6 +14,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   }
 
   final PumpProgressRepository pumpProgressRepository;
+
   Future<void> _onLoadSeriesByExercise(
     LoadSeriesByExercise event,
     Emitter<ExerciseState> emit,
