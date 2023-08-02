@@ -86,8 +86,6 @@ class _AddExerciseToWorkoutModalState extends State<AddExerciseToWorkoutModal> {
               ),
             ),
             const SizedBox(height: 16.0),
-            Text(exerciseName),
-            const SizedBox(height: 16.0),
             Expanded(
               child: ListView.builder(
                 itemCount: exercisesFiltered.length,
@@ -96,7 +94,10 @@ class _AddExerciseToWorkoutModalState extends State<AddExerciseToWorkoutModal> {
                       _onClickHandler(exercisesFiltered[index]);
                       Navigator.pop(context);
                     },
-                    child: Text(exercisesFiltered[index].name)),
+                    child: Container(
+                      padding: EdgeInsets.all(4),
+                      child: Text(exercisesFiltered[index].name),
+                    )),
               ),
             ),
           ],

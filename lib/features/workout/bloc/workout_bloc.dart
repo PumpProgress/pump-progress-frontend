@@ -64,5 +64,22 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   }
 
   Future<void> _onRemoveExerciseWorkoutEvent(
-      RemoveExerciseWorkoutEvent event, Emitter<WorkoutState> emit) async {}
+      RemoveExerciseWorkoutEvent event, Emitter<WorkoutState> emit) async {
+    await pumpProgressRepository.putRemoveWorkoutExercise(
+      workoutId: state.workout.id,
+      exerciseId: event.exerciseId,
+    );
+
+    state.workout.exercises.remove(event.exerciseId);
+
+    final workoutExercises = state.exercises
+        .where((exercise) => state.workout.exercises
+            .any((workoutExerciseId) => workoutExerciseId == exercise.id))
+        .toList();
+
+    emit(state.copyWith(
+      status: WorkoutPageStatus.success,
+      workoutExercises: workoutExercises,
+    ));
+  }
 }

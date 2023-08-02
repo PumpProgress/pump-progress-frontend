@@ -7,7 +7,9 @@ abstract class HomeWorkoutsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchHomeWorkoutsEvent extends HomeWorkoutsEvent {}
+class FetchHomeWorkoutsEvent extends HomeWorkoutsEvent {
+  const FetchHomeWorkoutsEvent();
+}
 
 class AddWorkoutHomeWorkoutsEvent extends HomeWorkoutsEvent {
   const AddWorkoutHomeWorkoutsEvent({required this.name});
