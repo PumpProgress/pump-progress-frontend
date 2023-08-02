@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/features/exercise/view/exercise_series_item.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 

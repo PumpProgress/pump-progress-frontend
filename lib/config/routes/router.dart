@@ -4,6 +4,8 @@ import 'package:pump_progress_frontend/features/error/error_page.dart';
 import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
 import 'package:pump_progress_frontend/features/home/home_page.dart';
 import 'package:pump_progress_frontend/features/login/login.dart';
+import 'package:pump_progress_frontend/features/workout/view/workout_page.dart';
+import 'package:pump_progress_frontend/repositories/models/workout.dart';
 
 class PumpProgressRouter {
   const PumpProgressRouter();
@@ -33,6 +35,16 @@ class PumpProgressRouter {
             ),
           ),
         );
+      case '/workouts':
+        final args = settings.arguments! as WorkoutsPageArguments;
+        return MaterialPageRoute<void>(
+          settings: const RouteSettings(name: '/exercises'),
+          builder: (_) => ProtectedRoute(
+            child: WorkoutPage(
+              workout: args.workout,
+            ),
+          ),
+        );
 
       default:
         return MaterialPageRoute<void>(
@@ -50,4 +62,11 @@ class ExercisesPageArguments {
   });
   final String exerciseId;
   final String exerciseName;
+}
+
+class WorkoutsPageArguments {
+  WorkoutsPageArguments({
+    required this.workout,
+  });
+  final Workout workout;
 }

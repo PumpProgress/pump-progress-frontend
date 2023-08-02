@@ -6,6 +6,8 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 class App extends StatelessWidget {
   const App({super.key});
   static const router = PumpProgressRouter();
@@ -28,6 +30,7 @@ class App extends StatelessWidget {
         child: MaterialApp(
           theme: theme,
           onGenerateRoute: router.onGenerateRoute,
+          navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
         ),
       ),
