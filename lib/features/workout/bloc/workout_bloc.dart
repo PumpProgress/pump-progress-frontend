@@ -36,6 +36,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
             .any((workoutExerciseId) => workoutExerciseId == exercise.id))
         .toList();
 
+    workoutExercises.sort((a, b) {
+      return state.workout.exercises.indexOf(a.id) -
+          state.workout.exercises.indexOf(b.id);
+    });
+
     emit(state.copyWith(
       status: WorkoutPageStatus.success,
       exercises: exercises,
@@ -57,6 +62,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
             .any((workoutExerciseId) => workoutExerciseId == exercise.id))
         .toList();
 
+    workoutExercises.sort((a, b) {
+      return state.workout.exercises.indexOf(a.id) -
+          state.workout.exercises.indexOf(b.id);
+    });
+
     emit(state.copyWith(
       status: WorkoutPageStatus.success,
       workoutExercises: workoutExercises,
@@ -76,6 +86,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         .where((exercise) => state.workout.exercises
             .any((workoutExerciseId) => workoutExerciseId == exercise.id))
         .toList();
+
+    workoutExercises.sort((a, b) {
+      return state.workout.exercises.indexOf(a.id) -
+          state.workout.exercises.indexOf(b.id);
+    });
 
     emit(state.copyWith(
       status: WorkoutPageStatus.success,
