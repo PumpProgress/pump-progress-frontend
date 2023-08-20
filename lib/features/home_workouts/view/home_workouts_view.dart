@@ -18,7 +18,7 @@ class _HomeWorkoutsState extends State<HomeWorkouts> with RouteAware {
   void didPopNext() {
     final workoutBloc = context.read<HomeWorkoutsBloc>();
     workoutBloc.add(
-      FetchHomeWorkoutsEvent(),
+      const FetchHomeWorkoutsEvent(),
     );
   }
 

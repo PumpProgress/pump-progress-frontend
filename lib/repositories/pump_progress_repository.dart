@@ -3,7 +3,6 @@ import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_update_favorite_exercises_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_put_update_exercise_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workouts_api.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
