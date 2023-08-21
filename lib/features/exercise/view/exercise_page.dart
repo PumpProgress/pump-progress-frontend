@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/view/floating_action_button_new_series.dart';
 import 'package:pump_progress_frontend/features/exercise/view/sets_list.dart';
@@ -23,6 +24,7 @@ class ExercisePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => ExerciseBloc(
         pumpProgressRepository: context.read<PumpProgressRepository>(),
+        coreState: context.read<CoreBloc>().state,
       )..add(LoadSeriesByExercise(exerciseId)),
       child: BlocBuilder<ExerciseBloc, ExerciseState>(
         builder: (context, state) {

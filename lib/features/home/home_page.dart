@@ -22,8 +22,9 @@ class Home extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => HomeWorkoutsBloc(
-            pumpProgressRepository: context.read<PumpProgressRepository>(),
-          )..add(const FetchHomeWorkoutsEvent()),
+              pumpProgressRepository: context.read<PumpProgressRepository>(),
+              coreBloc: context.read<CoreBloc>())
+            ..add(const FetchHomeWorkoutsEvent()),
         )
       ],
       child: DefaultTabController(

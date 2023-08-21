@@ -100,12 +100,14 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
 
       User meUpdated;
       if (updatedExercise.isFavorite) {
-        meUpdated = await pumpProgressRepository.postAddFavoriteExercise(
+        meUpdated = await pumpProgressRepository.postUSerAddFavoriteExercise(
           exerciseId: updatedExercise.id,
+          userId: coreBloc.state.user.id,
         );
       } else {
-        meUpdated = await pumpProgressRepository.postRemoveFavoriteExercise(
+        meUpdated = await pumpProgressRepository.postUserRemoveFavoriteExercise(
           exerciseId: updatedExercise.id,
+          userId: coreBloc.state.user.id,
         );
       }
 

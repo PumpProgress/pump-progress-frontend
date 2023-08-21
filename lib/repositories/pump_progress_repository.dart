@@ -1,6 +1,8 @@
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/auth_log_in/auth_log_in_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_sets_body_post.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_update_favorite_exercises_body.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_post.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/user/users_update_exercises_post.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_put_update_exercise_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
@@ -36,8 +38,23 @@ class PumpProgressRepository {
     return User.fromJson(me.toJson());
   }
 
+  Future<User> getUser(String userId) async {
+    final data = await pumpProgressApiProvider.getUser(userId);
+    final me = data.data;
+    return User.fromJson(me.toJson());
+  }
+
   Future<List<Series>> getMySets(String? exerciseId) async {
     final data = await pumpProgressApiProvider.getMySets(exerciseId);
+
+    final sets = data.data.map((e) => Series.fromJson(e.toJson())).toList();
+
+    return sets;
+  }
+
+  Future<List<Series>> getSets({String? exerciseId, String? userId}) async {
+    final data = await pumpProgressApiProvider.getSets(
+        exerciseId: exerciseId, userId: userId);
 
     final sets = data.data.map((e) => Series.fromJson(e.toJson())).toList();
 
@@ -58,28 +75,64 @@ class PumpProgressRepository {
     return Series.fromJson(series.toJson());
   }
 
-  Future<User> postAddFavoriteExercise({
+  Future<Series> postSeries({
+    required String exerciseId,
+    required int repetitions,
+    required double weight,
+  }) async {
+    final data = await pumpProgressApiProvider.postSeries(SeriesBodyPost(
+      exerciseId: exerciseId,
+      repetitions: repetitions,
+      weight: weight,
+    ));
+    final series = data.data;
+    return Series.fromJson(series.toJson());
+  }
+
+  Future<User> postMeAddFavoriteExercise({
     required String exerciseId,
   }) async {
-    final data = await pumpProgressApiProvider.postAddFavoriteExercise(
+    final data = await pumpProgressApiProvider.postMeAddFavoriteExercise(
       MeUpdateFavoriteExercisesBody(exerciseId: exerciseId),
     );
     final me = data.data;
     return User.fromJson(me.toJson());
   }
 
-  Future<User> postRemoveFavoriteExercise({
+  Future<User> postUSerAddFavoriteExercise({
+    required String exerciseId,
+    required String userId,
+  }) async {
+    final data = await pumpProgressApiProvider.postUserAddFavoriteExercise(
+      userId,
+      UpdateFavoriteExercisesBody(exerciseId: exerciseId),
+    );
+    final me = data.data;
+    return User.fromJson(me.toJson());
+  }
+
+  Future<User> postMeRemoveFavoriteExercise({
     required String exerciseId,
   }) async {
-    final data = await pumpProgressApiProvider.postRemoveFavoriteExercise(
+    final data = await pumpProgressApiProvider.postMeRemoveFavoriteExercise(
       MeUpdateFavoriteExercisesBody(exerciseId: exerciseId),
     );
     final me = data.data;
     return User.fromJson(me.toJson());
   }
 
-  Future<List<Workout>> getWorkouts() async {
-    final data = await pumpProgressApiProvider.getWorkouts();
+  Future<User> postUserRemoveFavoriteExercise(
+      {required String exerciseId, required String userId}) async {
+    final data = await pumpProgressApiProvider.postUserRemoveFavoriteExercise(
+      userId,
+      UpdateFavoriteExercisesBody(exerciseId: exerciseId),
+    );
+    final me = data.data;
+    return User.fromJson(me.toJson());
+  }
+
+  Future<List<Workout>> getWorkouts({String? userId}) async {
+    final data = await pumpProgressApiProvider.getWorkouts(userId: userId);
 
     final workouts =
         data.data.map((e) => Workout.fromJson(e.toJson())).toList();

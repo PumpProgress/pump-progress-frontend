@@ -23,8 +23,10 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final token = prefs.getString(jwtKey);
-      if (token != null) {
-        final user = await pumpProgressRepository.getMe();
+      final userId = prefs.getString(userKey);
+
+      if (token != null && userId != null) {
+        final user = await pumpProgressRepository.getUser(userId);
         emit(
           state.copyWith(
             status: AuthenticationStatus.authenticated,
