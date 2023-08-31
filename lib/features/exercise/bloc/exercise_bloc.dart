@@ -12,6 +12,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       : super(const ExerciseState()) {
     on<LoadSeriesByExercise>(_onLoadSeriesByExercise);
     on<AddNewSeries>(_onAddNewSeries);
+    on<EditSeries>(_onEditSeries);
   }
 
   final PumpProgressRepository pumpProgressRepository;
@@ -48,6 +49,23 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     );
     final sets = List<Series>.from(state.sets);
     sets.insert(0, series);
+
+    emit(state.copyWith(sets: sets));
+  }
+
+  Future<void> _onEditSeries(
+    EditSeries event,
+    Emitter<ExerciseState> emit,
+  ) async {
+    final series = await pumpProgressRepository.putSeries(
+      seriesId: event.seriesId,
+      repetitions: event.repetitions,
+      weight: event.weight,
+    );
+    final sets = List<Series>.from(state.sets);
+    final seriesAtListIndex =
+        sets.indexWhere((series) => series.id == event.seriesId);
+    sets[seriesAtListIndex] = series;
 
     emit(state.copyWith(sets: sets));
   }
