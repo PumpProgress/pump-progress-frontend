@@ -17,7 +17,7 @@ class ExerciseItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
@@ -37,7 +37,7 @@ class ExerciseItemWidget extends StatelessWidget {
         ),
         child: Card(
           elevation: 2,
-          margin: EdgeInsets.all(0),
+          margin: const EdgeInsets.all(0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),

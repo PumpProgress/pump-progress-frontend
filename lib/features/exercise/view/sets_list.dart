@@ -16,9 +16,7 @@ class SetsList extends StatelessWidget {
         itemBuilder: (context, index) {
           final series = sets[index];
           return ExerciseSeriesItemWidget(
-            weight: series.weight,
-            reps: series.repetitions,
-            date: series.createdAt,
+            series: series,
           );
         },
       ),

@@ -92,7 +92,7 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                 ],
               ),
             ),
-            !state.showFilters ? Container() : SizedBox(height: 10),
+            !state.showFilters ? Container() : const SizedBox(height: 10),
             !state.showFilters
                 ? Container()
                 : Row(
