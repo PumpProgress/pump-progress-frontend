@@ -95,7 +95,7 @@ class _AddExerciseToWorkoutModalState extends State<AddExerciseToWorkoutModal> {
                       Navigator.pop(context);
                     },
                     child: Container(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: Text(exercisesFiltered[index].name),
                     )),
               ),

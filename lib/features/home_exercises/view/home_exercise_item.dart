@@ -43,9 +43,9 @@ class ExerciseWidget extends StatelessWidget {
             children: exercise.muscles
                 .map(
                   (muscle) => Chip(
-                    labelPadding: EdgeInsets.all(0.0),
+                    labelPadding: const EdgeInsets.all(0.0),
                     padding:
-                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                        const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                     side: const BorderSide(
                         color: PumpProgressColors.coral, width: 0.5),
                     label: Text(

@@ -40,6 +40,8 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
           isScrollControlled: true,
           builder: (BuildContext context) => ModalBottomSheetSaveExercise(
                 saveExercise: saveExercise,
+                initialReps: series.repetitions.toString(),
+                initialWeight: series.weight.toString(),
               )),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16.00, vertical: 8.00),

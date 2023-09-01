@@ -256,7 +256,6 @@ class PumpProgressApiProvider {
       final url = Uri.parse(baseURL)
           .replace(queryParameters: queryParameters)
           .toString();
-      ;
 
       final response = await dioClient.dio.get<String>(url);
       return WorkoutsGetResponse.fromJson(response.data!);

@@ -5,11 +5,14 @@ class ModalBottomSheetSaveExercise extends StatelessWidget {
   ModalBottomSheetSaveExercise({
     required this.saveExercise,
     super.key,
-    double? initialWeight,
-    int? initialReps,
-  })  : weightController =
-            TextEditingController(text: initialWeight?.toString()),
-        repsController = TextEditingController(text: initialReps.toString());
+    String initialWeight = "",
+    String initialReps = "",
+  })  : weightController = TextEditingController.fromValue(TextEditingValue(
+            text: initialWeight,
+            selection: TextSelection.collapsed(offset: initialWeight.length))),
+        repsController = TextEditingController.fromValue(TextEditingValue(
+            text: initialReps,
+            selection: TextSelection.collapsed(offset: initialReps.length)));
 
   final TextEditingController weightController;
   final TextEditingController repsController;
@@ -40,6 +43,7 @@ class ModalBottomSheetSaveExercise extends StatelessWidget {
           children: [
             TextField(
               controller: weightController,
+              autofocus: true,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(
