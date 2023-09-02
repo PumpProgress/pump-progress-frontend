@@ -34,55 +34,6 @@ class PumpProgressRepository {
     return exercise;
   }
 
-// * me
-  Future<User> getMe() async {
-    final data = await pumpProgressApiProvider.getMe();
-    final me = data.data;
-    return User.fromJson(me.toJson());
-  }
-
-  Future<List<Series>> getMySets(String? exerciseId) async {
-    final data = await pumpProgressApiProvider.getMySets(exerciseId);
-
-    final sets = data.data.map((e) => Series.fromJson(e.toJson())).toList();
-
-    return sets;
-  }
-
-  Future<Series> postMySet({
-    required String exerciseId,
-    required int repetitions,
-    required double weight,
-  }) async {
-    final data = await pumpProgressApiProvider.postMySet(MeSetBodyPost(
-      exerciseId: exerciseId,
-      repetitions: repetitions,
-      weight: weight,
-    ));
-    final series = data.data;
-    return Series.fromJson(series.toJson());
-  }
-
-  Future<User> postMeAddFavoriteExercise({
-    required String exerciseId,
-  }) async {
-    final data = await pumpProgressApiProvider.postMeAddFavoriteExercise(
-      MeUpdateFavoriteExercisesBody(exerciseId: exerciseId),
-    );
-    final me = data.data;
-    return User.fromJson(me.toJson());
-  }
-
-  Future<User> postMeRemoveFavoriteExercise({
-    required String exerciseId,
-  }) async {
-    final data = await pumpProgressApiProvider.postMeRemoveFavoriteExercise(
-      MeUpdateFavoriteExercisesBody(exerciseId: exerciseId),
-    );
-    final me = data.data;
-    return User.fromJson(me.toJson());
-  }
-
 // * users
   Future<User> getUser(String userId) async {
     final data = await pumpProgressApiProvider.getUser(userId);
