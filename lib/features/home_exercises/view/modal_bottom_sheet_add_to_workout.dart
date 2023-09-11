@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 
 class ModalBottomSheetAddToWorkout extends StatelessWidget {
   const ModalBottomSheetAddToWorkout({super.key, required this.addExercise});
@@ -9,8 +9,8 @@ class ModalBottomSheetAddToWorkout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final coreBloc = context.read<CoreBloc>();
-    final workouts = coreBloc.state.workouts;
+    final workoutsBloc = context.read<WorkoutsBloc>();
+    final workouts = workoutsBloc.state.workouts;
     return Container(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),

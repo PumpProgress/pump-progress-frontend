@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
-import 'package:pump_progress_frontend/features/home_workouts/bloc/home_workouts_bloc.dart';
 
 class WorkoutWidgetItem extends StatelessWidget {
   const WorkoutWidgetItem({
@@ -12,7 +12,7 @@ class WorkoutWidgetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeWorkoutBloc = context.read<HomeWorkoutsBloc>();
+    final homeWorkoutBloc = context.read<WorkoutsBloc>();
     final workout = homeWorkoutBloc.state.workouts[index];
     return Card(
       elevation: 2,

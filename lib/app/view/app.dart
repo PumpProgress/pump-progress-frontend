@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 
 import 'package:pump_progress_frontend/config/constants/theme.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
@@ -26,6 +27,11 @@ class App extends StatelessWidget {
         return CoreBloc(
           pumpProgressRepository: context.read<PumpProgressRepository>(),
         )..add(const CoreInit());
+      }),
+      BlocProvider(create: (context) {
+        return WorkoutsBloc(
+          pumpProgressRepository: context.read<PumpProgressRepository>(),
+        );
       })
     ];
 
@@ -33,20 +39,11 @@ class App extends StatelessWidget {
       providers: repositoryProviders,
       child: MultiBlocProvider(
         providers: blocProviders,
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<CoreBloc, CoreState>(
-              listener: (context, state) {
-                // TODO: implement listener
-              },
-            )
-          ],
-          child: MaterialApp(
-            theme: theme,
-            onGenerateRoute: router.onGenerateRoute,
-            navigatorObservers: [routeObserver],
-            debugShowCheckedModeBanner: false,
-          ),
+        child: MaterialApp(
+          theme: theme,
+          onGenerateRoute: router.onGenerateRoute,
+          navigatorObservers: [routeObserver],
+          debugShowCheckedModeBanner: false,
         ),
       ),
     );

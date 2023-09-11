@@ -28,13 +28,11 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
 
       if (token != null && userId != null) {
         final user = await pumpProgressRepository.getUser(userId);
-        final workouts =
-            await pumpProgressRepository.getWorkouts(userId: user.id);
+
         emit(
           state.copyWith(
             status: AuthenticationStatus.authenticated,
             user: user,
-            workouts: workouts,
           ),
         );
         return;
