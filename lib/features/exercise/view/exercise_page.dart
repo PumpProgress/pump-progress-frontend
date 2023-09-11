@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/view/floating_action_button_new_series.dart';
 import 'package:pump_progress_frontend/features/exercise/view/sets_list.dart';

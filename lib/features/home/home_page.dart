@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+
+import 'package:pump_progress_frontend/features/home/home_drawer.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/home_exercises/view/home_exercises_view.dart';
 import 'package:pump_progress_frontend/features/home_workouts/bloc/home_workouts_bloc.dart';
@@ -37,22 +39,7 @@ class Home extends StatelessWidget {
               appBar: AppBar(
                 title: const Text('Pump Progress'),
               ),
-              drawer: Drawer(
-                child: SafeArea(
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: <Widget>[
-                      ListTile(
-                        title: const Text('Logout'),
-                        onTap: () {
-                          context.read<CoreBloc>().add(const CoreLogout());
-                        },
-                        leading: const Icon(Icons.power_settings_new_rounded),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              drawer: const HomeDrawer(),
               bottomNavigationBar: tabs(),
               body: const TabBarView(
                 children: [HomeExercises(), HomeWorkouts()],

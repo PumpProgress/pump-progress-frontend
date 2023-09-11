@@ -15,6 +15,7 @@ import 'package:pump_progress_frontend/repositories/models/workout.dart';
 class PumpProgressRepository {
   PumpProgressRepository();
   final pumpProgressApiProvider = PumpProgressApiProvider();
+
   // * auth
   Future<String> authLogIn({
     required String email,

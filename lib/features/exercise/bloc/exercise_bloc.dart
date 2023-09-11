@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 

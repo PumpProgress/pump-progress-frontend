@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/repositories/models/workout.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
@@ -18,29 +18,4 @@ class HomeWorkoutsBloc extends Bloc<HomeWorkoutsEvent, HomeWorkoutsState> {
 
   final PumpProgressRepository pumpProgressRepository;
   final CoreBloc coreBloc;
-
-  Future<void> _onFetchHomeWorkoutsEvent(
-      FetchHomeWorkoutsEvent event, Emitter<HomeWorkoutsState> emit) async {
-    emit(state.copyWith(status: HomeWorkoutsStatus.loading));
-
-    final userId = coreBloc.state.user.id;
-
-    final workouts = await pumpProgressRepository.getWorkouts(userId: userId);
-    emit(state.copyWith(
-      status: HomeWorkoutsStatus.success,
-      workouts: workouts,
-    ));
-  }
-
-  Future<void> _onAddWorkoutHomeWorkoutsEvent(AddWorkoutHomeWorkoutsEvent event,
-      Emitter<HomeWorkoutsState> emit) async {
-    emit(state.copyWith(status: HomeWorkoutsStatus.loading));
-    await pumpProgressRepository.postWorkout(name: event.name);
-    final userId = coreBloc.state.user.id;
-    final workouts = await pumpProgressRepository.getWorkouts(userId: userId);
-    emit(state.copyWith(
-      status: HomeWorkoutsStatus.success,
-      workouts: workouts,
-    ));
-  }
 }

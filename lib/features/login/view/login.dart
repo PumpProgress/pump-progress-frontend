@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+
 import 'package:pump_progress_frontend/features/login/bloc/login_bloc.dart';
 import 'package:pump_progress_frontend/features/login/view/login_form.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';

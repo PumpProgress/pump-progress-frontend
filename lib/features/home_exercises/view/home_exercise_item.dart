@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/modal_bottom_sheet_add_to_workout.dart';
 
 class ExerciseWidget extends StatelessWidget {
   const ExerciseWidget({
@@ -16,6 +17,16 @@ class ExerciseWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeExercisesBloc = context.read<HomeExercisesBloc>();
     final exercise = homeExercisesBloc.state.itemsFiltered[index];
+
+    void addExercise(String workoutId) {
+      homeExercisesBloc.add(
+        AddExerciseToWorkoutEvent(
+          workoutId: workoutId,
+          exerciseId: exercise.id,
+        ),
+      );
+    }
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -28,6 +39,13 @@ class ExerciseWidget extends StatelessWidget {
           arguments: ExercisesPageArguments(
               exerciseId: exercise.id, exerciseName: exercise.name),
         ),
+        onLongPress: () => showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            useSafeArea: true,
+            builder: (BuildContext context) => ModalBottomSheetAddToWorkout(
+                  addExercise: addExercise,
+                )),
         title: Text(
           exercise.name,
           style: const TextStyle(
@@ -44,8 +62,8 @@ class ExerciseWidget extends StatelessWidget {
                 .map(
                   (muscle) => Chip(
                     labelPadding: const EdgeInsets.all(0.0),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
                     side: const BorderSide(
                         color: PumpProgressColors.coral, width: 0.5),
                     label: Text(
