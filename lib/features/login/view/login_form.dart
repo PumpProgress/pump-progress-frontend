@@ -14,7 +14,7 @@ class LoginForm extends StatelessWidget {
       listener: (context, state) {
         if (state.status == LoginStatus.success) {
           context.read<CoreBloc>().add(const CoreInit());
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.of(context).pushReplacementNamed('/');
         }
       },
       child: Align(

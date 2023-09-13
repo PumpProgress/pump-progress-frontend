@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
       listener: (context, state) {
         if (state.status == AuthenticationStatus.authenticated) {
           context.read<CoreBloc>().add(const CoreInit());
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.of(context).pushReplacementNamed('/');
         }
       },
       child: Scaffold(

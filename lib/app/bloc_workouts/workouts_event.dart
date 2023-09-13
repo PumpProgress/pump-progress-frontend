@@ -15,3 +15,16 @@ class AddWorkoutWorkoutsEvent extends WorkoutsEvent {
   const AddWorkoutWorkoutsEvent({required this.name});
   final String name;
 }
+
+class AddExerciseToWorkoutEvent extends WorkoutsEvent {
+  const AddExerciseToWorkoutEvent({
+    required this.workoutId,
+    required this.exerciseId,
+  });
+
+  final String workoutId;
+  final String exerciseId;
+
+  @override
+  List<Object> get props => [];
+}

@@ -18,23 +18,13 @@ class ExerciseWidget extends StatelessWidget {
     final homeExercisesBloc = context.read<HomeExercisesBloc>();
     final exercise = homeExercisesBloc.state.itemsFiltered[index];
 
-    void addExercise(String workoutId) {
-      homeExercisesBloc.add(
-        AddExerciseToWorkoutEvent(
-          workoutId: workoutId,
-          exerciseId: exercise.id,
-        ),
-      );
-    }
-
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
-        onTap: () => Navigator.pushNamed(
-          context,
+        onTap: () => Navigator.of(context).pushNamed(
           '/exercises',
           arguments: ExercisesPageArguments(
               exerciseId: exercise.id, exerciseName: exercise.name),
@@ -44,7 +34,7 @@ class ExerciseWidget extends StatelessWidget {
             isScrollControlled: true,
             useSafeArea: true,
             builder: (BuildContext context) => ModalBottomSheetAddToWorkout(
-                  addExercise: addExercise,
+                  exerciseId: exercise.id,
                 )),
         title: Text(
           exercise.name,

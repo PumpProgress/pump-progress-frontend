@@ -18,7 +18,6 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
     on<HardFetchExerciseListEvent>(_onHardFetchExerciseListEvent);
     on<HandleUpdateFavoriteExerciseEvent>(_onHandleUpdateFavoriteExerciseEvent);
     on<HandleToggleFiltersEvent>(_onHandleToggleFiltersEvent);
-    on<AddExerciseToWorkoutEvent>(_onAddExerciseToWorkoutEvent);
   }
 
   final PumpProgressRepository pumpProgressRepository;
@@ -135,20 +134,6 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
     try {
       emit(
         state.copyWith(showFilters: !state.showFilters),
-      );
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> _onAddExerciseToWorkoutEvent(
-    AddExerciseToWorkoutEvent event,
-    Emitter<HomeExercisesState> emit,
-  ) async {
-    try {
-      await pumpProgressRepository.putAddWorkoutExercise(
-        workoutId: event.workoutId,
-        exerciseId: event.exerciseId,
       );
     } catch (e) {
       print(e);

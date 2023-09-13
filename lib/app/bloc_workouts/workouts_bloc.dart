@@ -13,6 +13,7 @@ class WorkoutsBloc extends Bloc<WorkoutsEvent, WorkoutsState> {
       : super(const WorkoutsState()) {
     on<FetchWorkoutsEvent>(_onFetchWorkoutsEvent);
     on<AddWorkoutWorkoutsEvent>(_onAddWorkoutWorkoutsEvent);
+    on<AddExerciseToWorkoutEvent>(_onAddExerciseToWorkoutEvent);
   }
   final PumpProgressRepository pumpProgressRepository;
 
@@ -43,5 +44,25 @@ class WorkoutsBloc extends Bloc<WorkoutsEvent, WorkoutsState> {
       status: WorkoutsStatus.success,
       workouts: workouts,
     ));
+  }
+
+  Future<void> _onAddExerciseToWorkoutEvent(
+    AddExerciseToWorkoutEvent event,
+    Emitter<WorkoutsState> emit,
+  ) async {
+    try {
+      final updatedWorkout = await pumpProgressRepository.putAddWorkoutExercise(
+        workoutId: event.workoutId,
+        exerciseId: event.exerciseId,
+      );
+      final indexWorkout = state.workouts
+          .indexWhere((workout) => workout.id == updatedWorkout.id);
+
+      state.workouts[indexWorkout] = updatedWorkout;
+
+      emit(state.copyWith(workouts: List.from(state.workouts)));
+    } catch (e) {
+      print(e);
+    }
   }
 }

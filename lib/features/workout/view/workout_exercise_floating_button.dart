@@ -92,7 +92,7 @@ class _AddExerciseToWorkoutModalState extends State<AddExerciseToWorkoutModal> {
                 itemBuilder: (context, index) => GestureDetector(
                     onTap: () {
                       _onClickHandler(exercisesFiltered[index]);
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                     },
                     child: Container(
                       padding: const EdgeInsets.all(4),

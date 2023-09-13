@@ -14,11 +14,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('test3');
-    context
-        .read<WorkoutsBloc>()
-        .add(const FetchWorkoutsEvent()); // TODO event not being emited
-    print('test4');
+    context.read<WorkoutsBloc>().add(const FetchWorkoutsEvent());
 
     return MultiBlocProvider(
       providers: [

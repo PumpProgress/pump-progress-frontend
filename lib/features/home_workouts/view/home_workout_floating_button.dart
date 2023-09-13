@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 
 class HomeWorkoutFloatingActionButton extends StatelessWidget {
-  HomeWorkoutFloatingActionButton({super.key, required this.saveWorkout});
+  HomeWorkoutFloatingActionButton({super.key});
 
-  final void Function(String name) saveWorkout;
   final TextEditingController nameController = TextEditingController();
 
-  void _onClickHandler() {
+  void _onClickHandler(context) {
     try {
       final name = nameController.text;
-      saveWorkout(name);
+      context.read<WorkoutsBloc>().add(AddWorkoutWorkoutsEvent(name: name));
       nameController.clear();
     } catch (e) {
       print(e);
@@ -51,8 +51,8 @@ class HomeWorkoutFloatingActionButton extends StatelessWidget {
                       foregroundColor: PumpProgressColors.white,
                     ),
                     onPressed: () {
-                      _onClickHandler();
-                      Navigator.pop(context);
+                      _onClickHandler(context);
+                      Navigator.of(context).pop();
                     },
                     child: Text(
                       'Create',

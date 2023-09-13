@@ -43,16 +43,3 @@ class HandleToggleFiltersEvent extends HomeExercisesEvent {
   @override
   List<Object> get props => [];
 }
-
-class AddExerciseToWorkoutEvent extends HomeExercisesEvent {
-  const AddExerciseToWorkoutEvent({
-    required this.workoutId,
-    required this.exerciseId,
-  });
-
-  final String workoutId;
-  final String exerciseId;
-
-  @override
-  List<Object> get props => [];
-}

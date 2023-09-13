@@ -15,23 +15,7 @@ class HomeWorkouts extends StatefulWidget {
 
 class _HomeWorkoutsState extends State<HomeWorkouts> with RouteAware {
   @override
-  void didPopNext() {
-    final workoutBloc = context.read<WorkoutsBloc>();
-    workoutBloc.add(
-      const FetchWorkoutsEvent(),
-    );
-  }
-
-  void saveWorkout(String name) {
-    try {
-      final workoutBloc = context.read<WorkoutsBloc>();
-      workoutBloc.add(
-        AddWorkoutWorkoutsEvent(name: name),
-      );
-    } catch (e) {
-      print(e);
-    }
-  }
+  void didPopNext() {}
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +36,7 @@ class _HomeWorkoutsState extends State<HomeWorkouts> with RouteAware {
                       return WorkoutWidgetItem(index: index);
                     }),
               ),
-              HomeWorkoutFloatingActionButton(
-                saveWorkout: saveWorkout,
-              )
+              HomeWorkoutFloatingActionButton()
             ],
           );
         });
