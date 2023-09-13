@@ -213,7 +213,7 @@ class _ModalBottomSheetSaveExerciseState
                 ),
                 onPressed: () {
                   _onClickHandler();
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
                 child: Text(
                   'Save',

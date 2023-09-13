@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/constants/local_storage.dart';
-
 import 'package:pump_progress_frontend/repositories/models/user.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +26,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
 
       if (token != null && userId != null) {
         final user = await pumpProgressRepository.getUser(userId);
+
         emit(
           state.copyWith(
             status: AuthenticationStatus.authenticated,

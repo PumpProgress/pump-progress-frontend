@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/user.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -11,7 +12,6 @@ part 'home_exercises_state.dart';
 class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
   HomeExercisesBloc({
     required this.pumpProgressRepository,
-    // required this.me,s
     required this.coreBloc,
   }) : super(const HomeExercisesState()) {
     on<UpdatedSearchExerciseListEvent>(_onUpdatedSearchExerciseListEvent);
@@ -21,7 +21,6 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
   }
 
   final PumpProgressRepository pumpProgressRepository;
-  // final User me;
   final CoreBloc coreBloc;
 
   Future<void> _onUpdatedSearchExerciseListEvent(

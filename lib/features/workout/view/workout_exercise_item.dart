@@ -42,8 +42,7 @@ class ExerciseItemWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: ListTile(
-            onTap: () => Navigator.pushNamed(
-              context,
+            onTap: () => Navigator.of(context).pushNamed(
               '/exercises',
               arguments: ExercisesPageArguments(
                   exerciseId: exercise.id, exerciseName: exercise.name),
