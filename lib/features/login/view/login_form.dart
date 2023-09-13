@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+
+import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/features/login/bloc/login_bloc.dart';
 
 class LoginForm extends StatelessWidget {
@@ -12,18 +14,8 @@ class LoginForm extends StatelessWidget {
       listener: (context, state) {
         if (state.status == LoginStatus.success) {
           context.read<CoreBloc>().add(const CoreInit());
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.of(context).pushReplacementNamed('/');
         }
-        // if (state.status.isSubmissionFailure) {
-        //   ScaffoldMessenger.of(context)
-        //     ..hideCurrentSnackBar()
-        //     ..showSnackBar(
-        //       const SnackBar(content: Text('Authentication Failure')),
-        //     );
-        // }
-        // if (state.status.isSubmissionSuccess) {
-        //   BlocProvider.of<AuthBloc>(context).add(AuthLoggedIn());
-        // }
       },
       child: Align(
         alignment: const Alignment(0, -1 / 3),
@@ -32,8 +24,10 @@ class LoginForm extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(flex: 3),
-              const Text('PumpProgress'),
-
+              Text(
+                'PumpProgress',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
               const Spacer(
                 flex: 2,
               ),
@@ -41,48 +35,10 @@ class LoginForm extends StatelessWidget {
               const Spacer(),
               _PasswordInput(),
               const Spacer(),
-              // Align(
-              //     alignment: Alignment.centerRight,
-              //     child: GestureDetector(
-              //       onTap: () {
-              //         Navigator.pushNamed(context, '/recover-password');
-              //       },
-              //       child: Text(
-              //         '¿Olvidaste tu contraseña?',
-              //         style: Theme.of(context)
-              //             .textTheme
-              //             .bodyText1!
-              //             .copyWith(color: Colors.black87),
-              //       ),
-              //     )),
               const Spacer(
                 flex: 2,
               ),
               _LoginButton(),
-              // const Spacer(
-              //   flex: 2,
-              // ),
-              // Wrap(alignment: WrapAlignment.center, children: [
-              //   Text(
-              //     '¿No estás registrado aún? ',
-              //     style: Theme.of(context)
-              //         .textTheme
-              //         .bodyText1!
-              //         .copyWith(color: Colors.black87),
-              //   ),
-              //   GestureDetector(
-              //       onTap: () {
-              //         Navigator.pushNamed(context, '/register');
-              //       },
-              //       child: Text(
-              //         'Crea una cuenta',
-              //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
-              //               fontWeight: FontWeight.w700,
-              //               decoration: TextDecoration.underline,
-              //             ),
-              //       ))
-              // ])
-              //_RegisterButton(),
             ],
           ),
         ),
@@ -98,17 +54,19 @@ class _EmailInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return TextFormField(
+          enableSuggestions: false,
           keyboardType: TextInputType.emailAddress,
           key: const Key('loginForm_emailInput_textField'),
           onChanged: (email) =>
               context.read<LoginBloc>().add(LoginUsernameChanged(email)),
           decoration: const InputDecoration(
-            hintText: 'Email',
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            isDense: true,
+            labelText: 'Email',
+            prefixIcon: Icon(Icons.mail),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16))),
           ),
-          // prefixIconData: CustomIcons.user,
-          // errorText: state.email.invalid
-          //     ? '${' ' * ConstantsSizes.sizes[0].toInt()}invalid username'
-          //     : null,
         );
       },
     );
@@ -122,18 +80,18 @@ class _PasswordInput extends StatelessWidget {
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
         return TextFormField(
-          //inputType: TextInputType.visiblePassword,
           key: const Key('loginForm_passwordInput_textField'),
           onChanged: (password) =>
               context.read<LoginBloc>().add(LoginPasswordChanged(password)),
           obscureText: true,
           decoration: const InputDecoration(
-            hintText: 'Contraseña',
+            prefixIcon: Icon(Icons.lock),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            isDense: true,
+            labelText: 'Password',
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16))),
           ),
-          // prefixIconData: CustomIcons.lock_close,
-          // errorText: state.password.invalid
-          //     ? '${' ' * ConstantsSizes.sizes[0].toInt()}invalid password'
-          //     : null,
         );
       },
     );
@@ -147,18 +105,24 @@ class _LoginButton extends StatelessWidget {
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         return state.status == LoginStatus.loading
-            ? const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.black87))
+            ? const CircularProgressIndicator()
             : ElevatedButton(
                 key: const Key('loginForm_continue_raisedButton'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: PumpProgressColors.coral,
+                  foregroundColor: PumpProgressColors.white,
+                ),
                 onPressed: () {
                   context.read<LoginBloc>().add(const LoginSubmitted());
                 },
-                child: Text('Inicia sesión',
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelLarge!
-                        .copyWith(fontSize: 14)));
+                child: Text(
+                  'LogIn',
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge!
+                      .copyWith(color: PumpProgressColors.white),
+                ),
+              );
       },
     );
   }

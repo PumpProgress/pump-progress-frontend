@@ -12,6 +12,7 @@ class HomeExercisesState extends Equatable {
     this.searchValue = '',
     this.selectedMuscles = emptyList,
     this.selectedCategories = emptyList,
+    this.showFilters = false,
   });
 
   final HomeExerciseStatus status;
@@ -20,6 +21,7 @@ class HomeExercisesState extends Equatable {
   final String searchValue;
   final List<String> selectedMuscles;
   final List<String> selectedCategories;
+  final bool showFilters;
 
   @override
   List<Object> get props => [
@@ -29,6 +31,7 @@ class HomeExercisesState extends Equatable {
         searchValue,
         selectedMuscles,
         selectedCategories,
+        showFilters
       ];
 
   HomeExercisesState copyWith({
@@ -38,14 +41,15 @@ class HomeExercisesState extends Equatable {
     String? searchValue,
     List<String>? selectedMuscles,
     List<String>? selectedCategories,
+    bool? showFilters,
   }) {
     return HomeExercisesState(
-      status: status ?? this.status,
-      itemsFiltered: itemsFiltered ?? this.itemsFiltered,
-      items: items ?? this.items,
-      searchValue: searchValue ?? this.searchValue,
-      selectedMuscles: selectedMuscles ?? this.selectedMuscles,
-      selectedCategories: selectedCategories ?? this.selectedCategories,
-    );
+        status: status ?? this.status,
+        itemsFiltered: itemsFiltered ?? this.itemsFiltered,
+        items: items ?? this.items,
+        searchValue: searchValue ?? this.searchValue,
+        selectedMuscles: selectedMuscles ?? this.selectedMuscles,
+        selectedCategories: selectedCategories ?? this.selectedCategories,
+        showFilters: showFilters ?? this.showFilters);
   }
 }

@@ -36,3 +36,10 @@ class HandleUpdateFavoriteExerciseEvent extends HomeExercisesEvent {
   @override
   List<Object> get props => [index];
 }
+
+class HandleToggleFiltersEvent extends HomeExercisesEvent {
+  const HandleToggleFiltersEvent();
+
+  @override
+  List<Object> get props => [];
+}

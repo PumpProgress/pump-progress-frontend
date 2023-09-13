@@ -1,13 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/auth_log_in/auth_log_in_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_sets_body_post.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/me/me_update_favorite_exercises_body.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_post.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_put.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/user/users_update_exercises_post.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/auth_log_in/auth_log_in_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise_get_response.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me_get_response.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me_set_post_response.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me_sets_get_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me_sets_update_favorite_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/series_post_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/sets_get_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/users/user_get_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_body.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_put_update_exercise_body.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_put_update_exercise_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workouts_get_response.dart';
 import 'package:pump_progress_frontend/utils/helpers/general_exception.dart';
 import 'package:pump_progress_frontend/utils/services/dio_http_client.dart';
 
@@ -24,7 +31,7 @@ class PumpProgressApiProvider {
           await dioClient.dio.post<String>('/auth/log-in', data: body.toJson());
 
       return AuthLogInResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
@@ -39,34 +46,84 @@ class PumpProgressApiProvider {
         '/exercises',
       );
       return ExerciseGetResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
     }
   }
 
-  // * me
+  Future<MeUpdateFavoriteExercisesPostResponse> postMeRemoveFavoriteExercise(
+    MeUpdateFavoriteExercisesBody body,
+  ) async {
+    try {
+      final response = await dioClient.dio
+          .post<String>('/me/remove-favorite-exercise', data: body.toJson());
+      return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
 
-  Future<MeGetResponse> getMe() async {
+  // * users
+
+  Future<UserGetResponse> getUser(String userId) async {
     try {
       final response = await dioClient.dio.get<String>(
-        '/me',
+        '/users/$userId',
       );
-      return MeGetResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+      return UserGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      print(error.toString());
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
     }
   }
 
-  Future<MeSetsGetResponse> getMySets(String? exerciseId) async {
+  Future<UserGetResponse> postUserAddFavoriteExercise(
+    String userId,
+    UpdateFavoriteExercisesBody body,
+  ) async {
     try {
-      const baseURL = '/me/sets';
+      final response = await dioClient.dio.post<String>(
+          '/users/$userId/add-favorite-exercise',
+          data: body.toJson());
+      return UserGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<UserGetResponse> postUserRemoveFavoriteExercise(
+    String userId,
+    UpdateFavoriteExercisesBody body,
+  ) async {
+    try {
+      final response = await dioClient.dio.post<String>(
+          '/users/$userId/remove-favorite-exercise',
+          data: body.toJson());
+      return UserGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  // * sets
+
+  Future<SetsGetResponse> getSets({String? exerciseId, String? userId}) async {
+    try {
+      const baseURL = '/sets';
       // Set the query parameter(s)
       final queryParameters = {
         'exerciseId': exerciseId,
+        'userId': userId,
       };
 
       // Modify the URL with the query parameters
@@ -77,48 +134,107 @@ class PumpProgressApiProvider {
       final response = await dioClient.dio.get<String>(
         url,
       );
-      return MeSetsGetResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+      return SetsGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
+    } catch (err) {
+      throw GeneralException('An error ocurred', '000', StackTrace.current);
     }
   }
 
-  Future<MeSetPostResponse> postMySet(MeSetBodyPost body) async {
+  Future<SeriesPostResponse> postSeries(SeriesBodyPost body) async {
     try {
       final response =
-          await dioClient.dio.post<String>('/me/sets', data: body.toJson());
-      return MeSetPostResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+          await dioClient.dio.post<String>('/sets', data: body.toJson());
+      return SeriesPostResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
     }
   }
 
-  Future<MeUpdateFavoriteExercisesPostResponse> postAddFavoriteExercise(
-    MeUpdateFavoriteExercisesBody body,
-  ) async {
+  Future<SeriesPostResponse> putSeries({
+    required String seriesId,
+    required SeriesBodyPut body,
+  }) async {
     try {
       final response = await dioClient.dio
-          .post<String>('/me/add-favorite-exercise', data: body.toJson());
-      return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+          .put<String>('/sets/$seriesId', data: body.toJson());
+      return SeriesPostResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
     }
   }
 
-  Future<MeUpdateFavoriteExercisesPostResponse> postRemoveFavoriteExercise(
-    MeUpdateFavoriteExercisesBody body,
+  // * workouts
+
+  Future<WorkoutsGetResponse> getWorkouts({String? userId}) async {
+    try {
+      const baseURL = '/workouts';
+
+      final queryParameters = {
+        'userId': userId,
+      };
+
+      // Modify the URL with the query parameters
+      final url = Uri.parse(baseURL)
+          .replace(queryParameters: queryParameters)
+          .toString();
+
+      final response = await dioClient.dio.get<String>(url);
+      return WorkoutsGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    } catch (err) {
+      throw GeneralException('An error ocurred', '000', StackTrace.current);
+    }
+  }
+
+  Future<WorkoutPostResponse> postWorkout(WorkoutPostBody body) async {
+    try {
+      final response =
+          await dioClient.dio.post<String>('/workouts', data: body.toJson());
+      return WorkoutPostResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<WorkoutPutUpdateExerciseResponse> putAddWorkoutExercise(
+    String workoutId,
+    WorkoutPutUpdateExerciseBody body,
   ) async {
     try {
-      final response = await dioClient.dio
-          .post<String>('/me/remove-favorite-exercise', data: body.toJson());
-      return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
-    } on DioError catch (error, stackTrace) {
+      final url = '/workouts/$workoutId/add-exercise';
+      final response =
+          await dioClient.dio.put<String>(url, data: body.toJson());
+      return WorkoutPutUpdateExerciseResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<WorkoutPutUpdateExerciseResponse> putRemoveWorkoutExercise(
+    String workoutId,
+    WorkoutPutUpdateExerciseBody body,
+  ) async {
+    try {
+      final url = '/workouts/$workoutId/remove-exercise';
+      final response =
+          await dioClient.dio.put<String>(url, data: body.toJson());
+      return WorkoutPutUpdateExerciseResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);

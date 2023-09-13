@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
+
+import 'package:pump_progress_frontend/features/home/home_drawer.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/home_exercises/view/home_exercises_view.dart';
+import 'package:pump_progress_frontend/features/home_workouts/view/home_workouts_view.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
 class Home extends StatelessWidget {
@@ -10,6 +14,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<WorkoutsBloc>().add(const FetchWorkoutsEvent());
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeExercisesBloc>(
@@ -17,38 +23,24 @@ class Home extends StatelessWidget {
             pumpProgressRepository: context.read<PumpProgressRepository>(),
             coreBloc: context.read<CoreBloc>(),
           )..add(const HardFetchExerciseListEvent()),
-        )
+        ),
       ],
       child: DefaultTabController(
         length: 2,
         animationDuration: const Duration(),
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Pump Progress'),
-          ),
-          drawer: Drawer(
-            child: SafeArea(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  ListTile(
-                    title: const Text('Logout'),
-                    onTap: () {
-                      context.read<CoreBloc>().add(const CoreLogout());
-                    },
-                    leading: const Icon(Icons.power_settings_new_rounded),
-                  ),
-                ],
+        child: Container(
+          color: Theme.of(context).colorScheme.background,
+          child: SafeArea(
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Pump Progress'),
+              ),
+              drawer: const HomeDrawer(),
+              bottomNavigationBar: tabs(),
+              body: const TabBarView(
+                children: [HomeExercises(), HomeWorkouts()],
               ),
             ),
-          ),
-          bottomNavigationBar: tabs(),
-          body: const TabBarView(
-            children: [
-              HomeExercises(),
-
-              // Container(child: const Icon(Icons.directions_transit)),
-            ],
           ),
         ),
       ),
@@ -57,24 +49,16 @@ class Home extends StatelessWidget {
 }
 
 Widget tabs() {
-  return Container(
-    color: Colors.blue,
-    child: const TabBar(
-      // labelColor: Colors.white,
-      // unselectedLabelColor: Colors.white70,
-      // indicatorSize: TabBarIndicatorSize.tab,
-      // indicatorPadding: EdgeInsets.all(5.0),
-      // indicatorColor: Colors.blue,
-      tabs: [
-        Tab(
-          text: "Exercises",
-          icon: Icon(Icons.workspaces),
-        ),
-        // Tab(
-        //   text: "Calendar",
-        //   icon: Icon(Icons.calendar_today),
-        // ),
-      ],
-    ),
+  return const TabBar(
+    tabs: [
+      Tab(
+        text: "Exercises",
+        icon: Icon(Icons.workspaces),
+      ),
+      Tab(
+        text: "Workouts",
+        icon: Icon(Icons.airline_seat_individual_suite_outlined),
+      ),
+    ],
   );
 }

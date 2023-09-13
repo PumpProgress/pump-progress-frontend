@@ -2,12 +2,10 @@ part of 'exercise_bloc.dart';
 
 enum ExerciseStatus { initial, loading, success }
 
-const emptySets = <Series>[];
-
 class ExerciseState extends Equatable {
   const ExerciseState({
     this.status = ExerciseStatus.initial,
-    this.sets = emptySets,
+    this.sets = const <Series>[],
     this.exerciseId = '',
   });
 

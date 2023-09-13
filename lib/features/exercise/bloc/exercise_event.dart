@@ -23,3 +23,15 @@ class AddNewSeries extends ExerciseEvent {
   final int repetitions;
   final double weight;
 }
+
+class EditSeries extends ExerciseEvent {
+  const EditSeries({
+    required this.seriesId,
+    required this.repetitions,
+    required this.weight,
+  });
+
+  final String seriesId;
+  final int repetitions;
+  final double weight;
+}

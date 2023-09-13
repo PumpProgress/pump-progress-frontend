@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
-import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_gpt.dart';
-import 'package:pump_progress_frontend/features/home_exercises/view/home_search_textbox.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_item.dart';
+import 'package:pump_progress_frontend/features/home_exercises/view/home_search.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 
 class HomeExercises extends StatelessWidget {
@@ -20,7 +20,7 @@ class HomeExercises extends StatelessWidget {
         }
         return Column(
           children: [
-            const SearchBarWithFilter(),
+            const HomeExercisesSearchWidget(),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,

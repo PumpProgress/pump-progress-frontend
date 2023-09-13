@@ -4,6 +4,8 @@ import 'package:pump_progress_frontend/features/error/error_page.dart';
 import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
 import 'package:pump_progress_frontend/features/home/home_page.dart';
 import 'package:pump_progress_frontend/features/login/login.dart';
+import 'package:pump_progress_frontend/features/workout/view/workout_page.dart';
+import 'package:pump_progress_frontend/repositories/models/workout.dart';
 
 class PumpProgressRouter {
   const PumpProgressRouter();
@@ -27,7 +29,20 @@ class PumpProgressRouter {
         return MaterialPageRoute<void>(
           settings: const RouteSettings(name: '/exercises'),
           builder: (_) => ProtectedRoute(
-            child: ExercisePage(exerciseId: args.exerciseId),
+            child: ExercisePage(
+              exerciseId: args.exerciseId,
+              exerciseName: args.exerciseName,
+            ),
+          ),
+        );
+      case '/workouts':
+        final args = settings.arguments! as WorkoutsPageArguments;
+        return MaterialPageRoute<void>(
+          settings: const RouteSettings(name: '/exercises'),
+          builder: (_) => ProtectedRoute(
+            child: WorkoutPage(
+              workout: args.workout,
+            ),
           ),
         );
 
@@ -41,6 +56,17 @@ class PumpProgressRouter {
 }
 
 class ExercisesPageArguments {
-  ExercisesPageArguments(this.exerciseId);
+  ExercisesPageArguments({
+    required this.exerciseId,
+    required this.exerciseName,
+  });
   final String exerciseId;
+  final String exerciseName;
+}
+
+class WorkoutsPageArguments {
+  WorkoutsPageArguments({
+    required this.workout,
+  });
+  final Workout workout;
 }

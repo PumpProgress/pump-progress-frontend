@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
+import 'package:pump_progress_frontend/utils/helpers/helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'login_event.dart';
@@ -42,7 +43,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         email: state.email,
         password: state.password,
       );
+      final payload = parseJwt(token);
       await prefs.setString(jwtKey, token);
+      await prefs.setString(userKey, payload['iss']);
 
       emit(
         state.copyWith(status: LoginStatus.success),
