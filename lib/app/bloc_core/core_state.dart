@@ -18,7 +18,6 @@ class CoreState extends Equatable {
   CoreState copyWith({
     AuthenticationStatus? status,
     User? user,
-    List<Workout>? workouts,
   }) {
     return CoreState(
       status: status ?? this.status,
