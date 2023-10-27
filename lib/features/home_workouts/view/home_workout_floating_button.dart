@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 
@@ -7,7 +8,7 @@ class HomeWorkoutFloatingActionButton extends StatelessWidget {
 
   final TextEditingController nameController = TextEditingController();
 
-  void _onClickHandler(context) {
+  void _onClickHandler(BuildContext context) {
     try {
       final name = nameController.text;
       context.read<WorkoutsBloc>().add(AddWorkoutWorkoutsEvent(name: name));
