@@ -23,7 +23,7 @@ class PumpProgressApiDio {
   static const urlDev = 'http://192.168.1.135:6000';
 
   static final options = BaseOptions(
-    baseUrl: urlDev,
+    baseUrl: urlProd,
   );
 }
 
