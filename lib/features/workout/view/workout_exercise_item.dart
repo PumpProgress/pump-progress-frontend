@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
+import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/workout/bloc/workout_bloc.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
@@ -17,7 +18,7 @@ class ExerciseItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8),
+      // margin: const EdgeInsets.all(8),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
@@ -36,8 +37,9 @@ class ExerciseItemWidget extends StatelessWidget {
           ],
         ),
         child: Card(
-          elevation: 2,
-          margin: const EdgeInsets.all(0),
+          elevation: 0,
+          margin: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
+          color: PPColors.amethyst500,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -49,26 +51,29 @@ class ExerciseItemWidget extends StatelessWidget {
             ),
             title: Text(
               exercise.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+              style: PPFontStyles.h6.copyWith(
+                color: PPColors.amethyst100,
               ),
             ),
             subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 0),
               child: Wrap(
                 spacing: 8.0,
                 runSpacing: -8.0,
                 children: exercise.muscles
                     .map(
                       (muscle) => Chip(
+                        backgroundColor: PPColors.amethyst500,
                         labelPadding: const EdgeInsets.all(0.0),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4.0),
+                            horizontal: 6.0, vertical: 0.0),
                         side: const BorderSide(
-                            color: PumpProgressColors.coral, width: 0.5),
+                            color: PPColors.coral300, width: 0.5),
                         label: Text(
-                          muscle,
+                          muscle.toUpperCase(),
+                          style: PPFontStyles.xSmall.copyWith(
+                            color: PPColors.coral300,
+                          ),
                         ),
                       ),
                     )

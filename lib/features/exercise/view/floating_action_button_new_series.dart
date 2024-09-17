@@ -13,11 +13,12 @@ class FloatingActionButtonNewSeries extends StatelessWidget {
     return FloatingActionButton(
       shape: const CircleBorder(),
       onPressed: () => showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) => ModalBottomSheetSaveExercise(
-                saveExercise: saveExercise,
-              )),
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) => ModalBottomSheetSaveExercise(
+          saveExercise: saveExercise,
+        ),
+      ),
       child: const Icon(Icons.add_rounded),
     );
   }

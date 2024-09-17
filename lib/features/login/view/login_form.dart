@@ -109,8 +109,8 @@ class _LoginButton extends StatelessWidget {
             : ElevatedButton(
                 key: const Key('loginForm_continue_raisedButton'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: PumpProgressColors.coral,
-                  foregroundColor: PumpProgressColors.white,
+                  backgroundColor: PPColors.coral300,
+                  foregroundColor: PPColors.white,
                 ),
                 onPressed: () {
                   context.read<LoginBloc>().add(const LoginSubmitted());
@@ -120,7 +120,7 @@ class _LoginButton extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .labelLarge!
-                      .copyWith(color: PumpProgressColors.white),
+                      .copyWith(color: PPColors.white),
                 ),
               );
       },

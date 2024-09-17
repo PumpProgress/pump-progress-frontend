@@ -1,15 +1,15 @@
-part of 'home_exercises_bloc.dart';
+part of 'start_exercises_bloc.dart';
 
 const emptyList = <String>[];
 
-abstract class HomeExercisesEvent extends Equatable {
-  const HomeExercisesEvent();
+abstract class StartExercisesEvent extends Equatable {
+  const StartExercisesEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class UpdatedSearchExerciseListEvent extends HomeExercisesEvent {
+class UpdatedSearchExerciseListEvent extends StartExercisesEvent {
   const UpdatedSearchExerciseListEvent({
     required this.searchValue,
     required this.selectedMuscles,
@@ -24,11 +24,11 @@ class UpdatedSearchExerciseListEvent extends HomeExercisesEvent {
   List<Object> get props => [searchValue, selectedMuscles, selectedCategories];
 }
 
-class HardFetchExerciseListEvent extends HomeExercisesEvent {
+class HardFetchExerciseListEvent extends StartExercisesEvent {
   const HardFetchExerciseListEvent();
 }
 
-class HandleUpdateFavoriteExerciseEvent extends HomeExercisesEvent {
+class HandleUpdateFavoriteExerciseEvent extends StartExercisesEvent {
   const HandleUpdateFavoriteExerciseEvent(this.index);
 
   final int index;
@@ -37,7 +37,7 @@ class HandleUpdateFavoriteExerciseEvent extends HomeExercisesEvent {
   List<Object> get props => [index];
 }
 
-class HandleToggleFiltersEvent extends HomeExercisesEvent {
+class HandleToggleFiltersEvent extends StartExercisesEvent {
   const HandleToggleFiltersEvent();
 
   @override

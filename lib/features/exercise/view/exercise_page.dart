@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/config/constants/colors.dart';
+import 'package:pump_progress_frontend/config/constants/fonts.dart';
 
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
-import 'package:pump_progress_frontend/features/exercise/view/floating_action_button_new_series.dart';
 import 'package:pump_progress_frontend/features/exercise/view/sets_list.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -47,15 +48,19 @@ class ExercisePage extends StatelessWidget {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: Text(exerciseName),
+              title: Text(
+                exerciseName,
+                style: PPFontStyles.h5.copyWith(color: PPColors.amethyst100),
+              ),
             ),
-            floatingActionButton:
-                FloatingActionButtonNewSeries(saveExercise: saveExercise),
+            // floatingActionButton:
+            //     FloatingActionButtonNewSeries(saveExercise: saveExercise),
             body: Container(
               child: (state.status == ExerciseStatus.loading)
                   ? const LoadingPage()
                   : Container(
-                      child: SetsList(sets: state.sets),
+                      child: SetsList(
+                          sets: state.sets, saveExercise: saveExercise),
                     ),
             ),
           );

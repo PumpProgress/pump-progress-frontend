@@ -1,12 +1,12 @@
-part of 'home_exercises_bloc.dart';
+part of 'start_exercises_bloc.dart';
 
-enum HomeExerciseStatus { initial, loading, loaded, updatedUserFav }
+enum StartExerciseStatus { initial, loading, loaded, updatedUserFav }
 
 const emptyExerciseList = <Exercise>[];
 
-class HomeExercisesState extends Equatable {
-  const HomeExercisesState({
-    this.status = HomeExerciseStatus.initial,
+class StartExercisesState extends Equatable {
+  const StartExercisesState({
+    this.status = StartExerciseStatus.initial,
     this.itemsFiltered = emptyExerciseList,
     this.items = emptyExerciseList,
     this.searchValue = '',
@@ -15,7 +15,7 @@ class HomeExercisesState extends Equatable {
     this.showFilters = false,
   });
 
-  final HomeExerciseStatus status;
+  final StartExerciseStatus status;
   final List<Exercise> itemsFiltered;
   final List<Exercise> items;
   final String searchValue;
@@ -34,8 +34,8 @@ class HomeExercisesState extends Equatable {
         showFilters
       ];
 
-  HomeExercisesState copyWith({
-    HomeExerciseStatus? status,
+  StartExercisesState copyWith({
+    StartExerciseStatus? status,
     List<Exercise>? itemsFiltered,
     List<Exercise>? items,
     String? searchValue,
@@ -43,7 +43,7 @@ class HomeExercisesState extends Equatable {
     List<String>? selectedCategories,
     bool? showFilters,
   }) {
-    return HomeExercisesState(
+    return StartExercisesState(
         status: status ?? this.status,
         itemsFiltered: itemsFiltered ?? this.itemsFiltered,
         items: items ?? this.items,

@@ -6,14 +6,15 @@ import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/user.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
-part 'home_exercises_event.dart';
-part 'home_exercises_state.dart';
+part 'start_exercises_event.dart';
+part 'start_exercises_state.dart';
 
-class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
-  HomeExercisesBloc({
+class StartExercisesBloc
+    extends Bloc<StartExercisesEvent, StartExercisesState> {
+  StartExercisesBloc({
     required this.pumpProgressRepository,
     required this.coreBloc,
-  }) : super(const HomeExercisesState()) {
+  }) : super(const StartExercisesState()) {
     on<UpdatedSearchExerciseListEvent>(_onUpdatedSearchExerciseListEvent);
     on<HardFetchExerciseListEvent>(_onHardFetchExerciseListEvent);
     on<HandleUpdateFavoriteExerciseEvent>(_onHandleUpdateFavoriteExerciseEvent);
@@ -25,7 +26,7 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
 
   Future<void> _onUpdatedSearchExerciseListEvent(
     UpdatedSearchExerciseListEvent event,
-    Emitter<HomeExercisesState> emit,
+    Emitter<StartExercisesState> emit,
   ) async {
     try {
       final me = coreBloc.state.user;
@@ -53,11 +54,11 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
 
   Future<void> _onHardFetchExerciseListEvent(
     HardFetchExerciseListEvent event,
-    Emitter<HomeExercisesState> emit,
+    Emitter<StartExercisesState> emit,
   ) async {
     try {
       final me = coreBloc.state.user;
-      emit(state.copyWith(status: HomeExerciseStatus.loading));
+      emit(state.copyWith(status: StartExerciseStatus.loading));
 
       final exercises = await pumpProgressRepository.getExercises();
 
@@ -75,7 +76,7 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
 
       emit(
         state.copyWith(
-            status: HomeExerciseStatus.loaded,
+            status: StartExerciseStatus.loaded,
             itemsFiltered: exercisesFiltered,
             items: items),
       );
@@ -86,7 +87,7 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
 
   Future<void> _onHandleUpdateFavoriteExerciseEvent(
     HandleUpdateFavoriteExerciseEvent event,
-    Emitter<HomeExercisesState> emit,
+    Emitter<StartExercisesState> emit,
   ) async {
     try {
       final oldExercise = state.itemsFiltered[event.index];
@@ -129,7 +130,7 @@ class HomeExercisesBloc extends Bloc<HomeExercisesEvent, HomeExercisesState> {
 
   Future<void> _onHandleToggleFiltersEvent(
     HandleToggleFiltersEvent event,
-    Emitter<HomeExercisesState> emit,
+    Emitter<StartExercisesState> emit,
   ) async {
     try {
       emit(

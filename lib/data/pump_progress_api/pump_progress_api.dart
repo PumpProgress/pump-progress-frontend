@@ -9,6 +9,7 @@ import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/e
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me_sets_update_favorite_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/series_post_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/sets_get_response.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/users/user_calendar.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/users/user_get_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_response.dart';
@@ -109,6 +110,24 @@ class PumpProgressApiProvider {
           data: body.toJson());
       return UserGetResponse.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<UserCalendarAPI> getCalendarInfoByUserId(
+      {required String userId, required int month, required int year}) async {
+    try {
+      final response = await dioClient.dio
+          .get<String>('/users/$userId/calendar', queryParameters: {
+        'month': month,
+        'year': year,
+      });
+      print("response: ${response.data}");
+      return UserCalendarAPI.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      print(error.toString());
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);

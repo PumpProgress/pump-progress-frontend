@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 
-class HomeWorkoutFloatingActionButton extends StatelessWidget {
-  HomeWorkoutFloatingActionButton({super.key});
+class StartWorkoutFloatingActionButton extends StatelessWidget {
+  StartWorkoutFloatingActionButton({super.key});
 
   final TextEditingController nameController = TextEditingController();
 
@@ -48,8 +48,8 @@ class HomeWorkoutFloatingActionButton extends StatelessWidget {
                   const SizedBox(height: 16.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: PumpProgressColors.coral,
-                      foregroundColor: PumpProgressColors.white,
+                      backgroundColor: PPColors.coral300,
+                      foregroundColor: PPColors.white,
                     ),
                     onPressed: () {
                       _onClickHandler(context);
@@ -60,7 +60,7 @@ class HomeWorkoutFloatingActionButton extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .labelLarge!
-                          .copyWith(color: PumpProgressColors.white),
+                          .copyWith(color: PPColors.white),
                     ),
                   ),
                 ],

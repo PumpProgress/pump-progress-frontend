@@ -3,17 +3,16 @@ import 'package:pump_progress_frontend/config/constants/colors.dart';
 
 final theme = ThemeData.from(
   colorScheme: const ColorScheme(
-    primary: PumpProgressColors.amethyst,
-    onPrimary: PumpProgressColors.black,
-    secondary: PumpProgressColors.coral,
-    onSecondary: PumpProgressColors.white,
-    error: PumpProgressColors.coral,
-    onError: PumpProgressColors.black,
+    primary: PPColors.amethyst300,
+    onPrimary: PPColors.neutral500,
+    secondary: PPColors.coral300,
+    onSecondary: PPColors.white,
+    error: PPColors.coral300,
+    onError: PPColors.neutral500,
     brightness: Brightness.dark,
-    background: PumpProgressColors.black,
-    onBackground: PumpProgressColors.silver,
-    surface: PumpProgressColors.black,
-    onSurface: PumpProgressColors.amethyst,
+    surface: PPColors.neutral500,
+    // onSurface: PPColors.amethyst300,
+    onSurface: Colors.red,
   ),
   useMaterial3: true,
 );

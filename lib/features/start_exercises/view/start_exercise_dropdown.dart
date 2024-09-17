@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 
-class HomeExerciseDropdownWidget extends StatelessWidget {
-  const HomeExerciseDropdownWidget(
+class StartExerciseDropdownWidget extends StatelessWidget {
+  const StartExerciseDropdownWidget(
       {super.key,
       required this.items,
       required this.selectedItems,
@@ -23,7 +23,7 @@ class HomeExerciseDropdownWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             width: 1,
-            color: PumpProgressColors.coral,
+            color: PPColors.coral300,
           ),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -34,14 +34,14 @@ class HomeExerciseDropdownWidget extends StatelessWidget {
           menuMaxHeight: 500.0,
           icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: PumpProgressColors.coral,
+            color: PPColors.coral300,
           ),
           hint: Text(
             hint,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!
-                .copyWith(color: PumpProgressColors.coral),
+                .copyWith(color: PPColors.coral300),
           ),
           onChanged: onChanged,
           items: items.map((item) {
@@ -54,7 +54,7 @@ class HomeExerciseDropdownWidget extends StatelessWidget {
                     selectedItems.contains(item)
                         ? Icons.check_box_rounded
                         : Icons.check_box_outline_blank_rounded,
-                    color: PumpProgressColors.coral,
+                    color: PPColors.coral300,
                   ),
                   Text(itemString),
                 ],

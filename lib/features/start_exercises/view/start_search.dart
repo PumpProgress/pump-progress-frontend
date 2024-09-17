@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/features/home_exercises/bloc/home_exercises_bloc.dart';
-import 'package:pump_progress_frontend/features/home_exercises/view/home_exercise_dropdown.dart';
+import 'package:pump_progress_frontend/config/constants/fonts.dart';
+import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
+import 'package:pump_progress_frontend/features/start_exercises/view/start_exercise_dropdown.dart';
 
 final musclesList = [
   'Biceps',
@@ -37,15 +38,15 @@ final categoriesList = [
   'MedicineBall',
 ];
 
-class HomeExercisesSearchWidget extends StatelessWidget {
-  const HomeExercisesSearchWidget({super.key});
+class StartExercisesSearchWidget extends StatelessWidget {
+  const StartExercisesSearchWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     musclesList.sort();
     categoriesList.sort();
-    final homeExerciseBloc = context.read<HomeExercisesBloc>();
-    return BlocBuilder<HomeExercisesBloc, HomeExercisesState>(
+    final startExerciseBloc = context.read<StartExercisesBloc>();
+    return BlocBuilder<StartExercisesBloc, StartExercisesState>(
       builder: (context, state) {
         return Column(
           children: [
@@ -57,7 +58,7 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       onChanged: (value) {
-                        homeExerciseBloc.add(
+                        startExerciseBloc.add(
                           UpdatedSearchExerciseListEvent(
                             searchValue: value,
                             selectedCategories: state.selectedCategories,
@@ -65,12 +66,17 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                           ),
                         );
                       },
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         isDense: true,
                         labelText: 'Search',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                        ),
+                        labelStyle: PPFontStyles.paragraph.copyWith(
+                          color: PPColors.neutral100,
+                        ),
+                        border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(16))),
                       ),
@@ -83,11 +89,11 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                     icon: const Icon(Icons.filter_list),
                     // ignore: avoid_print
                     onPressed: () {
-                      homeExerciseBloc.add(
+                      startExerciseBloc.add(
                         const HandleToggleFiltersEvent(),
                       );
                     },
-                    color: PumpProgressColors.coral,
+                    color: PPColors.coral300,
                   ),
                 ],
               ),
@@ -98,7 +104,7 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      HomeExerciseDropdownWidget(
+                      StartExerciseDropdownWidget(
                         items: musclesList,
                         hint: '${state.selectedMuscles.length} Muscles',
                         selectedItems: state.selectedMuscles,
@@ -109,7 +115,7 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                               ? selectedMuscles.remove(value)
                               : selectedMuscles.add(value!);
 
-                          homeExerciseBloc.add(
+                          startExerciseBloc.add(
                             UpdatedSearchExerciseListEvent(
                               searchValue: state.searchValue,
                               selectedCategories: state.selectedCategories,
@@ -118,7 +124,7 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                           );
                         },
                       ),
-                      HomeExerciseDropdownWidget(
+                      StartExerciseDropdownWidget(
                           items: categoriesList,
                           hint: '${state.selectedCategories.length} Categories',
                           selectedItems: state.selectedCategories,
@@ -128,7 +134,7 @@ class HomeExercisesSearchWidget extends StatelessWidget {
                             state.selectedCategories.contains(value)
                                 ? selectedCategories.remove(value)
                                 : selectedCategories.add(value!);
-                            homeExerciseBloc.add(
+                            startExerciseBloc.add(
                               UpdatedSearchExerciseListEvent(
                                 searchValue: state.searchValue,
                                 selectedCategories: selectedCategories,
