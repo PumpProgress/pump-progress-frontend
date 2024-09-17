@@ -11,8 +11,7 @@ final theme = ThemeData.from(
     onError: PPColors.neutral500,
     brightness: Brightness.dark,
     surface: PPColors.neutral500,
-    // onSurface: PPColors.amethyst300,
-    onSurface: Colors.red,
+    onSurface: PPColors.amethyst300,
   ),
   useMaterial3: true,
 );
