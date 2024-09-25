@@ -20,10 +20,10 @@ class PumpProgressApiDio {
   late Dio dio;
   static const urlProd =
       'https://23xlv17ugb.execute-api.us-east-1.amazonaws.com/api';
-  static const urlDev = 'http://192.168.1.135:6000';
+  static const urlDev = 'http://192.168.1.154:6000';
 
   static final options = BaseOptions(
-    baseUrl: urlProd,
+    baseUrl: urlDev,
   );
 }
 

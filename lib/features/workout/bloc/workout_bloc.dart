@@ -51,50 +51,52 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   Future<void> _onAddExerciseWorkoutEvent(
       AddExerciseWorkoutEvent event, Emitter<WorkoutState> emit) async {
     emit(state.copyWith(status: WorkoutPageStatus.loading));
-    await pumpProgressRepository.putAddWorkoutExercise(
+    final updatedWorkout = await pumpProgressRepository.putAddWorkoutExercise(
       workoutId: state.workout.id,
       exerciseId: event.exerciseId,
     );
+
     state.workout.exercises.add(event.exerciseId);
 
     final workoutExercises = state.exercises
-        .where((exercise) => state.workout.exercises
+        .where((exercise) => updatedWorkout.exercises
             .any((workoutExerciseId) => workoutExerciseId == exercise.id))
         .toList();
 
     workoutExercises.sort((a, b) {
-      return state.workout.exercises.indexOf(a.id) -
-          state.workout.exercises.indexOf(b.id);
+      return updatedWorkout.exercises.indexOf(a.id) -
+          updatedWorkout.exercises.indexOf(b.id);
     });
 
     emit(state.copyWith(
       status: WorkoutPageStatus.success,
       workoutExercises: workoutExercises,
+      workout: updatedWorkout,
     ));
   }
 
   Future<void> _onRemoveExerciseWorkoutEvent(
       RemoveExerciseWorkoutEvent event, Emitter<WorkoutState> emit) async {
-    await pumpProgressRepository.putRemoveWorkoutExercise(
+    final updatedWorkout =
+        await pumpProgressRepository.putRemoveWorkoutExercise(
       workoutId: state.workout.id,
       exerciseId: event.exerciseId,
     );
 
-    state.workout.exercises.remove(event.exerciseId);
-
     final workoutExercises = state.exercises
-        .where((exercise) => state.workout.exercises
+        .where((exercise) => updatedWorkout.exercises
             .any((workoutExerciseId) => workoutExerciseId == exercise.id))
         .toList();
 
     workoutExercises.sort((a, b) {
-      return state.workout.exercises.indexOf(a.id) -
-          state.workout.exercises.indexOf(b.id);
+      return updatedWorkout.exercises.indexOf(a.id) -
+          updatedWorkout.exercises.indexOf(b.id);
     });
 
     emit(state.copyWith(
       status: WorkoutPageStatus.success,
       workoutExercises: workoutExercises,
+      workout: updatedWorkout,
     ));
   }
 }
