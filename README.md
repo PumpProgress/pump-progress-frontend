@@ -14,3 +14,24 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+## Flavors
+
+```sh
+fvm flutter pub run flutter_flavorizr
+```
+
+## Main.dart
+
+```dart
+
+import 'dart:async';
+
+import 'package:pump_progress_frontend/app/app.dart';
+import 'package:pump_progress_frontend/bootstrap.dart';
+
+FutureOr<void> main() async {
+  bootstrap(() => const App());
+}
+```

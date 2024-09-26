@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:pump_progress_frontend/config/constants/flavor.dart';
 import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,12 +19,9 @@ class PumpProgressApiDio {
 
   static final PumpProgressApiDio _singleton = PumpProgressApiDio._internal();
   late Dio dio;
-  static const urlProd =
-      'https://23xlv17ugb.execute-api.us-east-1.amazonaws.com/api';
-  static const urlDev = 'http://192.168.1.154:6000';
 
   static final options = BaseOptions(
-    baseUrl: urlProd,
+    baseUrl: FlavorConfig.baseUrl,
   );
 }
 

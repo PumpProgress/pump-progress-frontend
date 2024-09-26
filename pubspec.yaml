@@ -56,6 +56,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
 
+  # handle Flutter flavors
+  flutter_flavorizr: ^2.2.3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
