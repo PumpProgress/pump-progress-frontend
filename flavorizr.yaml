@@ -27,7 +27,7 @@ flavors:
     app:
       name: 'D.PumpProgress'
     ios:
-      bundleId: 'com.xrok.pumpProgress'
+      bundleId: 'com.xrok.pumpProgress.test'
       icon: 'assets/icons/dev/icon.png'
 
   prod:
