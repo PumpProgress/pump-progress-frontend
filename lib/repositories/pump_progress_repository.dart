@@ -8,6 +8,7 @@ import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
 import 'package:pump_progress_frontend/repositories/models/user.dart';
+import 'package:pump_progress_frontend/repositories/models/user_calendar.dart';
 import 'package:pump_progress_frontend/repositories/models/workout.dart';
 
 class PumpProgressRepository {
@@ -60,6 +61,14 @@ class PumpProgressRepository {
     );
     final me = data.data;
     return User.fromJson(me.toJson());
+  }
+
+  Future<UserCalendar> getCalendarInfoByUserId(
+      {required String userId, required int month, required int year}) async {
+    final data = await pumpProgressApiProvider.getCalendarInfoByUserId(
+        userId: userId, month: month, year: year);
+    print("post getCalendarInfoByUserId provider: $data");
+    return UserCalendar.fromJson(data.toJson());
   }
 
 // * sets

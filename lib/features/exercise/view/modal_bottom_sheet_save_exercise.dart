@@ -126,7 +126,7 @@ class _ModalBottomSheetSaveExerciseState
                   ),
                   const Icon(
                     Icons.arrow_forward_ios,
-                    color: PumpProgressColors.coral,
+                    color: PPColors.coral300,
                   ),
                   const SizedBox(
                     width: 8,
@@ -179,10 +179,10 @@ class _ModalBottomSheetSaveExerciseState
                           minWidth: (constraints.maxWidth / 3) - 2,
                           minHeight: 56,
                           iconSize: 55,
-                          inactiveBgColor: PumpProgressColors.black,
-                          activeFgColor: PumpProgressColors.coral,
-                          dividerColor: PumpProgressColors.black,
-                          borderColor: const [PumpProgressColors.silver],
+                          inactiveBgColor: PPColors.black,
+                          activeFgColor: PPColors.coral300,
+                          dividerColor: PPColors.black,
+                          borderColor: const [PPColors.silver],
                           borderWidth: 1,
                           radiusStyle: true,
                           cornerRadius: 16,
@@ -208,8 +208,8 @@ class _ModalBottomSheetSaveExerciseState
               const SizedBox(height: 16.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: PumpProgressColors.coral,
-                  foregroundColor: PumpProgressColors.white,
+                  backgroundColor: PPColors.coral300,
+                  foregroundColor: PPColors.white,
                 ),
                 onPressed: () {
                   _onClickHandler();
@@ -220,7 +220,7 @@ class _ModalBottomSheetSaveExerciseState
                   style: Theme.of(context)
                       .textTheme
                       .labelLarge!
-                      .copyWith(color: PumpProgressColors.white),
+                      .copyWith(color: PPColors.white),
                 ),
               ),
             ],

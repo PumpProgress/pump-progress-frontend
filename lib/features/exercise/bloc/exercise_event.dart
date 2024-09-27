@@ -35,3 +35,8 @@ class EditSeries extends ExerciseEvent {
   final int repetitions;
   final double weight;
 }
+
+class DeleteSeries extends ExerciseEvent {
+  const DeleteSeries(this.seriesId);
+  final String seriesId;
+}

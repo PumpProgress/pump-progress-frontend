@@ -36,14 +36,22 @@ class WorkoutsBloc extends Bloc<WorkoutsEvent, WorkoutsState> {
       AddWorkoutWorkoutsEvent event, Emitter<WorkoutsState> emit) async {
     emit(state.copyWith(status: WorkoutsStatus.loading));
 
-    final workout = await pumpProgressRepository.postWorkout(name: event.name);
+    try {
+      final workout =
+          await pumpProgressRepository.postWorkout(name: event.name);
 
-    final workouts = [...state.workouts, workout];
+      final workouts = [...state.workouts, workout];
 
-    emit(state.copyWith(
-      status: WorkoutsStatus.success,
-      workouts: workouts,
-    ));
+      emit(state.copyWith(
+        status: WorkoutsStatus.success,
+        workouts: workouts,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: WorkoutsStatus.success,
+        workouts: state.workouts,
+      ));
+    }
   }
 
   Future<void> _onAddExerciseToWorkoutEvent(
