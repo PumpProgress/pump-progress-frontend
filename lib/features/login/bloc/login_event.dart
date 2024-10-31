@@ -28,3 +28,25 @@ class LoginPasswordChanged extends LoginEvent {
 class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
 }
+
+class LoginWithProvider extends LoginEvent {
+  final String provider;
+
+  const LoginWithProvider({required this.provider});
+
+  @override
+  List<Object> get props => [provider];
+}
+
+class LogInCode extends LoginEvent {
+  final String code;
+
+  const LogInCode({required this.code});
+
+  @override
+  List<Object> get props => [code];
+}
+
+class UnknownError extends LoginEvent {
+  const UnknownError();
+}

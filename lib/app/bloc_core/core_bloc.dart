@@ -1,3 +1,4 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,15 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   Future<void> _onCoreInit(CoreInit event, Emitter<CoreState> emit) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString(jwtKey);
-      final userId = prefs.getString(userKey);
 
-      if (token != null && userId != null) {
+      print("ON CORE INIT");
+
+      final accessToken = prefs.getString(accessTokenKey);
+      final refreshToken = prefs.getString(refreshTokenKey);
+      final idToken = prefs.getString(idTokenKey);
+
+      if (accessToken != null && refreshToken != null && idToken != null) {
+        final userId = CognitoIdToken(idToken).payload['custom:userID'];
         final user = await pumpProgressRepository.getUser(userId);
 
         emit(
@@ -33,8 +39,10 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
             user: user,
           ),
         );
+
         return;
       }
+
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     } catch (e) {
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));

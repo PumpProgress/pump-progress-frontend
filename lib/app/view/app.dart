@@ -24,7 +24,7 @@ class App extends StatelessWidget {
         create: (context) => PumpProgressRepository(),
       )
     ];
-
+    print("RepositoryProviders: $repositoryProviders");
     final blocProviders = [
       BlocProvider(create: (context) {
         return CoreBloc(

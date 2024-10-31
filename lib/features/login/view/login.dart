@@ -14,6 +14,7 @@ class LoginPage extends StatelessWidget {
     return BlocListener<CoreBloc, CoreState>(
       listener: (context, state) {
         if (state.status == AuthenticationStatus.authenticated) {
+          print('Login page. corebloc.state.status == authenticated');
           context.read<CoreBloc>().add(const CoreInit());
           Navigator.of(context).pushReplacementNamed('/');
         }
