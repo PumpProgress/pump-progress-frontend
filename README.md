@@ -15,6 +15,17 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## CI/CD
+
+Tag must follow format `v1.0.0+1` and version of the pubspec.yaml have to be updated. (It defines the build number and version for the CI/CD pipeline)
+
+### Production (main)
+
+Create tag at release production commit without: `-test` ie. `v1.0.0+1`
+
+### Staging (staging)
+
+Create tag at release staging commit with: `-test` ie. `v1.0.0+1-test`
 
 ## Flavors
 
@@ -35,3 +46,4 @@ FutureOr<void> main() async {
   bootstrap(() => const App());
 }
 ```
+
