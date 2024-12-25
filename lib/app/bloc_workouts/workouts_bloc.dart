@@ -1,30 +1,27 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/repositories/models/workout.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'workouts_event.dart';
 part 'workouts_state.dart';
 
 class WorkoutsBloc extends Bloc<WorkoutsEvent, WorkoutsState> {
+  final PumpProgressRepository pumpProgressRepository;
+
   WorkoutsBloc({required this.pumpProgressRepository})
       : super(const WorkoutsState()) {
     on<FetchWorkoutsEvent>(_onFetchWorkoutsEvent);
     on<AddWorkoutWorkoutsEvent>(_onAddWorkoutWorkoutsEvent);
     on<AddExerciseToWorkoutEvent>(_onAddExerciseToWorkoutEvent);
   }
-  final PumpProgressRepository pumpProgressRepository;
 
   Future<void> _onFetchWorkoutsEvent(
       FetchWorkoutsEvent event, Emitter<WorkoutsState> emit) async {
     emit(state.copyWith(status: WorkoutsStatus.loading));
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString(userKey);
-
-    final workouts = await pumpProgressRepository.getWorkouts(userId: userId);
+    final workouts =
+        await pumpProgressRepository.getWorkouts(userId: event.userId);
 
     emit(state.copyWith(
       status: WorkoutsStatus.success,

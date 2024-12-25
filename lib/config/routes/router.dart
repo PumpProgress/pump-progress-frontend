@@ -11,7 +11,9 @@ class PumpProgressRouter {
   const PumpProgressRouter();
 
   Route<void> onGenerateRoute(RouteSettings settings) {
-    //final GlobalKey<ScaffoldState> key = settings.arguments;
+    print("onGenerateRoute");
+    print(settings.name);
+
     switch (settings.name) {
       case '/':
         return MaterialPageRoute<void>(

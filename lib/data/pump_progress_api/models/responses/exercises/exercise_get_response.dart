@@ -6,6 +6,8 @@ import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/e
 
 @immutable
 class ExerciseGetResponse {
+  final List<ExerciseAPI> data;
+
   const ExerciseGetResponse({
     required this.data,
   });
@@ -20,7 +22,6 @@ class ExerciseGetResponse {
       ),
     );
   }
-  final List<ExerciseAPI> data;
 
   ExerciseGetResponse copyWith({
     List<ExerciseAPI>? data,

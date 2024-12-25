@@ -15,7 +15,7 @@ import 'package:pump_progress_frontend/features/start_workouts/view/start_workou
 import 'package:pump_progress_frontend/features/todo/todo_view.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
-List<String> titles = [
+List<String> _titles = [
   'Home',
   'Community',
   'Calendar',
@@ -23,7 +23,7 @@ List<String> titles = [
   'Workouts'
 ];
 
-const int defaultIndex = 2;
+const int _defaultIndex = 2;
 
 class Start extends StatefulWidget {
   const Start({super.key});
@@ -34,37 +34,40 @@ class Start extends StatefulWidget {
 
 class _StartState extends State<Start> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String _appBarTitle = titles[defaultIndex];
+  String _appBarTitle = _titles[_defaultIndex];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
-        length: titles.length, vsync: this, initialIndex: defaultIndex);
+        length: _titles.length, vsync: this, initialIndex: _defaultIndex);
     _tabController.addListener(() {
       setState(() {
-        _appBarTitle = titles[_tabController.index];
+        _appBarTitle = _titles[_tabController.index];
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<WorkoutsBloc>().add(const FetchWorkoutsEvent());
+    final me = context.read<CoreBloc>().state.user;
+    context.read<WorkoutsBloc>().add(FetchWorkoutsEvent(userId: me.id));
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<StartExercisesBloc>(
           create: (context) => StartExercisesBloc(
+            me: me,
             pumpProgressRepository: context.read<PumpProgressRepository>(),
-            coreBloc: context.read<CoreBloc>(),
+            // coreBloc: context.read<CoreBloc>(),
           )..add(const HardFetchExerciseListEvent()),
         ),
         BlocProvider<StartCalendarBloc>(
-            create: (context) => StartCalendarBloc(
-                pumpProgressRepository: context.read<PumpProgressRepository>(),
-                coreBloc: context.read<CoreBloc>())
-              ..add(FetchSeriesByMonthEvent())),
+          create: (context) => StartCalendarBloc(
+            pumpProgressRepository: context.read<PumpProgressRepository>(),
+            me: me,
+          )..add(FetchSeriesByMonthEvent()),
+        ),
       ],
       child: Container(
         color: Theme.of(context).colorScheme.surface,
@@ -87,7 +90,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
               indicatorColor: Colors.transparent,
               indicatorWeight: 0.0,
               dividerColor: Colors.transparent,
-              tabs: tabs(),
+              tabs: _tabs(),
             ),
             body: TabBarView(
               controller: _tabController,
@@ -106,7 +109,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
   }
 }
 
-List<Tab> tabs() {
+List<Tab> _tabs() {
   return const [
     Tab(
       icon: Icon(

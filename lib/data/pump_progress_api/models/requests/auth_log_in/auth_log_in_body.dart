@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+@Deprecated('No longer sand email and password, use aws cognito for auth')
 class AuthLogInBody {
   AuthLogInBody({
     required this.email,

@@ -1,21 +1,13 @@
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/auth_log_in/auth_log_in_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_post.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_put.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/user/users_update_exercises_post.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_put_update_exercise_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
-import 'package:pump_progress_frontend/repositories/models/exercise.dart';
-import 'package:pump_progress_frontend/repositories/models/series.dart';
-import 'package:pump_progress_frontend/repositories/models/user.dart';
-import 'package:pump_progress_frontend/repositories/models/user_calendar.dart';
-import 'package:pump_progress_frontend/repositories/models/workout.dart';
+import 'package:pump_progress_frontend/repositories/models/models.dart';
 
 class PumpProgressRepository {
+  // TODO singleton
   PumpProgressRepository();
   final pumpProgressApiProvider = PumpProgressApiProvider();
 
   // * auth
+  @Deprecated("Use cognito for auth instead")
   Future<String> authLogIn({
     required String email,
     required String password,
@@ -35,10 +27,11 @@ class PumpProgressRepository {
   }
 
 // * users
+
+  // ? Refactored
   Future<User> getUser(String userId) async {
     final data = await pumpProgressApiProvider.getUser(userId);
-    final me = data.data;
-    return User.fromJson(me.toJson());
+    return User.fromJson(data.toJson());
   }
 
   Future<User> postUSerAddFavoriteExercise({
@@ -49,8 +42,7 @@ class PumpProgressRepository {
       userId,
       UpdateFavoriteExercisesBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return User.fromJson(me.toJson());
+    return User.fromJson(data.toJson());
   }
 
   Future<User> postUserRemoveFavoriteExercise(
@@ -59,8 +51,7 @@ class PumpProgressRepository {
       userId,
       UpdateFavoriteExercisesBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return User.fromJson(me.toJson());
+    return User.fromJson(data.toJson());
   }
 
   Future<UserCalendar> getCalendarInfoByUserId(

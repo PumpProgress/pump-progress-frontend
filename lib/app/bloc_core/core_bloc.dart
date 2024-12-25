@@ -1,3 +1,4 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -14,17 +15,23 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     on<CoreInit>(_onCoreInit);
     on<CoreLogout>(_onCoreLogout);
     on<CoreMeUpdated>(_onCoreMeUpdated);
+    on<ReFetchUser>(_onReFetchUser);
+    // thinking its missing a onLoggedIn
   }
 
   final PumpProgressRepository pumpProgressRepository;
 
   Future<void> _onCoreInit(CoreInit event, Emitter<CoreState> emit) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString(jwtKey);
-      final userId = prefs.getString(userKey);
+      print("ON CORE INIT");
 
-      if (token != null && userId != null) {
+      final accessToken = prefs.getString(accessTokenKey);
+      final refreshToken = prefs.getString(refreshTokenKey);
+      final idToken = prefs.getString(idTokenKey);
+
+      if (accessToken != null && refreshToken != null && idToken != null) {
+        final userId = CognitoAccessToken(accessToken).payload['custom:userID'];
         final user = await pumpProgressRepository.getUser(userId);
 
         emit(
@@ -33,10 +40,14 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
             user: user,
           ),
         );
+
         return;
       }
+
+      _clearLocalStorage(prefs);
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     } catch (e) {
+      _clearLocalStorage(prefs);
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     }
   }
@@ -53,4 +64,35 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   ) async {
     emit(state.copyWith(user: event.me));
   }
+
+  Future<void> _onReFetchUser(
+      ReFetchUser event, Emitter<CoreState> emit) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final accessToken = prefs.getString(accessTokenKey);
+    final refreshToken = prefs.getString(refreshTokenKey);
+    final idToken = prefs.getString(idTokenKey);
+
+    if (accessToken != null && refreshToken != null && idToken != null) {
+      final userId = CognitoAccessToken(accessToken).payload['custom:userID'];
+      final user = await pumpProgressRepository.getUser(userId);
+
+      emit(
+        state.copyWith(
+          status: AuthenticationStatus.authenticated,
+          user: user,
+        ),
+      );
+
+      return;
+    }
+
+    emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
+  }
+}
+
+void _clearLocalStorage(SharedPreferences prefs) async {
+  prefs.remove(accessTokenKey);
+  prefs.remove(refreshTokenKey);
+  prefs.remove(idTokenKey);
 }
