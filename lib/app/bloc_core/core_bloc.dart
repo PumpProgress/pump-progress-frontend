@@ -15,14 +15,15 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     on<CoreInit>(_onCoreInit);
     on<CoreLogout>(_onCoreLogout);
     on<CoreMeUpdated>(_onCoreMeUpdated);
+    on<ReFetchUser>(_onReFetchUser);
+    // thinking its missing a onLoggedIn
   }
 
   final PumpProgressRepository pumpProgressRepository;
 
   Future<void> _onCoreInit(CoreInit event, Emitter<CoreState> emit) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-
       print("ON CORE INIT");
 
       final accessToken = prefs.getString(accessTokenKey);
@@ -30,7 +31,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
       final idToken = prefs.getString(idTokenKey);
 
       if (accessToken != null && refreshToken != null && idToken != null) {
-        final userId = CognitoIdToken(idToken).payload['custom:userID'];
+        final userId = CognitoAccessToken(accessToken).payload['custom:userID'];
         final user = await pumpProgressRepository.getUser(userId);
 
         emit(
@@ -43,8 +44,10 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
         return;
       }
 
+      _clearLocalStorage(prefs);
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     } catch (e) {
+      _clearLocalStorage(prefs);
       emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
     }
   }
@@ -61,4 +64,35 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   ) async {
     emit(state.copyWith(user: event.me));
   }
+
+  Future<void> _onReFetchUser(
+      ReFetchUser event, Emitter<CoreState> emit) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final accessToken = prefs.getString(accessTokenKey);
+    final refreshToken = prefs.getString(refreshTokenKey);
+    final idToken = prefs.getString(idTokenKey);
+
+    if (accessToken != null && refreshToken != null && idToken != null) {
+      final userId = CognitoAccessToken(accessToken).payload['custom:userID'];
+      final user = await pumpProgressRepository.getUser(userId);
+
+      emit(
+        state.copyWith(
+          status: AuthenticationStatus.authenticated,
+          user: user,
+        ),
+      );
+
+      return;
+    }
+
+    emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
+  }
+}
+
+void _clearLocalStorage(SharedPreferences prefs) async {
+  prefs.remove(accessTokenKey);
+  prefs.remove(refreshTokenKey);
+  prefs.remove(idTokenKey);
 }

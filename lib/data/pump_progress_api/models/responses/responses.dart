@@ -9,3 +9,4 @@ export 'workouts/workout_post_response.dart';
 export 'workouts/workout_put_update_exercise_body.dart';
 export 'workouts/workout_put_update_exercise_response.dart';
 export 'workouts/workouts_get_response.dart';
+export 'users/user_api.dart';

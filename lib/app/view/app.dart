@@ -8,6 +8,7 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/flavors.dart';
 
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
+import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
@@ -19,12 +20,15 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     print("Flavor: ${F.appFlavor}");
     // print("Flavor PPApiUrl: ${F.ppApiUrl}");
+
     final repositoryProviders = [
       RepositoryProvider<PumpProgressRepository>(
         create: (context) => PumpProgressRepository(),
+      ),
+      RepositoryProvider<PPUserPool>(
+        create: (context) => PPUserPool(),
       )
     ];
-    print("RepositoryProviders: $repositoryProviders");
     final blocProviders = [
       BlocProvider(create: (context) {
         return CoreBloc(

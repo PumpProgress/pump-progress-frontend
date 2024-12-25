@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/login/bloc/login_bloc.dart';
-import 'package:pump_progress_frontend/utils/services/congito_user_pool.dart';
+import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class FederatedLoginWebView extends StatelessWidget {
@@ -24,10 +24,11 @@ class FederatedLoginWebView extends StatelessWidget {
         NavigationDelegate(
           onNavigationRequest: (NavigationRequest request) {
             print('onNavigationRequest: ${request.url}');
-            if (!request.url.startsWith("myapp://?code=")) {
+            if (!request.url.startsWith("myapp://pumpprogress?code=")) {
               return NavigationDecision.navigate;
             }
-            String code = request.url.substring("myapp://?code=".length);
+            String code =
+                request.url.substring("myapp://pumpprogress?code=".length);
             if (code.isEmpty) {
               context.read<LoginBloc>().add(const UnknownError());
               return NavigationDecision.prevent;

@@ -1,13 +1,13 @@
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/requests.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
 import 'package:pump_progress_frontend/repositories/models/models.dart';
 
 class PumpProgressRepository {
+  // TODO singleton
   PumpProgressRepository();
   final pumpProgressApiProvider = PumpProgressApiProvider();
 
   // * auth
+  @Deprecated("Use cognito for auth instead")
   Future<String> authLogIn({
     required String email,
     required String password,

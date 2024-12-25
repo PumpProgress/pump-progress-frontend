@@ -24,11 +24,9 @@ class ProtectedRoute extends StatelessWidget {
               return child;
             case AuthenticationStatus.unknown:
               print('protected route: unknown');
-              // context.read<CoreBloc>().add(const CoreInit());
               return const SplashPage();
             case AuthenticationStatus.unauthenticated:
               print('protected route: unauthenticated');
-              context.read<CoreBloc>().add(const CoreInit());
               return const SplashPage();
           }
         },

@@ -1,19 +1,19 @@
-import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 import 'package:pump_progress_frontend/utils/helpers/helpers.dart';
-import 'package:pump_progress_frontend/utils/services/congito_user_pool.dart';
+import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc({required this.pumpProgressRepository})
-      : super(const LoginState()) {
+  LoginBloc({
+    required this.pumpProgressRepository,
+    required this.userPool,
+  }) : super(const LoginState()) {
     on<LoginUsernameChanged>(_onLoginUsernameChanged);
     on<LoginPasswordChanged>(_onLoginPasswordChanged);
     on<LoginSubmitted>(_onLoginSubmitted);
@@ -23,7 +23,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   final PumpProgressRepository pumpProgressRepository;
+  final PPUserPool userPool;
 
+  @Deprecated("Now using cognito")
   Future<void> _onLoginUsernameChanged(
     LoginUsernameChanged event,
     Emitter<LoginState> emit,
@@ -31,6 +33,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(email: event.username));
   }
 
+  @Deprecated("Now using cognito")
   Future<void> _onLoginPasswordChanged(
     LoginPasswordChanged event,
     Emitter<LoginState> emit,
@@ -38,6 +41,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(password: event.password));
   }
 
+  @Deprecated("Now using cognito")
   Future<void> _onLoginSubmitted(
     LoginSubmitted event,
     Emitter<LoginState> emit,
@@ -80,7 +84,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       final SharedPreferences sharedPref =
           await SharedPreferences.getInstance();
-      final session = await getTokenDataFromCode(event.code);
+      final session = await userPool.getTokenDataFromCode(event.code);
 
       await sharedPref.setString(accessTokenKey, session.idToken.jwtToken!);
       await sharedPref.setString(refreshTokenKey, session.refreshToken!.token!);

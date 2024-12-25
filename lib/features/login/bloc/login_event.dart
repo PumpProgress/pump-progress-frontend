@@ -7,6 +7,7 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
+@Deprecated("Now using cognito, only Provider login allowed")
 class LoginUsernameChanged extends LoginEvent {
   const LoginUsernameChanged(this.username);
 
@@ -16,6 +17,7 @@ class LoginUsernameChanged extends LoginEvent {
   List<Object> get props => [username];
 }
 
+@Deprecated("Now using cognito, only Provider login allowed")
 class LoginPasswordChanged extends LoginEvent {
   const LoginPasswordChanged(this.password);
 
@@ -25,6 +27,7 @@ class LoginPasswordChanged extends LoginEvent {
   List<Object> get props => [password];
 }
 
+@Deprecated("Now using cognito, only Provider login allowed")
 class LoginSubmitted extends LoginEvent {
   const LoginSubmitted();
 }
