@@ -18,7 +18,7 @@ class FederatedLoginWebView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final url = getLoginUrl(provider);
+    final url = PPUserPool().getLoginUrl(provider);
     webViewController
       ..setNavigationDelegate(
         NavigationDelegate(
@@ -33,6 +33,7 @@ class FederatedLoginWebView extends StatelessWidget {
               context.read<LoginBloc>().add(const UnknownError());
               return NavigationDecision.prevent;
             }
+            // handle error
             context.read<LoginBloc>().add(LogInCode(code: code));
             return NavigationDecision.prevent;
           },

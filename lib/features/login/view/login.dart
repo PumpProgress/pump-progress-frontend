@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 
 import 'package:pump_progress_frontend/features/login/bloc/login_bloc.dart';
 import 'package:pump_progress_frontend/features/login/view/login_form.dart';
@@ -19,7 +20,7 @@ class LoginPage extends StatelessWidget {
           userPool: context.read<PPUserPool>(),
         );
       },
-      child: BlocListener<LoginBloc, LoginState>(
+      child: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state.status == LoginStatus.success) {
             print('Login page. loginStatus.state.status == authenticated');
@@ -35,13 +36,19 @@ class LoginPage extends StatelessWidget {
             );
           }
         },
-        child: const Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: Padding(
-            padding: EdgeInsets.zero,
-            child: LoginForm(),
-          ),
-        ),
+        builder: (context, state) {
+          if (state.status == LoginStatus.loading ||
+              state.status == LoginStatus.success) {
+            return const LoadingPage();
+          }
+          return const Scaffold(
+            resizeToAvoidBottomInset: true,
+            body: Padding(
+              padding: EdgeInsets.zero,
+              child: LoginForm(),
+            ),
+          );
+        },
       ),
     );
   }

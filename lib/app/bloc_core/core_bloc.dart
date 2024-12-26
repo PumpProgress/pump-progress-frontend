@@ -22,6 +22,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   final PumpProgressRepository pumpProgressRepository;
 
   Future<void> _onCoreInit(CoreInit event, Emitter<CoreState> emit) async {
+    emit(state.copyWith(status: AuthenticationStatus.loading));
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       print("ON CORE INIT");

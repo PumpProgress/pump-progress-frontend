@@ -29,6 +29,10 @@ class LoginForm extends StatelessWidget {
         if (state.status == LoginStatus.providerLogIn) {
           return FederatedLoginWebView(provider: state.provider);
         }
+        if (state.status == LoginStatus.success ||
+            state.status == LoginStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
         return Align(
           alignment: const Alignment(0, -1 / 3),
           child: Padding(

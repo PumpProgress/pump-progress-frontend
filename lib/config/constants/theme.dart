@@ -14,4 +14,23 @@ final theme = ThemeData.from(
     onSurface: PPColors.amethyst300,
   ),
   useMaterial3: true,
+).copyWith(
+  pageTransitionsTheme: PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: NoAnimationPageTransitionsBuilder(),
+      TargetPlatform.iOS: NoAnimationPageTransitionsBuilder(),
+    },
+  ),
 );
+
+class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
+  @override
+  Widget buildTransitions<T>(
+      PageRoute<T> route,
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) {
+    return child; // No animation
+  }
+}
