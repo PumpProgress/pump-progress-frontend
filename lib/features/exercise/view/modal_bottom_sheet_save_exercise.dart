@@ -59,10 +59,12 @@ class _ModalBottomSheetSaveExerciseState
   }
 
   void setWeightState(String weightStr) {
+    print(weightStr);
     if (weightStr.isEmpty) {
       setState(() {
         weight = 0;
       });
+      return;
     }
     var inputWeight = double.parse(weightStr);
 
