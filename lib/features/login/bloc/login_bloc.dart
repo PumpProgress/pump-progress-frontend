@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
-import 'package:pump_progress_frontend/utils/helpers/helpers.dart';
 import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,19 +46,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Emitter<LoginState> emit,
   ) async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // ! Deprecated
+      throw UnimplementedError();
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      final token = await pumpProgressRepository.authLogIn(
-        email: state.email,
-        password: state.password,
-      );
-      final payload = parseJwt(token);
-      await prefs.setString(jwtKey, token);
-      await prefs.setString(userKey, payload['iss']);
+      // final token = await pumpProgressRepository.authLogIn(
+      //   email: state.email,
+      //   password: state.password,
+      // );
+      // final payload = parseJwt(token);
+      // await prefs.setString(jwtKey, token);
+      // await prefs.setString(userKey, payload['iss']);
 
-      emit(
-        state.copyWith(status: LoginStatus.success),
-      );
+      // emit(
+      //   state.copyWith(status: LoginStatus.success),
+      // );
     } catch (e) {
       print(e);
     }

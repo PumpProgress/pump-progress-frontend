@@ -6,17 +6,6 @@ class PumpProgressRepository {
   PumpProgressRepository();
   final pumpProgressApiProvider = PumpProgressApiProvider();
 
-  // * auth
-  @Deprecated("Use cognito for auth instead")
-  Future<String> authLogIn({
-    required String email,
-    required String password,
-  }) async {
-    final data = await pumpProgressApiProvider
-        .authLogIn(AuthLogInBody(email: email, password: password));
-    return data.data.data;
-  }
-
 // * exercises
   Future<List<Exercise>> getExercises() async {
     final data = await pumpProgressApiProvider.getExercises();
@@ -82,8 +71,7 @@ class PumpProgressRepository {
       repetitions: repetitions,
       weight: weight,
     ));
-    final series = data.data;
-    return Series.fromJson(series.toJson());
+    return Series.fromJson(data.toJson());
   }
 
   Future<Series> putSeries({
@@ -97,8 +85,8 @@ class PumpProgressRepository {
           repetitions: repetitions,
           weight: weight,
         ));
-    final series = data.data;
-    return Series.fromJson(series.toJson());
+
+    return Series.fromJson(data.toJson());
   }
 
 // * workouts
@@ -115,8 +103,7 @@ class PumpProgressRepository {
   Future<Workout> postWorkout({required String name}) async {
     final data =
         await pumpProgressApiProvider.postWorkout(WorkoutPostBody(name: name));
-    final workout = data.data;
-    return Workout.fromJson(workout.toJson());
+    return Workout.fromJson(data.toJson());
   }
 
   Future<Workout> putAddWorkoutExercise({
@@ -127,8 +114,7 @@ class PumpProgressRepository {
       workoutId,
       WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return Workout.fromJson(me.toJson());
+    return Workout.fromJson(data.toJson());
   }
 
   Future<Workout> putRemoveWorkoutExercise({
@@ -139,7 +125,6 @@ class PumpProgressRepository {
       workoutId,
       WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return Workout.fromJson(me.toJson());
+    return Workout.fromJson(data.toJson());
   }
 }

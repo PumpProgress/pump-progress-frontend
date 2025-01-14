@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/requests.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/series_api.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workouts_api.dart';
 import 'package:pump_progress_frontend/utils/helpers/general_exception.dart';
 
 import 'package:pump_progress_frontend/config/constants/flavor.dart';
@@ -19,21 +22,6 @@ class PumpProgressApiProvider {
   }
   PumpProgressApiProvider._internal();
 
-  // * auth
-
-  Future<AuthLogInResponse> authLogIn(AuthLogInBody body) async {
-    try {
-      final response =
-          await ppApiClient.post<String>('/auth/log-in', data: body.toJson());
-
-      return AuthLogInResponse.fromJson(response.data!);
-    } on DioException catch (error, stackTrace) {
-      (error.error is GeneralException)
-          ? throw error.error as GeneralException
-          : throw GeneralException('An error ocurred', '000', stackTrace);
-    }
-  }
-
   // * exercises
 
   Future<ExerciseGetResponse> getExercises() async {
@@ -49,13 +37,13 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<MeUpdateFavoriteExercisesPostResponse> postMeRemoveFavoriteExercise(
+  Future<Me> postMeRemoveFavoriteExercise(
     MeUpdateFavoriteExercisesBody body,
   ) async {
     try {
       final response = await ppApiClient
           .post<String>('/me/remove-favorite-exercise', data: body.toJson());
-      return MeUpdateFavoriteExercisesPostResponse.fromJson(response.data!);
+      return Me.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
@@ -160,11 +148,11 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<SeriesPostResponse> postSeries(SeriesBodyPost body) async {
+  Future<SeriesAPI> postSeries(SeriesBodyPost body) async {
     try {
       final response =
           await ppApiClient.post<String>('/sets', data: body.toJson());
-      return SeriesPostResponse.fromJson(response.data!);
+      return SeriesAPI.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
@@ -172,14 +160,14 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<SeriesPostResponse> putSeries({
+  Future<SeriesAPI> putSeries({
     required String seriesId,
     required SeriesBodyPut body,
   }) async {
     try {
       final response =
           await ppApiClient.put<String>('/sets/$seriesId', data: body.toJson());
-      return SeriesPostResponse.fromJson(response.data!);
+      return SeriesAPI.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
@@ -213,11 +201,11 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<WorkoutPostResponse> postWorkout(WorkoutPostBody body) async {
+  Future<WorkoutAPI> postWorkout(WorkoutPostBody body) async {
     try {
       final response =
           await ppApiClient.post<String>('/workouts', data: body.toJson());
-      return WorkoutPostResponse.fromJson(response.data!);
+      return WorkoutAPI.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
@@ -225,14 +213,14 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<WorkoutPutUpdateExerciseResponse> putAddWorkoutExercise(
+  Future<WorkoutAPI> putAddWorkoutExercise(
     String workoutId,
     WorkoutPutUpdateExerciseBody body,
   ) async {
     try {
       final url = '/workouts/$workoutId/add-exercise';
       final response = await ppApiClient.put<String>(url, data: body.toJson());
-      return WorkoutPutUpdateExerciseResponse.fromJson(response.data!);
+      return WorkoutAPI.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
@@ -240,14 +228,14 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<WorkoutPutUpdateExerciseResponse> putRemoveWorkoutExercise(
+  Future<WorkoutAPI> putRemoveWorkoutExercise(
     String workoutId,
     WorkoutPutUpdateExerciseBody body,
   ) async {
     try {
       final url = '/workouts/$workoutId/remove-exercise';
       final response = await ppApiClient.put<String>(url, data: body.toJson());
-      return WorkoutPutUpdateExerciseResponse.fromJson(response.data!);
+      return WorkoutAPI.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException

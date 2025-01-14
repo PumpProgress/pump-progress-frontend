@@ -63,6 +63,7 @@ class _ModalBottomSheetSaveExerciseState
       setState(() {
         weight = 0;
       });
+      return;
     }
     var inputWeight = double.parse(weightStr);
 
