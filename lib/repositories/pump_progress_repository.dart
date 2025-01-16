@@ -127,4 +127,12 @@ class PumpProgressRepository {
     );
     return Workout.fromJson(data.toJson());
   }
+
+  Future<List<UserSeries>> getSeriesByDate(
+      {required String userId, required DateTime date}) async {
+    final data = await pumpProgressApiProvider.getSetsByDate(userId, date);
+    final exercises =
+        data.sets.map((e) => UserSeries.fromJson(e.toJson())).toList();
+    return exercises;
+  }
 }

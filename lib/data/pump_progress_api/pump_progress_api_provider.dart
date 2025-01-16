@@ -242,4 +242,19 @@ class PumpProgressApiProvider {
           : throw GeneralException('An error ocurred', '000', stackTrace);
     }
   }
+
+  Future<UserSetsAPI> getSetsByDate(String userId, DateTime date) async {
+    try {
+      final url = '/users/$userId/sets';
+      final response = await ppApiClient.get<String>(url, queryParameters: {
+        'date': date.toIso8601String().split('T').first,
+      });
+      return UserSetsAPI.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      print(error.toString());
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
 }

@@ -12,9 +12,11 @@ class StartCalendarBloc extends Bloc<StartCalendarEvent, StartCalendarState> {
     required this.me,
   }) : super(const StartCalendarState()) {
     on<FetchSeriesByMonthEvent>(_onFetchSeriesByMonthEvent);
+    on<DaySelectedAtCalendar>(_onDaySelectedAtCalendar);
   }
 
   final PumpProgressRepository pumpProgressRepository;
+  // TODO remove this, user should be sent throught the event
   final User me;
 
   Future<void> _onFetchSeriesByMonthEvent(event, emit) async {
@@ -25,6 +27,18 @@ class StartCalendarBloc extends Bloc<StartCalendarEvent, StartCalendarState> {
         year: event.year,
       );
       emit(state.copyWith(userCalendar: userCalendar));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _onDaySelectedAtCalendar(event, emit) async {
+    try {
+      final sets = await pumpProgressRepository.getSeriesByDate(
+        userId: event.userId,
+        date: event.day,
+      );
+      emit(state.copyWith(setsAtDay: sets));
     } catch (e) {
       print(e);
     }
