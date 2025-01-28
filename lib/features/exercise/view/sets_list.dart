@@ -18,6 +18,7 @@ class SetsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
+      // TODO: this list should be paginated
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: (sets.length + 1),

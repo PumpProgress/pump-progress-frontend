@@ -213,10 +213,10 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<WorkoutAPI> putAddWorkoutExercise(
-    String workoutId,
-    WorkoutPutUpdateExerciseBody body,
-  ) async {
+  Future<WorkoutAPI> putAddWorkoutExercise({
+    required String workoutId,
+    required WorkoutPutUpdateExerciseBody body,
+  }) async {
     try {
       final url = '/workouts/$workoutId/add-exercise';
       final response = await ppApiClient.put<String>(url, data: body.toJson());
@@ -228,10 +228,10 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<WorkoutAPI> putRemoveWorkoutExercise(
-    String workoutId,
-    WorkoutPutUpdateExerciseBody body,
-  ) async {
+  Future<WorkoutAPI> putRemoveWorkoutExercise({
+    required String workoutId,
+    required WorkoutPutUpdateExerciseBody body,
+  }) async {
     try {
       final url = '/workouts/$workoutId/remove-exercise';
       final response = await ppApiClient.put<String>(url, data: body.toJson());
@@ -243,13 +243,38 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<UserSetsAPI> getSetsByDate(String userId, DateTime date) async {
+  Future<UserSetsAPI> getSetsByDate({
+    required String userId,
+    required DateTime date,
+  }) async {
     try {
       final url = '/users/$userId/sets';
       final response = await ppApiClient.get<String>(url, queryParameters: {
         'date': date.toIso8601String().split('T').first,
       });
       return UserSetsAPI.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      print(error.toString());
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<WorkoutSessionGetResponse> getWorkoutSessions({
+    int? limit = 0,
+    int? offset = 0,
+  }) async {
+    try {
+      // only add the query parameters that are not null
+      final queryParameters = {
+        if (limit != null) 'limit': limit,
+        if (offset != null) 'offset': offset,
+      };
+
+      final response = await ppApiClient.get<String>('/workout-sessions',
+          queryParameters: queryParameters);
+      return WorkoutSessionGetResponse.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       print(error.toString());
       (error.error is GeneralException)

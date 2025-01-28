@@ -111,8 +111,8 @@ class PumpProgressRepository {
     required String exerciseId,
   }) async {
     final data = await pumpProgressApiProvider.putAddWorkoutExercise(
-      workoutId,
-      WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
+      workoutId: workoutId,
+      body: WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
     );
     return Workout.fromJson(data.toJson());
   }
@@ -122,17 +122,29 @@ class PumpProgressRepository {
     required String exerciseId,
   }) async {
     final data = await pumpProgressApiProvider.putRemoveWorkoutExercise(
-      workoutId,
-      WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
+      workoutId: workoutId,
+      body: WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
     );
     return Workout.fromJson(data.toJson());
   }
 
-  Future<List<UserSeries>> getSeriesByDate(
-      {required String userId, required DateTime date}) async {
-    final data = await pumpProgressApiProvider.getSetsByDate(userId, date);
+  Future<List<UserSeries>> getSeriesByDate({
+    required String userId,
+    required DateTime date,
+  }) async {
+    final data =
+        await pumpProgressApiProvider.getSetsByDate(userId: userId, date: date);
     final exercises =
         data.sets.map((e) => UserSeries.fromJson(e.toJson())).toList();
     return exercises;
+  }
+
+  Future<List<WorkoutSession>> getWorkoutSessions(
+      {int? limit, int? offset}) async {
+    final data = await pumpProgressApiProvider.getWorkoutSessions(
+        limit: limit, offset: offset);
+    final workoutSessions =
+        data.data.map((e) => WorkoutSession.fromAPI(e)).toList();
+    return workoutSessions;
   }
 }

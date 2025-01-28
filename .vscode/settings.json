@@ -1,4 +1,5 @@
 {
   "svg.preview.background": "editor",
-  "dart.flutterSdkPath": ".fvm/versions/stable"
+  "dart.flutterSdkPath": ".fvm/versions/stable",
+  "cmake.ignoreCMakeListsMissing": true
 }

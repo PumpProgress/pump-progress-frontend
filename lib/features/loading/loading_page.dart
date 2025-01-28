@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// TODO rename to Loading view
 class LoadingPage extends StatelessWidget {
   const LoadingPage({super.key});
 

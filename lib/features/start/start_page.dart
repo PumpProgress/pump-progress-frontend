@@ -11,6 +11,8 @@ import 'package:pump_progress_frontend/features/start_calendar/bloc/start_calend
 import 'package:pump_progress_frontend/features/start_calendar/view/start_calendar_view.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/start_exercises_view.dart';
+import 'package:pump_progress_frontend/features/start_home/bloc/start_home_bloc.dart';
+import 'package:pump_progress_frontend/features/start_home/view/start_home_view.dart';
 import 'package:pump_progress_frontend/features/start_workouts/view/start_workouts_view.dart';
 import 'package:pump_progress_frontend/features/todo/todo_view.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -59,7 +61,6 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
           create: (context) => StartExercisesBloc(
             me: me,
             pumpProgressRepository: context.read<PumpProgressRepository>(),
-            // coreBloc: context.read<CoreBloc>(),
           )..add(const HardFetchExerciseListEvent()),
         ),
         BlocProvider<StartCalendarBloc>(
@@ -67,6 +68,11 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
             pumpProgressRepository: context.read<PumpProgressRepository>(),
             me: me,
           )..add(FetchSeriesByMonthEvent()),
+        ),
+        BlocProvider<StartHomeBloc>(
+          create: (context) => StartHomeBloc(
+            pumpProgressRepository: context.read<PumpProgressRepository>(),
+          )..add(FetchInitialWorkoutSessions()),
         ),
       ],
       child: Container(
@@ -95,7 +101,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
             body: TabBarView(
               controller: _tabController,
               children: const [
-                ComingSoonPage(), // * Home
+                StartHomeView(), // * Home
                 ComingSoonPage(), // * Community
                 StartCalendarView(), // * Calendar
                 StartExercises(), // * Exercises
