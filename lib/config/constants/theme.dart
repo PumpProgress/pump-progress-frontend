@@ -35,7 +35,6 @@ class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
   }
 }
 
-
 // {
 //   "0": 0,
 //   "0.5": 2,
