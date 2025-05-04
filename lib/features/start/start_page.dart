@@ -43,6 +43,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
     super.initState();
     _tabController = TabController(
         length: _titles.length, vsync: this, initialIndex: _defaultIndex);
+
     _tabController.addListener(() {
       setState(() {
         _appBarTitle = _titles[_tabController.index];

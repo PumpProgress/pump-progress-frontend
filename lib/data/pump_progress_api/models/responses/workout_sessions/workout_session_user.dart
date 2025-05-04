@@ -33,7 +33,7 @@ class WorkoutSessionUserAPI {
   factory WorkoutSessionUserAPI.fromMap(Map<String, dynamic> map) {
     return WorkoutSessionUserAPI(
       id: map['id'] as String,
-      name: map['name'] as String,
+      name: map['name'] ?? "No Name",
       email: map['email'] as String,
     );
   }

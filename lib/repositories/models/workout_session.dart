@@ -21,19 +21,19 @@ class WorkoutSession {
     final Map<String, String> exercisesNames = {};
 
     for (var series in workoutSessionAPI.sets) {
-      if (reps.containsKey(series.id)) {
-        reps[series.id]!.add(WorkoutSessionSeries(
+      if (reps.containsKey(series.exercise.id)) {
+        reps[series.exercise.id]!.add(WorkoutSessionSeries(
           repetitions: series.repetitions,
           weight: series.weight,
         ));
       } else {
-        reps[series.id] = [
+        reps[series.exercise.id] = [
           WorkoutSessionSeries(
             repetitions: series.repetitions,
             weight: series.weight,
           )
         ];
-        exercisesNames[series.id] = series.exercise.name;
+        exercisesNames[series.exercise.id] = series.exercise.name;
       }
     }
 
