@@ -5,9 +5,15 @@ class ComingSoonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         body: Center(
-      child: Text('Coming soon...'),
+      child: ElevatedButton(
+        onPressed: () {
+          // throw StateError('This is test exception');
+          throw Exception('This is test exception :o ');
+        },
+        child: const Text('Verify Sentry Setup!'),
+      ),
     ));
   }
 }

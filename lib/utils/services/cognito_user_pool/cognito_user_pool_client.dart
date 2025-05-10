@@ -1,5 +1,15 @@
 part of 'cognito_user_pool.dart';
 
+class _ErrorLogInterceptor extends Interceptor {
+  @override
+  void onError(DioException error, ErrorInterceptorHandler handler) {
+    print(error);
+    final hint = Hint();
+    Sentry.captureException(error, stackTrace: error.stackTrace, hint: hint);
+    super.onError(error, handler);
+  }
+}
+
 class PPUserPool {
   late Dio client;
   static final PPUserPool _singleton = PPUserPool._internal();
@@ -12,6 +22,9 @@ class PPUserPool {
       baseUrl: "https://$COGNITO_POOL_URL.amazoncognito.com/oauth2/",
     );
     client = Dio(options);
+    client.interceptors.addAll([
+      _ErrorLogInterceptor(),
+    ]);
   }
 
   Future<CognitoUserSession> getTokenDataFromCode(authCode) async {

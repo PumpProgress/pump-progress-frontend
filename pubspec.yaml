@@ -47,6 +47,7 @@ dependencies:
   amazon_cognito_identity_dart_2: ^3.6.5
   webview_flutter: ^4.10.0
   timeago: ^3.2.2
+  sentry_flutter: ^8.14.2
 
 dev_dependencies:
   flutter_test:
