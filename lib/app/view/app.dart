@@ -19,7 +19,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("Flavor: ${F.appFlavor}");
-    // print("Flavor PPApiUrl: ${F.ppApiUrl}");
 
     final repositoryProviders = [
       RepositoryProvider<PumpProgressRepository>(

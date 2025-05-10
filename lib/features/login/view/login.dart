@@ -31,7 +31,7 @@ class LoginPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.error ?? 'An error occurred'),
-                duration: const Duration(seconds: 5), // Display for 5 seconds
+                duration: const Duration(seconds: 5),
               ),
             );
           }

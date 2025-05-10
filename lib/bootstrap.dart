@@ -10,20 +10,12 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterError.onError = (details) {
-    // log(details.exceptionAsString(), stackTrace: details.stack);
-  };
 
   Bloc.observer = GlobalObserver();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  // await runZonedGuarded(
-  //   () async => runApp(await builder()),
-  //   (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
-  // );
 
   await SentryFlutter.init(
     (options) {
