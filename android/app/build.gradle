@@ -59,6 +59,10 @@ android {
             dimension "environment"
             resValue "string", "app_name", "PumpProgress"
         }
+        dev {
+            dimension "environment"
+            resValue "string", "app_name", "PumpProgress"
+        }
     }
     
     signingConfigs {
