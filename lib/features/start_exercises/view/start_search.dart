@@ -73,9 +73,9 @@ class StartExercisesSearchWidget extends StatelessWidget {
                         prefixIcon: const Icon(
                           Icons.search,
                         ),
-                        labelStyle: PPFontStyles.paragraph.copyWith(
-                          color: PPColors.neutral100,
-                        ),
+                        // labelStyle: PPFontStyles.paragraph.copyWith(
+                        //   color: PPColors.neutral100,
+                        // ),
                         border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(16))),

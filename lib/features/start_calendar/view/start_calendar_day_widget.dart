@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 
 class StartCalendarDayWidget extends StatelessWidget {
   const StartCalendarDayWidget({
@@ -8,7 +7,7 @@ class StartCalendarDayWidget extends StatelessWidget {
     required this.day,
     Color? bgColor,
     Color? textColor,
-  })  : bgColor = bgColor ?? PPColors.black,
+  })  : bgColor = bgColor ?? PPColors.neutral500,
         textColor = textColor ?? PPColors.white;
   final DateTime day;
   final Color bgColor;
@@ -25,7 +24,7 @@ class StartCalendarDayWidget extends StatelessWidget {
         child: Center(
           child: Text(
             day.day.toString(),
-            style: PPFontStyles.paragraph.copyWith(color: textColor),
+            // style: PPFontStyles.paragraph.copyWith(color: textColor),
           ),
         ),
       ),

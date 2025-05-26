@@ -1,5 +1,5 @@
 name: pump_progress_frontend
-description: Welcome to PumpProgress, the innovative app designed to enhance, streamline, and revolutionize your gym experience! FitTrack Pro makes tracking your gym workouts easier than ever before, allowing you to focus on what truly matters – your fitness journey.
+description: Welcome to PumpProgress, the innovative app designed to enhance, streamline, and revolutionize your gym experience! PumpProgress makes tracking your gym workouts easier than ever before, allowing you to focus on what truly matters ~ your fitness journey.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.0.1+2
+
+version: 3.5.0+1
 
 environment:
   sdk: '>=3.0.3 <4.0.0'
@@ -34,16 +35,20 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  bloc: ^8.1.2
+  bloc: ^9.0.0
   dio: ^5.2.1+1
   equatable: ^2.0.5
-  flutter_bloc: ^8.1.3
-  intl: ^0.19.0
+  flutter_bloc: ^9.0.0
+  intl: ^0.20.1
   shared_preferences: ^2.1.2
-  flutter_slidable: ^3.0.0
+  flutter_slidable: ^4.0.0
   toggle_switch: ^2.1.0
   flutter_svg: ^2.0.10+1
   table_calendar: ^3.1.2
+  amazon_cognito_identity_dart_2: ^3.6.5
+  webview_flutter: ^4.10.0
+  timeago: ^3.2.2
+  sentry_flutter: ^8.14.2
 
 dev_dependencies:
   flutter_test:
@@ -54,7 +59,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
   # handle Flutter flavors
   flutter_flavorizr: ^2.2.3
@@ -73,3 +78,12 @@ flutter:
     - family: icomoon
       fonts:
         - asset: assets/fonts/icomoon/icomoon.ttf
+    - family: ITC Avant Garde Gothic
+      fonts:
+        - asset: assets/fonts/itc-avant-garde/itc-avant-garde-gothic-ce-book.otf
+    - family: VCR OSD Mono
+      fonts:
+        - asset: assets/fonts/vcr-osd-mono/VCR_OSD_MONO.ttf
+    - family: Press Start 2P
+      fonts:
+        - asset: assets/fonts/press-start-2-p/PressStart2P-Regular.ttf

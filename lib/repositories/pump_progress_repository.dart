@@ -1,29 +1,10 @@
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/auth_log_in/auth_log_in_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_post.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sets/series_body_put.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/user/users_update_exercises_post.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_post_body.dart';
-import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workout_put_update_exercise_body.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
-import 'package:pump_progress_frontend/repositories/models/exercise.dart';
-import 'package:pump_progress_frontend/repositories/models/series.dart';
-import 'package:pump_progress_frontend/repositories/models/user.dart';
-import 'package:pump_progress_frontend/repositories/models/user_calendar.dart';
-import 'package:pump_progress_frontend/repositories/models/workout.dart';
+import 'package:pump_progress_frontend/repositories/models/models.dart';
 
 class PumpProgressRepository {
+  // TODO singleton
   PumpProgressRepository();
   final pumpProgressApiProvider = PumpProgressApiProvider();
-
-  // * auth
-  Future<String> authLogIn({
-    required String email,
-    required String password,
-  }) async {
-    final data = await pumpProgressApiProvider
-        .authLogIn(AuthLogInBody(email: email, password: password));
-    return data.data.data;
-  }
 
 // * exercises
   Future<List<Exercise>> getExercises() async {
@@ -35,10 +16,11 @@ class PumpProgressRepository {
   }
 
 // * users
+
+  // ? Refactored
   Future<User> getUser(String userId) async {
     final data = await pumpProgressApiProvider.getUser(userId);
-    final me = data.data;
-    return User.fromJson(me.toJson());
+    return User.fromJson(data.toJson());
   }
 
   Future<User> postUSerAddFavoriteExercise({
@@ -49,8 +31,7 @@ class PumpProgressRepository {
       userId,
       UpdateFavoriteExercisesBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return User.fromJson(me.toJson());
+    return User.fromJson(data.toJson());
   }
 
   Future<User> postUserRemoveFavoriteExercise(
@@ -59,8 +40,7 @@ class PumpProgressRepository {
       userId,
       UpdateFavoriteExercisesBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return User.fromJson(me.toJson());
+    return User.fromJson(data.toJson());
   }
 
   Future<UserCalendar> getCalendarInfoByUserId(
@@ -91,8 +71,7 @@ class PumpProgressRepository {
       repetitions: repetitions,
       weight: weight,
     ));
-    final series = data.data;
-    return Series.fromJson(series.toJson());
+    return Series.fromJson(data.toJson());
   }
 
   Future<Series> putSeries({
@@ -106,8 +85,8 @@ class PumpProgressRepository {
           repetitions: repetitions,
           weight: weight,
         ));
-    final series = data.data;
-    return Series.fromJson(series.toJson());
+
+    return Series.fromJson(data.toJson());
   }
 
 // * workouts
@@ -124,8 +103,7 @@ class PumpProgressRepository {
   Future<Workout> postWorkout({required String name}) async {
     final data =
         await pumpProgressApiProvider.postWorkout(WorkoutPostBody(name: name));
-    final workout = data.data;
-    return Workout.fromJson(workout.toJson());
+    return Workout.fromJson(data.toJson());
   }
 
   Future<Workout> putAddWorkoutExercise({
@@ -133,11 +111,10 @@ class PumpProgressRepository {
     required String exerciseId,
   }) async {
     final data = await pumpProgressApiProvider.putAddWorkoutExercise(
-      workoutId,
-      WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
+      workoutId: workoutId,
+      body: WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return Workout.fromJson(me.toJson());
+    return Workout.fromJson(data.toJson());
   }
 
   Future<Workout> putRemoveWorkoutExercise({
@@ -145,10 +122,29 @@ class PumpProgressRepository {
     required String exerciseId,
   }) async {
     final data = await pumpProgressApiProvider.putRemoveWorkoutExercise(
-      workoutId,
-      WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
+      workoutId: workoutId,
+      body: WorkoutPutUpdateExerciseBody(exerciseId: exerciseId),
     );
-    final me = data.data;
-    return Workout.fromJson(me.toJson());
+    return Workout.fromJson(data.toJson());
+  }
+
+  Future<List<UserSeries>> getSeriesByDate({
+    required String userId,
+    required DateTime date,
+  }) async {
+    final data =
+        await pumpProgressApiProvider.getSetsByDate(userId: userId, date: date);
+    final exercises =
+        data.sets.map((e) => UserSeries.fromJson(e.toJson())).toList();
+    return exercises;
+  }
+
+  Future<List<WorkoutSession>> getWorkoutSessions(
+      {int? limit, int? offset}) async {
+    final data = await pumpProgressApiProvider.getWorkoutSessions(
+        limit: limit, offset: offset);
+    final workoutSessions =
+        data.data.map((e) => WorkoutSession.fromAPI(e)).toList();
+    return workoutSessions;
   }
 }

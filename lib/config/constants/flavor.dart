@@ -5,6 +5,7 @@ class FlavorConfig {
     // TODO this should be an environment variable
     const urlProd =
         'https://23xlv17ugb.execute-api.us-east-1.amazonaws.com/api';
+
     const urlLocal = 'http://localhost:6000';
 
     switch (F.appFlavor) {

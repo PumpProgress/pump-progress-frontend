@@ -21,26 +21,27 @@ class _StartWorkoutsState extends State<StartWorkouts> with RouteAware {
     routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
 
     return BlocConsumer<WorkoutsBloc, WorkoutsState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state.status == WorkoutsStatus.loading) {
-            return const LoadingPage();
-          }
-          return Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                      itemCount: state.workouts.length + 1,
-                      itemBuilder: (context, index) {
-                        return WorkoutWidgetItem(index: index);
-                      }),
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state.status == WorkoutsStatus.loading) {
+          return const LoadingPage();
+        }
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.workouts.length + 1,
+                  itemBuilder: (context, index) {
+                    return WorkoutWidgetItem(index: index);
+                  },
                 ),
-                // StartWorkoutFloatingActionButton()
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

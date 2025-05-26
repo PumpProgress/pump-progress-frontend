@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/start_exercise_item.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/start_search.dart';
@@ -13,7 +14,12 @@ class StartExercises extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StartExercisesBloc, StartExercisesState>(
+    return BlocConsumer<StartExercisesBloc, StartExercisesState>(
+      listener: (context, state) {
+        if (state.status == StartExerciseStatus.updatedUserFav) {
+          context.read<CoreBloc>().add(const ReFetchUser());
+        }
+      },
       builder: (context, state) {
         if (state.status == StartExerciseStatus.loading) {
           return const LoadingPage();

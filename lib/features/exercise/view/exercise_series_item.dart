@@ -137,7 +137,9 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       series.createdAt.day.toString(),
-                      style: PPFontStyles.h3.copyWith(color: PPColors.coral300),
+                      style: TextTheme.of(context)
+                          .displayMedium
+                          ?.copyWith(color: PPColors.coral300),
                     ),
                     const SizedBox(
                       width: 8.0,
@@ -145,15 +147,11 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          '$monthInString.',
-                          style: PPFontStyles.small
-                              .copyWith(color: PPColors.coral300),
-                        ),
+                        Text('$monthInString.',
+                            style: TextTheme.of(context).labelSmall),
                         Text(
                           series.createdAt.year.toString(),
-                          style: PPFontStyles.xSmall
-                              .copyWith(color: PPColors.amethyst100),
+                          style: TextTheme.of(context).labelSmall,
                         )
                       ],
                     )
@@ -167,12 +165,13 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       series.weight.toStringAsFixed(2),
-                      style: PPFontStyles.h4.copyWith(color: PPColors.coral300),
+                      style: TextTheme.of(context)
+                          .displaySmall
+                          ?.copyWith(color: PPColors.coral300),
                     ),
                     Text(
                       'kgs.',
-                      style: PPFontStyles.xSmall
-                          .copyWith(color: PPColors.amethyst100),
+                      style: TextTheme.of(context).labelSmall,
                     )
                   ],
                 ),
@@ -182,14 +181,13 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      series.repetitions.toString(),
-                      style: PPFontStyles.h4.copyWith(color: PPColors.coral300),
-                    ),
+                    Text(series.repetitions.toString(),
+                        style: TextTheme.of(context)
+                            .displaySmall
+                            ?.copyWith(color: PPColors.coral300)),
                     Text(
                       'reps',
-                      style: PPFontStyles.xSmall
-                          .copyWith(color: PPColors.amethyst100),
+                      style: TextTheme.of(context).labelSmall,
                     )
                   ],
                 ),

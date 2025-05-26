@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/config/constants/icomoon_icons.dart';
 
 import 'package:pump_progress_frontend/features/start/start_drawer.dart';
@@ -11,11 +10,13 @@ import 'package:pump_progress_frontend/features/start_calendar/bloc/start_calend
 import 'package:pump_progress_frontend/features/start_calendar/view/start_calendar_view.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/start_exercises_view.dart';
+import 'package:pump_progress_frontend/features/start_home/bloc/start_home_bloc.dart';
+import 'package:pump_progress_frontend/features/start_home/view/start_home_view.dart';
 import 'package:pump_progress_frontend/features/start_workouts/view/start_workouts_view.dart';
 import 'package:pump_progress_frontend/features/todo/todo_view.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
-List<String> titles = [
+List<String> _titles = [
   'Home',
   'Community',
   'Calendar',
@@ -23,7 +24,7 @@ List<String> titles = [
   'Workouts'
 ];
 
-const int defaultIndex = 2;
+const int _defaultIndex = 2;
 
 class Start extends StatefulWidget {
   const Start({super.key});
@@ -34,37 +35,45 @@ class Start extends StatefulWidget {
 
 class _StartState extends State<Start> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String _appBarTitle = titles[defaultIndex];
+  String _appBarTitle = _titles[_defaultIndex];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
-        length: titles.length, vsync: this, initialIndex: defaultIndex);
+        length: _titles.length, vsync: this, initialIndex: _defaultIndex);
+
     _tabController.addListener(() {
       setState(() {
-        _appBarTitle = titles[_tabController.index];
+        _appBarTitle = _titles[_tabController.index];
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<WorkoutsBloc>().add(const FetchWorkoutsEvent());
+    final me = context.read<CoreBloc>().state.user;
+    context.read<WorkoutsBloc>().add(FetchWorkoutsEvent(userId: me.id));
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<StartExercisesBloc>(
           create: (context) => StartExercisesBloc(
+            me: me,
             pumpProgressRepository: context.read<PumpProgressRepository>(),
-            coreBloc: context.read<CoreBloc>(),
           )..add(const HardFetchExerciseListEvent()),
         ),
         BlocProvider<StartCalendarBloc>(
-            create: (context) => StartCalendarBloc(
-                pumpProgressRepository: context.read<PumpProgressRepository>(),
-                coreBloc: context.read<CoreBloc>())
-              ..add(FetchSeriesByMonthEvent())),
+          create: (context) => StartCalendarBloc(
+            pumpProgressRepository: context.read<PumpProgressRepository>(),
+            me: me,
+          )..add(FetchSeriesByMonthEvent()),
+        ),
+        BlocProvider<StartHomeBloc>(
+          create: (context) => StartHomeBloc(
+            pumpProgressRepository: context.read<PumpProgressRepository>(),
+          )..add(FetchInitialWorkoutSessions()),
+        ),
       ],
       child: Container(
         color: Theme.of(context).colorScheme.surface,
@@ -73,7 +82,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
             appBar: AppBar(
               title: Text(
                 _appBarTitle,
-                style: PPFontStyles.h4.copyWith(color: PPColors.neutral100),
+                // style: PPFontStyles.h4.copyWith(color: PPColors.neutral100),
               ),
               elevation: 0,
             ),
@@ -87,12 +96,12 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
               indicatorColor: Colors.transparent,
               indicatorWeight: 0.0,
               dividerColor: Colors.transparent,
-              tabs: tabs(),
+              tabs: _tabs(),
             ),
             body: TabBarView(
               controller: _tabController,
               children: const [
-                ComingSoonPage(), // * Home
+                StartHomeView(), // * Home
                 ComingSoonPage(), // * Community
                 StartCalendarView(), // * Calendar
                 StartExercises(), // * Exercises
@@ -106,7 +115,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
   }
 }
 
-List<Tab> tabs() {
+List<Tab> _tabs() {
   return const [
     Tab(
       icon: Icon(

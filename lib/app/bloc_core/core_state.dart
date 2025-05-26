@@ -1,6 +1,6 @@
 part of 'core_bloc.dart';
 
-enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+enum AuthenticationStatus { unknown, authenticated, unauthenticated, loading }
 
 @immutable
 class CoreState extends Equatable {
