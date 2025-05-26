@@ -73,17 +73,18 @@ class _StartCalendarViewState extends State<StartCalendarView> {
                 }
               },
               headerStyle: HeaderStyle(
-                  titleTextStyle:
-                      PPFontStyles.h6.copyWith(color: PPColors.neutral100),
-                  titleCentered: true),
+                  // titleTextStyle:
+                  // PPFontStyles.h6.copyWith(color: PPColors.neutral100),
+                  // titleCentered: true
+                  ),
               calendarBuilders: CalendarBuilders(
                 dowBuilder: (context, day) {
                   final text = DateFormat.E().format(day);
                   return Center(
                     child: Text(
                       text,
-                      style: PPFontStyles.small
-                          .copyWith(color: PPColors.neutral100),
+                      // style: PPFontStyles.small
+                      //     .copyWith(color: PPColors.neutral100),
                     ),
                   );
                 },

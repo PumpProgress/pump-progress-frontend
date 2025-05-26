@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
+import 'package:pump_progress_frontend/config/constants/fonts.dart';
 
 final theme = ThemeData.from(
+  textTheme: retroMinimalTextTheme,
   colorScheme: const ColorScheme(
     primary: PPColors.amethyst300,
     onPrimary: Colors.white,

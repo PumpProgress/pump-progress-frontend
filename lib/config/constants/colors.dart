@@ -17,9 +17,8 @@ class PPColors {
   static const neutral200 = Color(0xFFEAEAEA);
   static const neutral300 = Color(0xFFAAAAAA);
   static const neutral400 = Color(0xFF6A6A6A);
-  static const neutral500 = Color(0xFF222222);
+  static const neutral500 = Color(0xFF1C1C1C);
 
-  static const black = Color(0xFF333333); // todo delete this colors
   static const white = Color(0xFFFFFFFF); // todo delete this colors
   static const silver = Color(0xFFAAAAAA); // todo delete this colors
 }

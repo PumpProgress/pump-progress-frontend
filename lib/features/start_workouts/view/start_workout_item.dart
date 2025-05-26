@@ -119,12 +119,15 @@ class WorkoutWidgetItem extends StatelessWidget {
             ),
             title: Text(
               workout.name,
-              style:
-                  PPFontStyles.paragraph.copyWith(color: PPColors.amethyst100),
+              style: TextTheme.of(context)
+                  .titleSmall
+                  ?.copyWith(color: PPColors.amethyst100),
             ),
             trailing: Text(
               '${workout.exercises.length} exercises',
-              style: PPFontStyles.small.copyWith(color: PPColors.amethyst100),
+              style: TextTheme.of(context)
+                  .titleSmall
+                  ?.copyWith(color: PPColors.amethyst100),
             ),
           ),
         );

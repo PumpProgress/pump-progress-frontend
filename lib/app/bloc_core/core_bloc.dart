@@ -55,7 +55,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
 
   Future<void> _onCoreLogout(CoreLogout event, Emitter<CoreState> emit) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(jwtKey);
+    _clearLocalStorage(prefs);
     emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
   }
 

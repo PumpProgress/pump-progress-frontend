@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 import 'package:pump_progress_frontend/features/workout/bloc/workout_bloc.dart';
 import 'package:pump_progress_frontend/features/workout/view/workout_exercise_list.dart';
@@ -43,7 +41,7 @@ class WorkoutPage extends StatelessWidget {
             appBar: AppBar(
               title: Text(
                 workout.name,
-                style: PPFontStyles.h5.copyWith(color: PPColors.amethyst100),
+                // style: PPFontStyles.h5.copyWith(color: PPColors.amethyst100),
               ),
             ),
             // floatingActionButton: WorkoutFloatingActionButton(

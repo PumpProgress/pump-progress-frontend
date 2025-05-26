@@ -77,3 +77,12 @@ flutter:
     - family: icomoon
       fonts:
         - asset: assets/fonts/icomoon/icomoon.ttf
+    - family: ITC Avant Garde Gothic
+      fonts:
+        - asset: assets/fonts/itc-avant-garde/itc-avant-garde-gothic-ce-book.otf
+    - family: VCR OSD Mono
+      fonts:
+        - asset: assets/fonts/vcr-osd-mono/VCR_OSD_MONO.ttf
+    - family: Press Start 2P
+      fonts:
+        - asset: assets/fonts/press-start-2-p/PressStart2P-Regular.ttf

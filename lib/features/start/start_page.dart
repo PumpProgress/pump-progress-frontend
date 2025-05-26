@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/config/constants/icomoon_icons.dart';
 
 import 'package:pump_progress_frontend/features/start/start_drawer.dart';
@@ -83,7 +82,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
             appBar: AppBar(
               title: Text(
                 _appBarTitle,
-                style: PPFontStyles.h4.copyWith(color: PPColors.neutral100),
+                // style: PPFontStyles.h4.copyWith(color: PPColors.neutral100),
               ),
               elevation: 0,
             ),

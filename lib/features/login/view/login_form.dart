@@ -41,13 +41,25 @@ class LoginForm extends StatelessWidget {
               children: [
                 const Spacer(flex: 3),
                 Text(
-                  'PumpProgress',
-                  style: Theme.of(context).textTheme.headlineLarge,
+                  'PUMP\nPROGRESS',
+                  style: Theme.of(context).textTheme.displayLarge,
                 ),
-                const Spacer(flex: 2),
+                const Spacer(flex: 1),
+                // pump-logo-inverted
+                SvgPicture.asset(
+                  'assets/svg/pump-logo-inverted.svg',
+                  width: 150,
+                  height: 150,
+                ),
+                const Spacer(flex: 1),
+                Text(
+                  'make every rep count...',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                const Spacer(flex: 1),
                 ..._getFederatedLoginButtons(context),
                 const Spacer(
-                  flex: 4,
+                  flex: 3,
                 )
               ],
             ),
@@ -69,7 +81,7 @@ List<Widget> _getFederatedLoginButtons(BuildContext context) {
               key:
                   Key('loginForm_login${login['provider']}Button_raisedButton'),
               style: ElevatedButton.styleFrom(
-                foregroundColor: PPColors.black,
+                foregroundColor: PPColors.neutral500,
                 backgroundColor: PPColors.white,
               ),
               onPressed: () {
@@ -85,8 +97,12 @@ List<Widget> _getFederatedLoginButtons(BuildContext context) {
                     width: 24,
                     height: 24,
                   ),
-                  const SizedBox(width: 8),
-                  Text('Continue with ${login['name']}'),
+                  const SizedBox(width: 20),
+                  Text('Continue with ${login['name']}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: PPColors.neutral500)),
                 ],
               ),
             ),
