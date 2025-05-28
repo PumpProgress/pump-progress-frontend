@@ -59,9 +59,8 @@ class WorkoutSessionItemWidgetBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final exercisesSets = workoutSession.exercises.map(
       (exercise) {
-        final sets = exercise.sets
-            .map((s) => "${s.repetitions}x ${s.weight}kg")
-            .join(",  ");
+        final sets =
+            exercise.sets.map((s) => Text("${s.repetitions}x ${s.weight}kg,"));
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -72,7 +71,11 @@ class WorkoutSessionItemWidgetBody extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
             ),
-            Text(sets)
+            Wrap(
+              spacing: 8, // Optional: adds spacing between items
+              runSpacing: 4, // Optional: spacing between lines when wrapping
+              children: sets.toList(),
+            ),
           ],
         );
       },

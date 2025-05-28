@@ -4,6 +4,7 @@ import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/config/constants/icomoon_icons.dart';
+import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 
 import 'package:pump_progress_frontend/features/start/start_drawer.dart';
 import 'package:pump_progress_frontend/features/start_calendar/bloc/start_calendar_bloc.dart';

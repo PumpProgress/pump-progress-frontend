@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/features/start_calendar/bloc/start_calendar_bloc.dart';
 import 'package:pump_progress_frontend/features/start_calendar/view/start_calendar_day_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -75,8 +74,7 @@ class _StartCalendarViewState extends State<StartCalendarView> {
               headerStyle: HeaderStyle(
                   // titleTextStyle:
                   // PPFontStyles.h6.copyWith(color: PPColors.neutral100),
-                  // titleCentered: true
-                  ),
+                  titleCentered: true),
               calendarBuilders: CalendarBuilders(
                 dowBuilder: (context, day) {
                   final text = DateFormat.E().format(day);
@@ -95,7 +93,7 @@ class _StartCalendarViewState extends State<StartCalendarView> {
                     textColor: PPColors.white,
                   );
                 },
-                markerBuilder: (context, day, focusedDay) {
+                markerBuilder: (context, day, events) {
                   if (hasEvent(state.userCalendar.dates, day)) {
                     return StartCalendarDayWidget(
                       day: day,

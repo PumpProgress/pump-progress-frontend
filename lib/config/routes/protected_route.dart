@@ -23,9 +23,6 @@ class ProtectedRoute extends StatelessWidget {
           switch (state.status) {
             case AuthenticationStatus.authenticated:
               return child;
-            case AuthenticationStatus.unknown:
-              print('protected route: unknown');
-              return const SplashPage();
             case AuthenticationStatus.unauthenticated:
               print('protected route: unauthenticated');
               return const SplashPage();

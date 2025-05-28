@@ -24,7 +24,7 @@ class StartCalendarDayWidget extends StatelessWidget {
         child: Center(
           child: Text(
             day.day.toString(),
-            // style: PPFontStyles.paragraph.copyWith(color: textColor),
+            style: TextStyle(color: textColor),
           ),
         ),
       ),
