@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/view/modal_bottom_sheet_save_exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/requests.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
