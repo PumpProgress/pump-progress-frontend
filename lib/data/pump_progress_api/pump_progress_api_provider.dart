@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/requests.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
@@ -115,6 +114,16 @@ class PumpProgressApiProvider {
       return UserCalendarAPI.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       print(error.toString());
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<void> deleteUser(String userId) async {
+    try {
+      await ppApiClient.delete('/users/$userId');
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
