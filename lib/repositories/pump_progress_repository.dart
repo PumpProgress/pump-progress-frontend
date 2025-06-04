@@ -51,6 +51,10 @@ class PumpProgressRepository {
     return UserCalendar.fromJson(data.toJson());
   }
 
+  Future<void> deleteUser(String userId) async {
+    await pumpProgressApiProvider.deleteUser(userId);
+  }
+
 // * sets
   Future<List<Series>> getSets({String? exerciseId, String? userId}) async {
     final data = await pumpProgressApiProvider.getSets(

@@ -25,3 +25,7 @@ class CoreMeUpdated extends CoreEvent {
 class ReFetchUser extends CoreEvent {
   const ReFetchUser();
 }
+
+class CoreDeleteAccount extends CoreEvent {
+  const CoreDeleteAccount();
+}

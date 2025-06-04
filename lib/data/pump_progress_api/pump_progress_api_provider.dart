@@ -120,6 +120,16 @@ class PumpProgressApiProvider {
     }
   }
 
+  Future<void> deleteUser(String userId) async {
+    try {
+      await ppApiClient.delete('/users/$userId');
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
   // * sets
 
   Future<SetsGetResponse> getSets({String? exerciseId, String? userId}) async {

@@ -16,6 +16,7 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     on<CoreLogout>(_onCoreLogout);
     on<CoreMeUpdated>(_onCoreMeUpdated);
     on<ReFetchUser>(_onReFetchUser);
+    on<CoreDeleteAccount>(_onCoreDeleteAccount);
     // thinking its missing a onLoggedIn
   }
 
@@ -89,6 +90,19 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     }
 
     emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
+  }
+
+  Future<void> _onCoreDeleteAccount(
+      CoreDeleteAccount event, Emitter<CoreState> emit) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      await pumpProgressRepository.deleteUser(state.user.id);
+      _clearLocalStorage(prefs);
+      emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
+    } catch (e) {
+      // Handle error if needed
+      print("Error deleting account: $e");
+    }
   }
 }
 
