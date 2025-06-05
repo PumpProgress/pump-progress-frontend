@@ -18,13 +18,13 @@ import 'package:pump_progress_frontend/repositories/pump_progress_repository.dar
 
 List<String> _titles = [
   'Home',
-  'Community',
+  // 'Community',
   'Calendar',
-  'Exercises',
+  // 'Exercises',
   'Workouts'
 ];
 
-const int _defaultIndex = 2;
+const int _defaultIndex = 1;
 
 class Start extends StatefulWidget {
   const Start({super.key});
@@ -102,9 +102,9 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
               controller: _tabController,
               children: const [
                 StartHomeView(), // * Home
-                ComingSoonPage(), // * Community
+                // ComingSoonPage(), // * Community
                 StartCalendarView(), // * Calendar
-                StartExercises(), // * Exercises
+                // StartExercises(), // * Exercises
                 StartWorkouts(), // * Workouts
               ],
             ),
@@ -123,24 +123,24 @@ List<Tab> _tabs() {
         size: 32,
       ),
     ),
-    Tab(
-      icon: Icon(
-        Icomoon.icon_community,
-        size: 32,
-      ),
-    ),
+    // Tab(
+    //   icon: Icon(
+    //     Icomoon.icon_community,
+    //     size: 32,
+    //   ),
+    // ),
     Tab(
       icon: Icon(
         Icomoon.icon_calendar,
         size: 32,
       ),
     ),
-    Tab(
-      icon: Icon(
-        Icomoon.icon_dumbell,
-        size: 32,
-      ),
-    ),
+    // Tab(
+    //   icon: Icon(
+    //     Icomoon.icon_dumbell,
+    //     size: 32,
+    //   ),
+    // ),
     Tab(
       icon: Icon(
         Icomoon.icon_thunder,
