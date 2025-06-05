@@ -18,6 +18,9 @@ class WorkoutSessionsListWidget extends StatelessWidget {
         context.read<StartHomeBloc>().add(FetchNextWorkoutSessions());
       }
     });
+    if (state.workoutSessions.isEmpty) {
+      return Center(child: Text("No workout sessions yet."));
+    }
     return Container(
       margin: EdgeInsets.all(16),
       child: ListView.builder(

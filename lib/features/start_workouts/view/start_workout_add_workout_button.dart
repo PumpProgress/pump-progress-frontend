@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 
-@deprecated
-class StartWorkoutFloatingActionButton extends StatelessWidget {
-  StartWorkoutFloatingActionButton({super.key});
+class StartWorkoutAddWorkoutButton extends StatelessWidget {
+  StartWorkoutAddWorkoutButton({
+    super.key,
+  });
 
   final TextEditingController nameController = TextEditingController();
 
@@ -21,9 +22,8 @@ class StartWorkoutFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      shape: const CircleBorder(),
-      onPressed: () => showModalBottomSheet<void>(
+    return InkWell(
+      onTap: () => showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
         builder: (BuildContext context) {
@@ -70,7 +70,30 @@ class StartWorkoutFloatingActionButton extends StatelessWidget {
           );
         },
       ),
-      child: const Icon(Icons.add_rounded),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        color: PPColors.amethyst300,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: PPColors.neutral500,
+            border: Border.all(
+              color: PPColors.amethyst300,
+              width: 2,
+            ),
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.add,
+              color: PPColors.amethyst300,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
