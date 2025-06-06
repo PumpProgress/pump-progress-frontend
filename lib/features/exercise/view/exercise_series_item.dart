@@ -116,8 +116,8 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
           ),
         ]),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 16.0),
-          height: 84,
+          margin: const EdgeInsets.only(bottom: 8.0),
+          height: 64,
           decoration: BoxDecoration(
             border: haveBottomBorder
                 ? const Border(
