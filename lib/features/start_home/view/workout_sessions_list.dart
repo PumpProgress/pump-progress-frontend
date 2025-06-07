@@ -11,6 +11,7 @@ class WorkoutSessionsListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<StartHomeBloc>().state;
+
     _scrollController.addListener(() {
       if (state.areMore &&
           _scrollController.position.pixels >=
@@ -23,18 +24,23 @@ class WorkoutSessionsListWidget extends StatelessWidget {
     }
     return Container(
       margin: EdgeInsets.all(16),
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: state.workoutSessions.length +
-            (state.status == StartHomeStatus.loading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == state.workoutSessions.length) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return WorkoutSessionItemWidget(
-            workoutSession: state.workoutSessions[index],
-          );
+      child: RefreshIndicator(
+        onRefresh: () async {
+          context.read<StartHomeBloc>().add(FetchInitialWorkoutSessions());
         },
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: state.workoutSessions.length +
+              (state.status == StartHomeStatus.loading ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index == state.workoutSessions.length) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return WorkoutSessionItemWidget(
+              workoutSession: state.workoutSessions[index],
+            );
+          },
+        ),
       ),
     );
   }

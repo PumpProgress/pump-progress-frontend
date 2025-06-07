@@ -19,10 +19,14 @@ class StartHomeBloc extends Bloc<StartHomeEvent, StartHomeState> {
       FetchInitialWorkoutSessions event, Emitter<StartHomeState> emit) async {
     // try {
     emit(state.copyWith(status: StartHomeStatus.loading));
+
+    await Future.delayed(const Duration(milliseconds: 300));
+
     final workoutSessions = await pumpProgressRepository.getWorkoutSessions();
     emit(state.copyWith(
       status: StartHomeStatus.success,
       workoutSessions: workoutSessions,
+      areMore: workoutSessions.isNotEmpty,
     ));
     // } catch (e) {
     //   print(e.toString());

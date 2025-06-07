@@ -12,8 +12,7 @@ class StartHomeView extends StatelessWidget {
     return BlocConsumer<StartHomeBloc, StartHomeState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if (state.status == StartHomeStatus.loading &&
-            state.workoutSessions.isEmpty) {
+        if (state.status == StartHomeStatus.loading) {
           return const LoadingPage();
         }
         return WorkoutSessionsListWidget();
