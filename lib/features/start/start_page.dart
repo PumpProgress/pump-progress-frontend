@@ -53,7 +53,7 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final me = context.read<CoreBloc>().state.user;
-    context.read<WorkoutsBloc>().add(FetchWorkoutsEvent(userId: me.id));
+    // context.read<WorkoutsBloc>().add(FetchWorkoutsEvent(userId: me.id));
 
     return MultiBlocProvider(
       providers: [
