@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.xrok.pumpProgress">
     <application
-        android:label="pump_progress_frontend"
+        android:label="PumpProgress"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
