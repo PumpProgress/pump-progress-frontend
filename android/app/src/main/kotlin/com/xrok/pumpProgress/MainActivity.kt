@@ -1,4 +1,4 @@
-package com.example.pump_progress_frontend
+package com.xrok.pumpProgress
 
 import io.flutter.embedding.android.FlutterActivity
 
