@@ -376,9 +376,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -499,6 +503,7 @@
 			baseConfigurationReference = 38E4ED85DC9EE7960ECB3E05 /* Pods-Runner.debug-local.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = XJS6DY3JS8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xrok.pumpProgress.local;
 				PRODUCT_NAME = Runner;
 			};
 			name = "Debug-local";
@@ -508,6 +513,7 @@
 			baseConfigurationReference = 62FE703BC14C1B1162425780 /* Pods-Runner.profile-local.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = XJS6DY3JS8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xrok.pumpProgress.local;
 				PRODUCT_NAME = Runner;
 			};
 			name = "Profile-local";
@@ -517,6 +523,7 @@
 			baseConfigurationReference = CCD906E510CC6F6C3CF5AD51 /* Pods-Runner.release-local.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = XJS6DY3JS8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xrok.pumpProgress.local;
 				PRODUCT_NAME = Runner;
 			};
 			name = "Release-local";
@@ -553,6 +560,7 @@
 			baseConfigurationReference = FBCEE4CB24DCACD5DE520EA3 /* Pods-Runner.debug-dev.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = XJS6DY3JS8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xrok.pumpProgress.test;
 				PRODUCT_NAME = Runner;
 			};
 			name = "Debug-dev";
@@ -562,6 +570,7 @@
 			baseConfigurationReference = 5C63EBAE3F442BA878D3A72C /* Pods-Runner.profile-dev.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = XJS6DY3JS8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xrok.pumpProgress.test;
 				PRODUCT_NAME = Runner;
 			};
 			name = "Profile-dev";
@@ -571,6 +580,7 @@
 			baseConfigurationReference = 7F4619EF2BE41A416D094EC4 /* Pods-Runner.release-dev.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = XJS6DY3JS8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xrok.pumpProgress.test;
 				PRODUCT_NAME = Runner;
 			};
 			name = "Release-dev";
