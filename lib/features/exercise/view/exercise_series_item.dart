@@ -39,7 +39,6 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
         final exerciseBloc = context.read<ExerciseBloc>();
         exerciseBloc.add(
           AddNewSeries(
-            exerciseId: exerciseBloc.state.exerciseId,
             repetitions: repetitions,
             weight: weight,
           ),
@@ -72,7 +71,6 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
               final exerciseBloc = context.read<ExerciseBloc>();
               exerciseBloc.add(
                 AddNewSeries(
-                  exerciseId: exerciseBloc.state.exerciseId,
                   repetitions: series.repetitions,
                   weight: series.weight,
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/config/constants/icomoon_icons.dart';
 
@@ -9,7 +8,6 @@ import 'package:pump_progress_frontend/features/start/start_drawer.dart';
 import 'package:pump_progress_frontend/features/start_calendar/bloc/start_calendar_bloc.dart';
 import 'package:pump_progress_frontend/features/start_calendar/view/start_calendar_view.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
-import 'package:pump_progress_frontend/features/start_exercises/view/start_exercises_view.dart';
 import 'package:pump_progress_frontend/features/start_home/bloc/start_home_bloc.dart';
 import 'package:pump_progress_frontend/features/start_home/view/start_home_view.dart';
 import 'package:pump_progress_frontend/features/start_workouts/view/start_workouts_view.dart';

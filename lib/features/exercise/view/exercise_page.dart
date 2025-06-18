@@ -27,7 +27,10 @@ class ExercisePage extends StatelessWidget {
         pumpProgressRepository: context.read<PumpProgressRepository>(),
         // TODO: send core state to the bloc ?? think to refactor
         coreState: context.read<CoreBloc>().state,
-      )..add(LoadSeriesByExercise(exerciseId)),
+      )..add(LoadSeriesByExercise(
+          exerciseId: exerciseId,
+          exerciseName: exerciseName,
+        )),
       child: BlocBuilder<ExerciseBloc, ExerciseState>(
         builder: (context, state) {
           void saveExercise(int repetitions, double weight) {
@@ -35,7 +38,6 @@ class ExercisePage extends StatelessWidget {
               final exerciseBloc = context.read<ExerciseBloc>();
               exerciseBloc.add(
                 AddNewSeries(
-                  exerciseId: exerciseBloc.state.exerciseId,
                   repetitions: repetitions,
                   weight: weight,
                 ),

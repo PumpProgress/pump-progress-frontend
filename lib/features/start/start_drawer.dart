@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
 
 class StartDrawer extends StatelessWidget {
   const StartDrawer({super.key});
@@ -18,6 +19,13 @@ class StartDrawer extends StatelessWidget {
               title: Text("Profile"),
               subtitle: Text("${user.name} (${user.email})"),
               leading: const Icon(Icons.person_rounded),
+            ),
+            ListTile(
+              title: const Text('Stop Series Timer'),
+              onTap: () async {
+                await TimerService.stopTimer();
+              },
+              leading: const Icon(Icons.notifications_off_rounded),
             ),
             ListTile(
               title: const Text('Logout'),
