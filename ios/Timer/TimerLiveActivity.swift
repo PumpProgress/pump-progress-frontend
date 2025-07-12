@@ -9,6 +9,16 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
+//struct TimerAttributes: ActivityAttributes {
+//    public struct ContentState: Codable, Hashable {
+//        // Dynamic stateful properties about your activity go here!
+//        var emoji: String
+//    }
+//
+//    // Fixed non-changing properties about your activity go here!
+//    var name: String
+//}
+
 struct TimerLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: TimerAttributes.self) { context in

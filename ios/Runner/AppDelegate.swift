@@ -70,14 +70,18 @@ import ActivityKit
         DispatchQueue.main.async {
           let attributes = TimerAttributes(name: name)
           let state = TimerAttributes.ContentState(emoji: emoji)
-          do {
-            let activity = try Activity<TimerAttributes>.request(
-              attributes: attributes,
-              contentState: state,
-              pushType: nil
-            )
-            NSLog("✅ Live Activity started: \(activity.id)")
-          } catch {
+            do {
+                let activity = try Activity<TimerAttributes>.request(
+                    attributes: attributes,
+                    contentState: state,
+                    pushType: nil
+                )
+                NSLog("✅ Live Activity started: \(activity.id)")
+                NSLog("🧠 Live Activity Authorization info: \(ActivityAuthorizationInfo().areActivitiesEnabled)")
+                NSLog("🧠 Live Activity enabled globally? \(ActivityAuthorizationInfo().areActivitiesEnabled)")
+                
+                
+            } catch {
             NSLog("❌ Failed to start Live Activity: \(error.localizedDescription)")
           }
         }

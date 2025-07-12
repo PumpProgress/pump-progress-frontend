@@ -7,6 +7,8 @@
 import ActivityKit
 
 struct TimerAttributes: ActivityAttributes {
+    public typealias LiveDeliveryData = ContentState // don't forget to add this line, otherwise, live activity will not display it.
+
     public struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
         var emoji: String
