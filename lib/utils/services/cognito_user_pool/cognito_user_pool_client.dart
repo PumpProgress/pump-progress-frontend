@@ -4,8 +4,8 @@ class _ErrorLogInterceptor extends Interceptor {
   @override
   void onError(DioException error, ErrorInterceptorHandler handler) {
     print(error);
-    final hint = Hint();
-    Sentry.captureException(error, stackTrace: error.stackTrace, hint: hint);
+    // final hint = Hint();
+    // Sentry.captureException(error, stackTrace: error.stackTrace, hint: hint);
     super.onError(error, handler);
   }
 }

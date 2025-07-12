@@ -5,7 +5,7 @@ enum Flavor {
 }
 
 class F {
-  static Flavor appFlavor = Flavor.local;
+  static late final Flavor appFlavor;
 
   static String get name => appFlavor.name;
 
@@ -19,4 +19,5 @@ class F {
         return 'PumpProgress';
     }
   }
+
 }
