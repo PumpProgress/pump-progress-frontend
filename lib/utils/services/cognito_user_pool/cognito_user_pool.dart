@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 part 'cognito_user_pool_client.dart';
 

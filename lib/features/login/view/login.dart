@@ -8,11 +8,14 @@ import 'package:pump_progress_frontend/features/login/view/login_form.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
 
+import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    requestNotificationPermission();
     return BlocProvider(
       create: (context) {
         return LoginBloc(

@@ -34,6 +34,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+
   cupertino_icons: ^1.0.2
   bloc: ^9.0.0
   dio: ^5.2.1+1
@@ -48,9 +49,11 @@ dependencies:
   amazon_cognito_identity_dart_2: ^3.6.5
   webview_flutter: ^4.10.0
   timeago: ^3.2.2
-  sentry_flutter: ^8.14.2
+  # sentry_flutter: ^9.3.0
+  permission_handler: ^12.0.0+1
 
 dev_dependencies:
+  # sentry_dart_plugin: ^3.1.0
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
@@ -60,7 +63,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
   # handle Flutter flavors
   flutter_flavorizr: ^2.2.3
@@ -93,3 +96,9 @@ flutter_launcher_icons:
   android: true
   ios: false
   image_path: 'assets/icons/prod/icon.png'
+
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true
+  project: pumpprogress-front
+  org: sergio-carbone

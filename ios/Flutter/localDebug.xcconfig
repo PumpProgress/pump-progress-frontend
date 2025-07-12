@@ -1,8 +1,6 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
 
-FLUTTER_TARGET=lib/main_local.dart
 ASSET_PREFIX=local
 BUNDLE_NAME=L.PumpProgress
 BUNDLE_DISPLAY_NAME=L.PumpProgress
-PRODUCT_BUNDLE_IDENTIFIER=com.xrok.pumpProgress.local

@@ -8,18 +8,20 @@ abstract class ExerciseEvent extends Equatable {
 }
 
 class LoadSeriesByExercise extends ExerciseEvent {
-  const LoadSeriesByExercise(this.exerciseId);
+  const LoadSeriesByExercise({
+    required this.exerciseId,
+    required this.exerciseName,
+  });
   final String exerciseId;
+  final String exerciseName;
 }
 
 class AddNewSeries extends ExerciseEvent {
   const AddNewSeries({
-    required this.exerciseId,
     required this.repetitions,
     required this.weight,
   });
 
-  final String exerciseId;
   final int repetitions;
   final double weight;
 }
