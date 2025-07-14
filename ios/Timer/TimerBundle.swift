@@ -2,7 +2,7 @@
 //  TimerBundle.swift
 //  Timer
 //
-//  Created by Sergio Carbone on 12/7/25.
+//  Created by Sergio Carbone on 14/7/25.
 //
 
 import WidgetKit
