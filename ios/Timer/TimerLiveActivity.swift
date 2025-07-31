@@ -47,19 +47,21 @@ struct TimerLiveActivity: Widget {
                     // Expanded UI goes here.  Compose the expanded UI through
                     // various regions, like leading/trailing/center/bottom
                     DynamicIslandExpandedRegion(.leading) {
-                        Text("Leading")
+                        Text(context.state.startTime, style: .timer)
                     }
                     DynamicIslandExpandedRegion(.trailing) {
-                        Text("Trailing")
+                        Text("\(context.state.weight, specifier: "%.1f") kg x \(context.state.reps)")
+
                     }
                     DynamicIslandExpandedRegion(.bottom) {
                         Text("Bottom")
                         // more content
                     }
                 } compactLeading: {
-                    Text("L")
+                    Text(context.state.startTime, style: .timer)
                 } compactTrailing: {
-                    Text("T")
+                    Text("\(context.state.weight, specifier: "%.1f") kg x \(context.state.reps)")
+
                 } minimal: {
                     Text("minimal")
                 }
