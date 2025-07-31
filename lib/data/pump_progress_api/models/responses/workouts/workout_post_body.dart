@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+// TODO this is a request body, not a response
 class WorkoutPostBody {
   String name;
   WorkoutPostBody({

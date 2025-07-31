@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
-import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
-
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
+import 'package:pump_progress_frontend/features/exercise/view/button_add_seriers.dart';
+import 'package:pump_progress_frontend/features/exercise/view/series_timer.dart';
 import 'package:pump_progress_frontend/features/exercise/view/sets_list.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -26,8 +25,12 @@ class ExercisePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => ExerciseBloc(
         pumpProgressRepository: context.read<PumpProgressRepository>(),
+        // TODO: send core state to the bloc ?? think to refactor
         coreState: context.read<CoreBloc>().state,
-      )..add(LoadSeriesByExercise(exerciseId)),
+      )..add(LoadSeriesByExercise(
+          exerciseId: exerciseId,
+          exerciseName: exerciseName,
+        )),
       child: BlocBuilder<ExerciseBloc, ExerciseState>(
         builder: (context, state) {
           void saveExercise(int repetitions, double weight) {
@@ -35,7 +38,6 @@ class ExercisePage extends StatelessWidget {
               final exerciseBloc = context.read<ExerciseBloc>();
               exerciseBloc.add(
                 AddNewSeries(
-                  exerciseId: exerciseBloc.state.exerciseId,
                   repetitions: repetitions,
                   weight: weight,
                 ),
@@ -50,7 +52,7 @@ class ExercisePage extends StatelessWidget {
             appBar: AppBar(
               title: Text(
                 exerciseName,
-                style: PPFontStyles.h5.copyWith(color: PPColors.amethyst100),
+                // style: PPFontStyles.h5.copyWith(color: PPColors.amethyst100),
               ),
             ),
             // floatingActionButton:
@@ -58,9 +60,16 @@ class ExercisePage extends StatelessWidget {
             body: Container(
               child: (state.status == ExerciseStatus.loading)
                   ? const LoadingPage()
-                  : Container(
-                      child: SetsList(
-                          sets: state.sets, saveExercise: saveExercise),
+                  : Column(
+                      spacing: 8,
+                      children: [
+                        SeriesTimer(
+                            startTime: state.sets.isNotEmpty
+                                ? state.sets.first.createdAt
+                                : null),
+                        ButtonAddSeries(saveExercise: saveExercise),
+                        SetsList(sets: state.sets),
+                      ],
                     ),
             ),
           );

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/view/modal_bottom_sheet_save_exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
@@ -40,7 +39,6 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
         final exerciseBloc = context.read<ExerciseBloc>();
         exerciseBloc.add(
           AddNewSeries(
-            exerciseId: exerciseBloc.state.exerciseId,
             repetitions: repetitions,
             weight: weight,
           ),
@@ -73,7 +71,6 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
               final exerciseBloc = context.read<ExerciseBloc>();
               exerciseBloc.add(
                 AddNewSeries(
-                  exerciseId: exerciseBloc.state.exerciseId,
                   repetitions: series.repetitions,
                   weight: series.weight,
                 ),
@@ -117,8 +114,8 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
           ),
         ]),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 16.0),
-          height: 84,
+          margin: const EdgeInsets.only(bottom: 8.0),
+          height: 64,
           decoration: BoxDecoration(
             border: haveBottomBorder
                 ? const Border(
@@ -137,7 +134,9 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       series.createdAt.day.toString(),
-                      style: PPFontStyles.h3.copyWith(color: PPColors.coral300),
+                      style: TextTheme.of(context)
+                          .displayMedium
+                          ?.copyWith(color: PPColors.coral300),
                     ),
                     const SizedBox(
                       width: 8.0,
@@ -145,15 +144,11 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          '$monthInString.',
-                          style: PPFontStyles.small
-                              .copyWith(color: PPColors.coral300),
-                        ),
+                        Text('$monthInString.',
+                            style: TextTheme.of(context).labelSmall),
                         Text(
                           series.createdAt.year.toString(),
-                          style: PPFontStyles.xSmall
-                              .copyWith(color: PPColors.amethyst100),
+                          style: TextTheme.of(context).labelSmall,
                         )
                       ],
                     )
@@ -167,12 +162,13 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                   children: [
                     Text(
                       series.weight.toStringAsFixed(2),
-                      style: PPFontStyles.h4.copyWith(color: PPColors.coral300),
+                      style: TextTheme.of(context)
+                          .displaySmall
+                          ?.copyWith(color: PPColors.coral300),
                     ),
                     Text(
                       'kgs.',
-                      style: PPFontStyles.xSmall
-                          .copyWith(color: PPColors.amethyst100),
+                      style: TextTheme.of(context).labelSmall,
                     )
                   ],
                 ),
@@ -182,14 +178,13 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      series.repetitions.toString(),
-                      style: PPFontStyles.h4.copyWith(color: PPColors.coral300),
-                    ),
+                    Text(series.repetitions.toString(),
+                        style: TextTheme.of(context)
+                            .displaySmall
+                            ?.copyWith(color: PPColors.coral300)),
                     Text(
                       'reps',
-                      style: PPFontStyles.xSmall
-                          .copyWith(color: PPColors.amethyst100),
+                      style: TextTheme.of(context).labelSmall,
                     )
                   ],
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/modal_bottom_sheet_add_to_workout.dart';
@@ -43,29 +42,24 @@ class ExerciseWidget extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0.0),
         title: Text(
           exercise.name,
-          style: PPFontStyles.h6.copyWith(
-            color: PPColors.amethyst100,
-          ),
+          style: TextTheme.of(context).titleMedium?.copyWith(
+                color: PPColors.amethyst100,
+              ),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 0),
           child: Wrap(
             spacing: 8.0,
-            // runSpacing: -8.0,
             children: exercise.muscles
                 .map(
-                  (muscle) => Chip(
-                    backgroundColor: PPColors.amethyst500,
-                    labelPadding: const EdgeInsets.all(0.0),
+                  (muscle) => Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 6.0, vertical: 0.0),
-                    side:
-                        const BorderSide(color: PPColors.coral300, width: 0.5),
-                    label: Text(
+                        horizontal: 4.0, vertical: 2.0),
+                    child: Text(
                       muscle.toUpperCase(),
-                      style: PPFontStyles.xSmall.copyWith(
-                        color: PPColors.coral300,
-                      ),
+                      style: TextTheme.of(context).labelSmall?.copyWith(
+                            color: PPColors.coral300,
+                          ),
                     ),
                   ),
                 )
@@ -87,3 +81,5 @@ class ExerciseWidget extends StatelessWidget {
     );
   }
 }
+
+class PPFontStyles {}

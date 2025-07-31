@@ -20,3 +20,16 @@ class FetchSeriesByMonthEvent extends StartCalendarEvent {
   @override
   List<Object> get props => [year, month];
 }
+
+class DaySelectedAtCalendar extends StartCalendarEvent {
+  const DaySelectedAtCalendar({
+    required this.day,
+    required this.userId,
+  });
+
+  final DateTime day;
+  final String userId;
+
+  @override
+  List<Object> get props => [day, userId];
+}

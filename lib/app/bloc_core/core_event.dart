@@ -16,7 +16,16 @@ class CoreLogout extends CoreEvent {
   const CoreLogout();
 }
 
+@Deprecated("Use ReFetchUser instead")
 class CoreMeUpdated extends CoreEvent {
   const CoreMeUpdated({required this.me});
   final User me;
+}
+
+class ReFetchUser extends CoreEvent {
+  const ReFetchUser();
+}
+
+class CoreDeleteAccount extends CoreEvent {
+  const CoreDeleteAccount();
 }

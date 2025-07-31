@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/user.dart';
@@ -13,7 +12,9 @@ class StartExercisesBloc
     extends Bloc<StartExercisesEvent, StartExercisesState> {
   StartExercisesBloc({
     required this.pumpProgressRepository,
-    required this.coreBloc,
+    required this.me,
+    // TODO: no comms with another bloc
+    // required this.coreBloc,
   }) : super(const StartExercisesState()) {
     on<UpdatedSearchExerciseListEvent>(_onUpdatedSearchExerciseListEvent);
     on<HardFetchExerciseListEvent>(_onHardFetchExerciseListEvent);
@@ -22,15 +23,16 @@ class StartExercisesBloc
   }
 
   final PumpProgressRepository pumpProgressRepository;
-  final CoreBloc coreBloc;
+  final User me;
+
+  // @Deprecated("refactor no inter bloc comms")
+  // final CoreBloc coreBloc;
 
   Future<void> _onUpdatedSearchExerciseListEvent(
     UpdatedSearchExerciseListEvent event,
     Emitter<StartExercisesState> emit,
   ) async {
     try {
-      final me = coreBloc.state.user;
-
       final itemsFiltered = getFilteredExercises(
         event.searchValue,
         event.selectedMuscles,
@@ -57,7 +59,6 @@ class StartExercisesBloc
     Emitter<StartExercisesState> emit,
   ) async {
     try {
-      final me = coreBloc.state.user;
       emit(state.copyWith(status: StartExerciseStatus.loading));
 
       final exercises = await pumpProgressRepository.getExercises();
@@ -102,12 +103,12 @@ class StartExercisesBloc
       if (updatedExercise.isFavorite) {
         meUpdated = await pumpProgressRepository.postUSerAddFavoriteExercise(
           exerciseId: updatedExercise.id,
-          userId: coreBloc.state.user.id,
+          userId: me.id,
         );
       } else {
         meUpdated = await pumpProgressRepository.postUserRemoveFavoriteExercise(
           exerciseId: updatedExercise.id,
-          userId: coreBloc.state.user.id,
+          userId: me.id,
         );
       }
 
@@ -119,9 +120,12 @@ class StartExercisesBloc
         meUpdated,
       );
 
-      coreBloc.add(CoreMeUpdated(me: meUpdated));
+      // coreBloc.add(CoreMeUpdated(me: meUpdated));
       emit(
-        state.copyWith(itemsFiltered: itemsFiltered, items: state.items),
+        state.copyWith(
+            itemsFiltered: itemsFiltered,
+            items: state.items,
+            status: StartExerciseStatus.updatedUserFav),
       );
     } catch (e) {
       print(e);

@@ -2,24 +2,28 @@
 
 A new Flutter project.
 
-## Getting Started
+## Update Flutter version using fvm
 
-This project is a starting point for a Flutter application.
+```sh
+fvm use stable -p
+```
 
-A few resources to get you started if this is your first Flutter project:
+## CI/CD
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Tag must follow format `v1.0.0+1` and version of the pubspec.yaml have to be updated. (It defines the build number and version for the CI/CD pipeline)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Production (main)
 
+Create tag at release production commit without: `-test` ie. `v1.0.0+1`
+
+### Staging (staging)
+
+Create tag at release staging commit with: `-test` ie. `v1.0.0+1-test`
 
 ## Flavors
 
 ```sh
-fvm flutter pub run flutter_flavorizr
+fvm dart run flutter_flavorizr
 ```
 
 ## Main.dart
@@ -35,3 +39,4 @@ FutureOr<void> main() async {
   bootstrap(() => const App());
 }
 ```
+

@@ -8,7 +8,8 @@ abstract class WorkoutsEvent extends Equatable {
 }
 
 class FetchWorkoutsEvent extends WorkoutsEvent {
-  const FetchWorkoutsEvent();
+  const FetchWorkoutsEvent({required this.userId});
+  final String userId;
 }
 
 class AddWorkoutWorkoutsEvent extends WorkoutsEvent {

@@ -24,10 +24,6 @@ class UserCalendarAPI {
   }
 
   factory UserCalendarAPI.fromMap(Map<String, dynamic> map) {
-    print('UserCalendarAPI.fromMap: $map');
-    print('UserCalendarAPI.fromMap dates: ${map['dates']}');
-    print('UserCalendarAPI.fromMap dates type: ${map['dates'].runtimeType}');
-
     return UserCalendarAPI(
         dates: (map['dates'] as Map<String, dynamic>).map(
             (key, value) => MapEntry(key, List<String>.from(value as List))));

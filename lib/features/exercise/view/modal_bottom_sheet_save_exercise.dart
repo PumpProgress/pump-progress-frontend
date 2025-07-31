@@ -63,6 +63,7 @@ class _ModalBottomSheetSaveExerciseState
       setState(() {
         weight = 0;
       });
+      return;
     }
     var inputWeight = double.parse(weightStr);
 
@@ -179,9 +180,9 @@ class _ModalBottomSheetSaveExerciseState
                           minWidth: (constraints.maxWidth / 3) - 2,
                           minHeight: 56,
                           iconSize: 55,
-                          inactiveBgColor: PPColors.black,
+                          inactiveBgColor: PPColors.neutral500,
                           activeFgColor: PPColors.coral300,
-                          dividerColor: PPColors.black,
+                          dividerColor: PPColors.neutral500,
                           borderColor: const [PPColors.silver],
                           borderWidth: 1,
                           radiusStyle: true,

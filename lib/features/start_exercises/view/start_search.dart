@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/start_exercise_dropdown.dart';
 
@@ -73,9 +72,9 @@ class StartExercisesSearchWidget extends StatelessWidget {
                         prefixIcon: const Icon(
                           Icons.search,
                         ),
-                        labelStyle: PPFontStyles.paragraph.copyWith(
-                          color: PPColors.neutral100,
-                        ),
+                        // labelStyle: PPFontStyles.paragraph.copyWith(
+                        //   color: PPColors.neutral100,
+                        // ),
                         border: const OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(16))),
