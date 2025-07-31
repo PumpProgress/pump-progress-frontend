@@ -22,7 +22,7 @@ class FederatedLoginWebView extends StatelessWidget {
     webViewController
       ..setNavigationDelegate(
         NavigationDelegate(
-          onNavigationRequest: (NavigationRequest request) {
+          onNavigationRequest: (NavigationRequest request) async {
             print('onNavigationRequest: ${request.url}');
             if (!request.url.startsWith("myapp://pumpprogress?code=")) {
               return NavigationDecision.navigate;
@@ -36,12 +36,29 @@ class FederatedLoginWebView extends StatelessWidget {
             }
             // handle error
             context.read<LoginBloc>().add(LogInCode(code: code));
+
+            final cookieManager = WebViewCookieManager();
+            await cookieManager.clearCookies();
             return NavigationDecision.prevent;
           },
         ),
       )
       ..loadRequest(Uri.parse(url));
 
-    return SafeArea(child: WebViewWidget(controller: webViewController));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Login'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            // Navigator.of(context).pop();
+            context.read<LoginBloc>().add(const ResetLogin());
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: WebViewWidget(controller: webViewController),
+      ),
+    );
   }
 }

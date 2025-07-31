@@ -27,17 +27,19 @@ class StartExercises extends StatelessWidget {
         return Column(
           children: [
             const StartExercisesSearchWidget(),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: state.itemsFiltered.length,
-                itemBuilder: (context, index) {
-                  return ExerciseWidget(
-                    index: index,
-                  );
-                },
-              ),
-            ),
+            state.itemsFiltered.isEmpty
+                ? Text("No favorite exercises")
+                : Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: state.itemsFiltered.length,
+                      itemBuilder: (context, index) {
+                        return ExerciseWidget(
+                          index: index,
+                        );
+                      },
+                    ),
+                  ),
           ],
         );
       },

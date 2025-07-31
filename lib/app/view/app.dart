@@ -30,28 +30,30 @@ class App extends StatelessWidget {
     ];
     final blocProviders = [
       BlocProvider(create: (context) {
-        return CoreBloc(
-          pumpProgressRepository: context.read<PumpProgressRepository>(),
-        )..add(const CoreInit());
-      }),
-      BlocProvider(create: (context) {
+        final me = context.read<CoreBloc>().state.user;
         return WorkoutsBloc(
           pumpProgressRepository: context.read<PumpProgressRepository>(),
-        );
+        )..add(FetchWorkoutsEvent(userId: me.id));
       })
     ];
 
     return MultiRepositoryProvider(
       providers: repositoryProviders,
-      child: MultiBlocProvider(
-        providers: blocProviders,
-        child: MaterialApp(
-          theme: theme,
-          onGenerateRoute: router.onGenerateRoute,
-          navigatorObservers: [routeObserver],
-          debugShowCheckedModeBanner: false,
-        ),
-      ),
+      child: BlocProvider(
+          create: (context) {
+            return CoreBloc(
+              pumpProgressRepository: context.read<PumpProgressRepository>(),
+            )..add(const CoreInit());
+          },
+          child: MultiBlocProvider(
+            providers: blocProviders,
+            child: MaterialApp(
+              theme: theme,
+              onGenerateRoute: router.onGenerateRoute,
+              navigatorObservers: [routeObserver],
+              debugShowCheckedModeBanner: false,
+            ),
+          )),
     );
   }
 }

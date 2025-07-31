@@ -19,10 +19,13 @@ class LoginState extends Equatable {
   });
 
   final LoginStatus status;
-  final String email;
-  final String password;
   final String provider;
   final String error;
+
+  @Deprecated("Now using cognito, only Provider login allowed")
+  final String email;
+  @Deprecated("Now using cognito, only Provider login allowed")
+  final String password;
 
   LoginState copyWith({
     LoginStatus? status,

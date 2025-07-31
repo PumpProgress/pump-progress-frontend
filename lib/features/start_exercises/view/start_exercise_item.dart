@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/start_exercises/bloc/start_exercises_bloc.dart';
 import 'package:pump_progress_frontend/features/start_exercises/view/modal_bottom_sheet_add_to_workout.dart';

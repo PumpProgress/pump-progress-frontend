@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 import 'package:pump_progress_frontend/features/workout/bloc/workout_bloc.dart';
+import 'package:pump_progress_frontend/features/workout/view/workout_add_exercise_button.dart';
 import 'package:pump_progress_frontend/features/workout/view/workout_exercise_list.dart';
 import 'package:pump_progress_frontend/repositories/models/workout.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -51,10 +52,21 @@ class WorkoutPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: (state.status == WorkoutPageStatus.loading)
                   ? const LoadingPage()
-                  : ExerciseList(
-                      addExerciseToWorkout: addExerciseToWorkout,
-                      exercises: state.workoutExercises,
-                      totalExercises: state.exercises,
+                  : Column(
+                      children: [
+                        WorkoutAddExerciseItemButton(
+                          addExerciseToWorkout: addExerciseToWorkout,
+                          exercises: state.exercises,
+                        ),
+                        Expanded(
+                          child: state.workoutExercises.isEmpty
+                              ? Text("No exercises added yet.")
+                              : ExerciseList(
+                                  addExerciseToWorkout: addExerciseToWorkout,
+                                  exercises: state.workoutExercises,
+                                ),
+                        )
+                      ],
                     ),
             ),
           );

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 
+@deprecated
 class StartWorkoutFloatingActionButton extends StatelessWidget {
   StartWorkoutFloatingActionButton({super.key});
 

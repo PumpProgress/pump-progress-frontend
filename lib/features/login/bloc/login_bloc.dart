@@ -15,9 +15,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }) : super(const LoginState()) {
     on<LoginUsernameChanged>(_onLoginUsernameChanged);
     on<LoginPasswordChanged>(_onLoginPasswordChanged);
-    on<LoginSubmitted>(_onLoginSubmitted);
+
     on<LoginWithProvider>(_onLoginWithProvider);
     on<LogInCode>(_onLogInCode);
+    on<ResetLogin>(_onResetLogin);
     on<UnknownError>(_onUnknownError);
   }
 
@@ -40,30 +41,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(password: event.password));
   }
 
-  @Deprecated("Now using cognito")
-  Future<void> _onLoginSubmitted(
-    LoginSubmitted event,
+  Future<void> _onResetLogin(
+    ResetLogin event,
     Emitter<LoginState> emit,
   ) async {
-    try {
-      // ! Deprecated
-      throw UnimplementedError();
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      // final token = await pumpProgressRepository.authLogIn(
-      //   email: state.email,
-      //   password: state.password,
-      // );
-      // final payload = parseJwt(token);
-      // await prefs.setString(jwtKey, token);
-      // await prefs.setString(userKey, payload['iss']);
-
-      // emit(
-      //   state.copyWith(status: LoginStatus.success),
-      // );
-    } catch (e) {
-      print(e);
-    }
+    emit(const LoginState());
   }
 
   Future<void> _onLoginWithProvider(

@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 part 'cognito_user_pool_client.dart';
 
@@ -15,6 +14,8 @@ const CLIENT_SECRET = 'q1qv2u4pd4ivq2hljpdk40pf4bbjv6h04etk7el1hthvjks3il0';
 const USER_POOL_ID = 'us-east-1_nCqvFmutS';
 const REDIRECT_URI = "myapp://pumpprogress";
 const SCOPES = ["email", "openid", "profile"];
+const GOOGLE_CLIENT_ID =
+    "922895573491-fvcnk3si3pjf358lqlrdd3av3r4nss60.apps.googleusercontent.com";
 
 @Deprecated("Not being used, doesnt work as expected")
 final userPool = CognitoUserPool(
@@ -87,7 +88,7 @@ Future<CognitoUserSession> renewCognitoTokens(
   return CognitoUserSession(idToken, accessToken, refreshToken: refreshToken);
 }
 
-@Deprecated("Use CognitoDio")
-String getLoginUrl(String provider) {
-  return "https://$COGNITO_POOL_URL.amazoncognito.com/oauth2/authorize?identity_provider=$provider&redirect_uri=myapp://pumpprogress&response_type=CODE&client_id=$COGNITO_CLIENT_ID&scope=email+openid+profile";
-}
+// @Deprecated("Use CognitoDio")
+// String getLoginUrl(String provider) {
+//   return "https://$COGNITO_POOL_URL.amazoncognito.com/oauth2/authorize?identity_provider=$provider&redirect_uri=myapp://pumpprogress&response_type=CODE&client_id=$COGNITO_CLIENT_ID&scope=email+openid+profile&prompt=select_account";
+// }

@@ -18,20 +18,28 @@ class WorkoutSessionsListWidget extends StatelessWidget {
         context.read<StartHomeBloc>().add(FetchNextWorkoutSessions());
       }
     });
+    if (state.workoutSessions.isEmpty) {
+      return Center(child: Text("No workout sessions yet."));
+    }
     return Container(
       margin: EdgeInsets.all(16),
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: state.workoutSessions.length +
-            (state.status == StartHomeStatus.loading ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == state.workoutSessions.length) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return WorkoutSessionItemWidget(
-            workoutSession: state.workoutSessions[index],
-          );
+      child: RefreshIndicator(
+        onRefresh: () async {
+          context.read<StartHomeBloc>().add(FetchInitialWorkoutSessions());
         },
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: state.workoutSessions.length +
+              (state.status == StartHomeStatus.loading ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index == state.workoutSessions.length) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return WorkoutSessionItemWidget(
+              workoutSession: state.workoutSessions[index],
+            );
+          },
+        ),
       ),
     );
   }

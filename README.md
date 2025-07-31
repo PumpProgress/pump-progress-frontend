@@ -23,7 +23,7 @@ Create tag at release staging commit with: `-test` ie. `v1.0.0+1-test`
 ## Flavors
 
 ```sh
-fvm flutter pub run flutter_flavorizr
+fvm dart run flutter_flavorizr
 ```
 
 ## Main.dart

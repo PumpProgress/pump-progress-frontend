@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/config/constants/fonts.dart';
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/view/modal_bottom_sheet_save_exercise.dart';
 import 'package:pump_progress_frontend/repositories/models/series.dart';
@@ -40,7 +39,6 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
         final exerciseBloc = context.read<ExerciseBloc>();
         exerciseBloc.add(
           AddNewSeries(
-            exerciseId: exerciseBloc.state.exerciseId,
             repetitions: repetitions,
             weight: weight,
           ),
@@ -73,7 +71,6 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
               final exerciseBloc = context.read<ExerciseBloc>();
               exerciseBloc.add(
                 AddNewSeries(
-                  exerciseId: exerciseBloc.state.exerciseId,
                   repetitions: series.repetitions,
                   weight: series.weight,
                 ),
@@ -117,8 +114,8 @@ class ExerciseSeriesItemWidget extends StatelessWidget {
           ),
         ]),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 16.0),
-          height: 84,
+          margin: const EdgeInsets.only(bottom: 8.0),
+          height: 64,
           decoration: BoxDecoration(
             border: haveBottomBorder
                 ? const Border(

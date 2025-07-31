@@ -53,3 +53,7 @@ class LogInCode extends LoginEvent {
 class UnknownError extends LoginEvent {
   const UnknownError();
 }
+
+class ResetLogin extends LoginEvent {
+  const ResetLogin();
+}
