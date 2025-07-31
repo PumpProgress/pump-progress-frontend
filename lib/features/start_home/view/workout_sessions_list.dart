@@ -11,7 +11,6 @@ class WorkoutSessionsListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<StartHomeBloc>().state;
-
     _scrollController.addListener(() {
       if (state.areMore &&
           _scrollController.position.pixels >=

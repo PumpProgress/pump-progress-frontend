@@ -28,7 +28,6 @@ class App extends StatelessWidget {
         create: (context) => PPUserPool(),
       )
     ];
-
     final blocProviders = [
       BlocProvider(create: (context) {
         final me = context.read<CoreBloc>().state.user;

@@ -27,7 +27,6 @@ class FederatedLoginWebView extends StatelessWidget {
             if (!request.url.startsWith("myapp://pumpprogress?code=")) {
               return NavigationDecision.navigate;
             }
-
             final uri = Uri.parse(request.url);
             final code = uri.queryParameters['code'];
 
