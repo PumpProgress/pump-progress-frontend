@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/exercise/bloc/exercise_bloc.dart';
 import 'package:pump_progress_frontend/features/exercise/view/button_add_seriers.dart';
 import 'package:pump_progress_frontend/features/exercise/view/series_timer.dart';
@@ -49,11 +50,27 @@ class ExercisePage extends StatelessWidget {
 
           return Scaffold(
             resizeToAvoidBottomInset: true,
+            // app bar eith button to go to analytics page
             appBar: AppBar(
               title: Text(
                 exerciseName,
                 // style: PPFontStyles.h5.copyWith(color: PPColors.amethyst100),
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.analytics),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/exercises/analytics',
+                      arguments: ExercisesPageArguments(
+                        exerciseId: exerciseId,
+                        exerciseName: exerciseName,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
             // floatingActionButton:
             //     FloatingActionButtonNewSeries(saveExercise: saveExercise),

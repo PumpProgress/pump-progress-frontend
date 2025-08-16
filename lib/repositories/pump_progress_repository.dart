@@ -151,4 +151,14 @@ class PumpProgressRepository {
         data.data.map((e) => WorkoutSession.fromAPI(e)).toList();
     return workoutSessions;
   }
+
+  Future<List<ExerciseAnalytics>> getExerciseAnalytics(
+      {required String exerciseId, required String userId}) async {
+    final data = await pumpProgressApiProvider.getExerciseAnalytics(
+        exerciseId: exerciseId, userId: userId);
+    final analytics = data.dailyStats
+        .map((e) => ExerciseAnalytics.fromJson(e.toJson()))
+        .toList();
+    return analytics;
+  }
 }

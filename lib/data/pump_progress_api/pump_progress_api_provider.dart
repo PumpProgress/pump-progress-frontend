@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/requests.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise_analytics_get_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/series_api.dart';
@@ -287,6 +288,22 @@ class PumpProgressApiProvider {
       return WorkoutSessionGetResponse.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       print(error.toString());
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<ExerciseAnalyticsGetResponse> getExerciseAnalytics({
+    required String exerciseId,
+    required String userId,
+  }) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/users/$userId/exercises/$exerciseId/analytics',
+      );
+      return ExerciseAnalyticsGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
           : throw GeneralException('An error ocurred', '000', stackTrace);
