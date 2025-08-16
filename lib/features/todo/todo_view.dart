@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
 
 class ComingSoonPage extends StatelessWidget {
   const ComingSoonPage({super.key});
@@ -12,12 +11,8 @@ class ComingSoonPage extends StatelessWidget {
         //     style: Theme.of(context).textTheme.headlineMedium),
         child: OutlinedButton(
             onPressed: () async {
-              await TimerService.startTimer(
-                lastSetTime: DateTime.now(),
-                exerciseName: "Bench Press",
-                weight: 70,
-                reps: 10,
-              );
+              // test Sentry connection
+              // await Sentry.captureMessage('Test Sentry connection');
             },
             child: const Text('Start Timer')),
       ),
