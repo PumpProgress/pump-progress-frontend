@@ -49,12 +49,12 @@ dependencies:
   amazon_cognito_identity_dart_2: ^3.6.5
   webview_flutter: ^4.10.0
   timeago: ^3.2.2
-  # sentry_flutter: ^9.3.0
+  sentry_flutter: ^9.3.0
   permission_handler: ^12.0.0+1
   fl_chart: ^1.0.0
 
 dev_dependencies:
-  # sentry_dart_plugin: ^3.1.0
+  sentry_dart_plugin: ^3.1.0
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class StartDrawer extends StatelessWidget {
   const StartDrawer({super.key});
@@ -19,6 +20,14 @@ class StartDrawer extends StatelessWidget {
               title: Text("Profile"),
               subtitle: Text("${user.name} (${user.email})"),
               leading: const Icon(Icons.person_rounded),
+              onLongPress: () async {
+                // Send a test error to Sentry
+                await Sentry.captureException(
+                  Exception(
+                      'Test Sentry error from Profile - connection is working!'),
+                  stackTrace: StackTrace.current,
+                );
+              },
             ),
             ListTile(
               title: const Text('Stop Series Timer'),
