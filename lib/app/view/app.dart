@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_exercises/exercises_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
 
 import 'package:pump_progress_frontend/config/constants/theme.dart';
@@ -8,13 +11,36 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/flavors.dart';
 
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
+import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
+import 'package:pump_progress_frontend/utils/helpers/route_observer.dart';
 import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
 
-final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
   static const router = PumpProgressRouter();
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  late final StreamSubscription<String> _sub;
+  final messengerKey = GlobalKey<ScaffoldMessengerState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = ErrorEventBus.stream.listen((message) {
+      final messenger = messengerKey.currentState;
+      messenger?.showSnackBar(SnackBar(content: Text(message)));
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +56,14 @@ class App extends StatelessWidget {
     ];
     final blocProviders = [
       BlocProvider(create: (context) {
-        final me = context.read<CoreBloc>().state.user;
         return WorkoutsBloc(
           pumpProgressRepository: context.read<PumpProgressRepository>(),
-        )..add(FetchWorkoutsEvent(userId: me.id));
+        );
+      }),
+      BlocProvider(create: (context) {
+        return ExercisesBloc(
+          pumpProgressRepository: context.read<PumpProgressRepository>(),
+        )..add(FetchExercisesEvent());
       })
     ];
 
@@ -48,8 +78,9 @@ class App extends StatelessWidget {
           child: MultiBlocProvider(
             providers: blocProviders,
             child: MaterialApp(
+              scaffoldMessengerKey: messengerKey,
               theme: theme,
-              onGenerateRoute: router.onGenerateRoute,
+              onGenerateRoute: App.router.onGenerateRoute,
               navigatorObservers: [routeObserver],
               debugShowCheckedModeBanner: false,
             ),

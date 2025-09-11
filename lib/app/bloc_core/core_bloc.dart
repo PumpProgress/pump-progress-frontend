@@ -14,7 +14,6 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
   CoreBloc({required this.pumpProgressRepository}) : super(const CoreState()) {
     on<CoreInit>(_onCoreInit);
     on<CoreLogout>(_onCoreLogout);
-    on<CoreMeUpdated>(_onCoreMeUpdated);
     on<ReFetchUser>(_onReFetchUser);
     on<CoreDeleteAccount>(_onCoreDeleteAccount);
     // thinking its missing a onLoggedIn
@@ -58,13 +57,6 @@ class CoreBloc extends Bloc<CoreEvent, CoreState> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     _clearLocalStorage(prefs);
     emit(state.copyWith(status: AuthenticationStatus.unauthenticated));
-  }
-
-  Future<void> _onCoreMeUpdated(
-    CoreMeUpdated event,
-    Emitter<CoreState> emit,
-  ) async {
-    emit(state.copyWith(user: event.me));
   }
 
   Future<void> _onReFetchUser(

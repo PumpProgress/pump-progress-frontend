@@ -41,12 +41,9 @@ class _AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException error, ErrorInterceptorHandler handler) async {
-    if (error.response?.statusCode == 401) {
-      if (error.requestOptions.headers.containsKey('X-Avoid-Retry')) {
-        handler.next(error);
-        return;
-      }
-      try {
+    try {
+      if (error.response?.statusCode == 401 &&
+          !error.requestOptions.headers.containsKey('X-Avoid-Retry')) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         final refreshToken = prefs.getString(refreshTokenKey);
         if (refreshToken == null) {
@@ -79,10 +76,9 @@ class _AuthInterceptor extends Interceptor {
 
         handler.resolve(response);
         return;
-      } catch (e) {
-        handler.next(error);
-        return;
       }
+    } catch (e) {
+      return;
     }
     handler.next(error);
   }
@@ -92,8 +88,8 @@ class _ErrorLogInterceptor extends Interceptor {
   @override
   void onError(DioException error, ErrorInterceptorHandler handler) {
     print(error);
-    // final hint = Hint();
-    // Sentry.captureException(error, stackTrace: error.stackTrace, hint: hint);
+    print("error interceptor !!!");
+    Sentry.captureException(error, stackTrace: error.stackTrace);
     super.onError(error, handler);
   }
 }

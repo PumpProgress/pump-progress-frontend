@@ -10,6 +10,7 @@ import 'package:pump_progress_frontend/utils/helpers/general_exception.dart';
 import 'package:pump_progress_frontend/config/constants/flavor.dart';
 import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'pump_progress_api_client.dart';
@@ -303,6 +304,34 @@ class PumpProgressApiProvider {
         '/users/$userId/exercises/$exerciseId/analytics',
       );
       return ExerciseAnalyticsGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<void> getUtilStatusCode({required String code}) async {
+    try {
+      await ppApiClient.get<String>(
+        '/utils/status/code/$code',
+      );
+      return;
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<WorkoutPopulatedDto> getWorkoutById(
+      {required String workoutId}) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/workouts/$workoutId',
+      );
+
+      return WorkoutPopulatedDto.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException

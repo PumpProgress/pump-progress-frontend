@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/routes/protected_route.dart';
 import 'package:pump_progress_frontend/features/error/error_page.dart';
 import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
-import 'package:pump_progress_frontend/features/exercise_analytics/exercise_analytics.dart';
+import 'package:pump_progress_frontend/features/exercise_analytics/exercise_analytics_page.dart';
 import 'package:pump_progress_frontend/features/start/start_page.dart';
 import 'package:pump_progress_frontend/features/login/login.dart';
-import 'package:pump_progress_frontend/features/workout/view/workout_page.dart';
+import 'package:pump_progress_frontend/features/workout/workout_page.dart';
 import 'package:pump_progress_frontend/repositories/models/workout.dart';
 
 class PumpProgressRouter {

@@ -20,11 +20,23 @@ class _StartCalendarViewState extends State<StartCalendarView> {
   DateTime? _selectedDay;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<StartCalendarBloc>().add(FetchSeriesByMonthEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userId = context.read<CoreBloc>().state.user.id;
 
     return BlocConsumer<StartCalendarBloc, StartCalendarState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state.status == StartCalendarStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage!)),
+          );
+        }
+      },
       builder: (context, state) {
         return Column(
           children: [

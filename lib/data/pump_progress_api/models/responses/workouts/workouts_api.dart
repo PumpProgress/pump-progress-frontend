@@ -28,12 +28,15 @@ class WorkoutAPI {
     );
   }
 
+// * Custom to Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'userId': userId,
-      'exercises': exercises,
+      // 'exercises': exercises,
+      'exercises': [],
+      'exercisesCount': exercises.length,
     };
   }
 

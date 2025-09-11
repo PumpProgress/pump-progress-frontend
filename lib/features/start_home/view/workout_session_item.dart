@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pump_progress_frontend/repositories/models/models.dart';
+import 'package:pump_progress_frontend/repositories/models/index.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class WorkoutSessionItemWidget extends StatelessWidget {

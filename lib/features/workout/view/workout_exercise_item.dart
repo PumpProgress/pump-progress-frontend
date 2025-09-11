@@ -4,15 +4,15 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/workout/bloc/workout_bloc.dart';
-import 'package:pump_progress_frontend/repositories/models/exercise.dart';
+import 'package:pump_progress_frontend/repositories/models/index.dart';
 
 class ExerciseItemWidget extends StatelessWidget {
   const ExerciseItemWidget({
     super.key,
-    required this.exercise,
+    required this.exerciseAtWorkout,
   });
 
-  final Exercise exercise;
+  final ExerciseAtWorkout exerciseAtWorkout;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,8 @@ class ExerciseItemWidget extends StatelessWidget {
               borderRadius:
                   const BorderRadius.horizontal(right: Radius.circular(8)),
               onPressed: (context) => context.read<WorkoutBloc>()
-                ..add(RemoveExerciseWorkoutEvent(exerciseId: exercise.id)),
+                ..add(RemoveExerciseWorkoutEvent(
+                    exerciseId: exerciseAtWorkout.exercise.id)),
               backgroundColor: const Color.fromARGB(255, 196, 42, 42),
               foregroundColor: Colors.white,
               icon: Icons.delete_outline_rounded,
@@ -43,13 +44,17 @@ class ExerciseItemWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: ListTile(
-            onTap: () => Navigator.of(context).pushNamed(
-              '/exercises',
-              arguments: ExercisesPageArguments(
-                  exerciseId: exercise.id, exerciseName: exercise.name),
-            ),
+            onTap: () async {
+              await Navigator.of(context).pushNamed(
+                '/exercises',
+                arguments: ExercisesPageArguments(
+                    exerciseId: exerciseAtWorkout.exercise.id,
+                    exerciseName: exerciseAtWorkout.exercise.name),
+              );
+              context.read<WorkoutBloc>().add(LoadExercisesWorkoutEvent());
+            },
             title: Text(
-              exercise.name,
+              exerciseAtWorkout.exercise.name,
               style: TextTheme.of(context).titleMedium?.copyWith(
                     color: PPColors.amethyst100,
                   ),
@@ -58,7 +63,7 @@ class ExerciseItemWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 0),
               child: Wrap(
                 spacing: 8.0,
-                children: exercise.muscles
+                children: exerciseAtWorkout.exercise.muscles
                     .map(
                       (muscle) => Padding(
                         padding: const EdgeInsets.symmetric(
@@ -72,6 +77,15 @@ class ExerciseItemWidget extends StatelessWidget {
                       ),
                     )
                     .toList(),
+              ),
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '${exerciseAtWorkout.seriesToday}',
+                style: TextTheme.of(context).labelLarge?.copyWith(
+                      color: PPColors.coral300,
+                    ),
               ),
             ),
           ),

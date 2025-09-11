@@ -37,7 +37,7 @@ class WorkoutWidgetItem extends StatelessWidget {
                   ?.copyWith(color: PPColors.amethyst100),
             ),
             trailing: Text(
-              '${workout.exercises.length} exercises',
+              '${workout.exercisesCount} exercises',
               style: TextTheme.of(context)
                   .titleSmall
                   ?.copyWith(color: PPColors.amethyst100),

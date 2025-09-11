@@ -5,7 +5,7 @@ enum AuthenticationStatus { authenticated, unauthenticated, loading }
 @immutable
 class CoreState extends Equatable {
   const CoreState({
-    this.status = AuthenticationStatus.unauthenticated,
+    this.status = AuthenticationStatus.authenticated,
     this.user = User.unknown,
   });
 

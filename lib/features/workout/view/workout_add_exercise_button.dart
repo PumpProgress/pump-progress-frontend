@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_exercises/exercises_bloc.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
 import 'package:pump_progress_frontend/repositories/models/exercise.dart';
 
@@ -6,11 +8,9 @@ class WorkoutAddExerciseItemButton extends StatelessWidget {
   const WorkoutAddExerciseItemButton({
     super.key,
     required this.addExerciseToWorkout,
-    required this.exercises,
   });
 
   final void Function(String exerciseId) addExerciseToWorkout;
-  final List<Exercise> exercises;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,6 @@ class WorkoutAddExerciseItemButton extends StatelessWidget {
         builder: (BuildContext context) {
           return AddExerciseToWorkoutModal(
             addExerciseToWorkout: addExerciseToWorkout,
-            exercises: exercises,
           );
         },
       ),
@@ -57,11 +56,9 @@ class AddExerciseToWorkoutModal extends StatefulWidget {
   const AddExerciseToWorkoutModal({
     super.key,
     required this.addExerciseToWorkout,
-    required this.exercises,
   });
 
   final void Function(String exerciseId) addExerciseToWorkout;
-  final List<Exercise> exercises;
 
   @override
   State<AddExerciseToWorkoutModal> createState() =>
@@ -81,10 +78,15 @@ class _AddExerciseToWorkoutModalState extends State<AddExerciseToWorkoutModal> {
 
   @override
   Widget build(BuildContext context) {
-    final exercisesFiltered = widget.exercises
+    final exercises = context.select(
+      (ExercisesBloc bloc) => bloc.state.exercises,
+    );
+
+    var exercisesFiltered = exercises
         .where((exercise) =>
             exercise.name.toLowerCase().contains(exerciseName.toLowerCase()))
         .toList();
+
     return Container(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,

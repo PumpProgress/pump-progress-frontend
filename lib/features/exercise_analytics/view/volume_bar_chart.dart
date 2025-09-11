@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/config/constants/colors.dart';
-import 'package:pump_progress_frontend/repositories/models/models.dart';
+import 'package:pump_progress_frontend/repositories/models/index.dart';
 
 class WorkoutVolumeBarChart extends StatelessWidget {
   final List<ExerciseAnalytics> rawData;
@@ -199,7 +199,7 @@ class WorkoutVolumeBarChart extends StatelessWidget {
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 80, // Increased space for larger text
+                        reservedSize: 50, // Increased space for larger text
                         interval: _yAxisInterval,
                         getTitlesWidget: (double value, TitleMeta meta) {
                           return SideTitleWidget(

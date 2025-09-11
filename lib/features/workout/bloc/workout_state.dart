@@ -1,44 +1,53 @@
 part of 'workout_bloc.dart';
 
-enum WorkoutPageStatus { initial, loading, success }
+sealed class WorkoutPageStatus {
+  const WorkoutPageStatus();
+}
+
+class WorkoutPageStatusInitial implements WorkoutPageStatus {
+  const WorkoutPageStatusInitial();
+}
+
+class WorkoutPageStatusLoading implements WorkoutPageStatus {}
+
+class WorkoutPageStatusSuccess implements WorkoutPageStatus {}
+
+class WorkoutPageStatusError extends ErrorStatus implements WorkoutPageStatus {
+  WorkoutPageStatusError(super.errorMsg);
+}
 
 class WorkoutState extends Equatable {
   const WorkoutState({
     this.workout = const Workout.empty(),
-    this.status = WorkoutPageStatus.initial,
-    this.workoutExercises = const [],
-    this.exercises = const [],
+    this.status = const WorkoutPageStatusInitial(),
     this.searchValue = '',
+    this.lastError,
+    this.errorMsg = '',
   });
 
   final WorkoutPageStatus status;
   final Workout workout;
-  final List<Exercise> workoutExercises;
-  final List<Exercise> exercises;
   final String searchValue;
+  final DateTime? lastError;
+  final String errorMsg;
 
   @override
-  List<Object> get props => [
-        status,
-        workout,
-        workoutExercises,
-        exercises,
-        searchValue,
-      ];
+  List<Object> get props => [status, workout, searchValue, errorMsg];
 
   WorkoutState copyWith({
     WorkoutPageStatus? status,
     Workout? workout,
-    List<Exercise>? workoutExercises,
     List<Exercise>? exercises,
     String? searchValue,
+    DateTime? lastError,
+    String? errorMsg,
   }) {
     return WorkoutState(
       status: status ?? this.status,
       workout: workout ?? this.workout,
-      workoutExercises: workoutExercises ?? this.workoutExercises,
-      exercises: exercises ?? this.exercises,
       searchValue: searchValue ?? this.searchValue,
+      lastError: lastError ?? this.lastError,
+      errorMsg: errorMsg ?? this.errorMsg,
     );
   }
 }

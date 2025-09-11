@@ -1,5 +1,5 @@
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
-import 'package:pump_progress_frontend/repositories/models/models.dart';
+import 'package:pump_progress_frontend/repositories/models/index.dart';
 
 class PumpProgressRepository {
   // TODO singleton
@@ -160,5 +160,15 @@ class PumpProgressRepository {
         .map((e) => ExerciseAnalytics.fromJson(e.toJson()))
         .toList();
     return analytics;
+  }
+
+  Future<void> getUtilStatusCode({required String code}) async {
+    return await pumpProgressApiProvider.getUtilStatusCode(code: code);
+  }
+
+  Future<Workout> getWorkoutById({required String workoutId}) async {
+    final data =
+        await pumpProgressApiProvider.getWorkoutById(workoutId: workoutId);
+    return Workout.fromJson(data.toJson());
   }
 }

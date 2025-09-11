@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/repositories/models/models.dart';
+import 'package:pump_progress_frontend/repositories/models/index.dart';
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
 
 part 'start_calendar_event.dart';
@@ -29,6 +29,11 @@ class StartCalendarBloc extends Bloc<StartCalendarEvent, StartCalendarState> {
       emit(state.copyWith(userCalendar: userCalendar));
     } catch (e) {
       print(e);
+      emit(state.copyWith(
+        status: StartCalendarStatus.error,
+        lastError: DateTime.now(),
+        errorMessage: e.toString(),
+      ));
     }
   }
 
@@ -41,6 +46,11 @@ class StartCalendarBloc extends Bloc<StartCalendarEvent, StartCalendarState> {
       emit(state.copyWith(setsAtDay: sets));
     } catch (e) {
       print(e);
+      emit(state.copyWith(
+        status: StartCalendarStatus.error,
+        lastError: DateTime.now(),
+        errorMessage: e.toString(),
+      ));
     }
   }
 }

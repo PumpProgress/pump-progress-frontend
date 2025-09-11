@@ -17,21 +17,24 @@ class StartHomeBloc extends Bloc<StartHomeEvent, StartHomeState> {
 
   Future<void> _onFetchInitialWorkoutSessions(
       FetchInitialWorkoutSessions event, Emitter<StartHomeState> emit) async {
-    // try {
-    emit(state.copyWith(status: StartHomeStatus.loading));
+    try {
+      emit(state.copyWith(status: StartHomeStatus.loading));
 
-    await Future.delayed(const Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
 
-    final workoutSessions = await pumpProgressRepository.getWorkoutSessions();
-    emit(state.copyWith(
-      status: StartHomeStatus.success,
-      workoutSessions: workoutSessions,
-      areMore: workoutSessions.isNotEmpty,
-    ));
-    // } catch (e) {
-    //   print(e.toString());
-    //   emit(state.copyWith(status: StartHomeStatus.error));
-    // }
+      final workoutSessions = await pumpProgressRepository.getWorkoutSessions();
+      emit(state.copyWith(
+        status: StartHomeStatus.success,
+        workoutSessions: workoutSessions,
+        areMore: workoutSessions.isNotEmpty,
+      ));
+    } catch (e) {
+      print(e.toString());
+      emit(state.copyWith(
+          status: StartHomeStatus.error,
+          lastError: DateTime.now(),
+          errorMessage: e.toString()));
+    }
   }
 
   Future<void> _onFetchNextWorkoutSessions(
@@ -47,7 +50,10 @@ class StartHomeBloc extends Bloc<StartHomeEvent, StartHomeState> {
         areMore: workoutSessions.isNotEmpty,
       ));
     } catch (e) {
-      emit(state.copyWith(status: StartHomeStatus.error));
+      emit(state.copyWith(
+          status: StartHomeStatus.error,
+          lastError: DateTime.now(),
+          errorMessage: e.toString()));
     }
   }
 }

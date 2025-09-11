@@ -6,6 +6,7 @@ import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/w
 
 class WorkoutsGetResponse {
   final List<WorkoutAPI> data;
+
   WorkoutsGetResponse({
     required this.data,
   });

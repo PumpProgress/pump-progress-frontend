@@ -1,22 +1,37 @@
 part of 'workouts_bloc.dart';
 
-enum WorkoutsStatus { initial, loading, success }
+sealed class WorkoutsBlocStatus {
+  const WorkoutsBlocStatus();
+}
+
+class WorkoutsBlocStatusLoading implements WorkoutsBlocStatus {
+  const WorkoutsBlocStatusLoading();
+}
+
+class WorkoutsBlocStatusSuccess implements WorkoutsBlocStatus {
+  const WorkoutsBlocStatusSuccess();
+}
+
+class WorkoutsBlocStatusError extends ErrorStatus
+    implements WorkoutsBlocStatus {
+  WorkoutsBlocStatusError(super.error);
+}
 
 class WorkoutsState extends Equatable {
   const WorkoutsState({
     this.workouts = const <Workout>[],
-    this.status = WorkoutsStatus.initial,
+    this.status = const WorkoutsBlocStatusLoading(),
   });
 
   final List<Workout> workouts;
-  final WorkoutsStatus status;
+  final WorkoutsBlocStatus status;
 
   @override
   List<Object> get props => [workouts, status];
 
   WorkoutsState copyWith({
     List<Workout>? workouts,
-    WorkoutsStatus? status,
+    WorkoutsBlocStatus? status,
   }) {
     return WorkoutsState(
       workouts: workouts ?? this.workouts,

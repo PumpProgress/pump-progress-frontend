@@ -61,11 +61,11 @@ class _StartState extends State<Start> with SingleTickerProviderStateMixin {
           )..add(const HardFetchExerciseListEvent()),
         ),
         BlocProvider<StartCalendarBloc>(
-          create: (context) => StartCalendarBloc(
-            pumpProgressRepository: context.read<PumpProgressRepository>(),
-            me: me,
-          )..add(FetchSeriesByMonthEvent()),
-        ),
+            create: (context) => StartCalendarBloc(
+                  pumpProgressRepository:
+                      context.read<PumpProgressRepository>(),
+                  me: me,
+                )),
         BlocProvider<StartHomeBloc>(
           create: (context) => StartHomeBloc(
             pumpProgressRepository: context.read<PumpProgressRepository>(),

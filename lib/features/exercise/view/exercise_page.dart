@@ -35,22 +35,17 @@ class ExercisePage extends StatelessWidget {
       child: BlocBuilder<ExerciseBloc, ExerciseState>(
         builder: (context, state) {
           void saveExercise(int repetitions, double weight) {
-            try {
-              final exerciseBloc = context.read<ExerciseBloc>();
-              exerciseBloc.add(
-                AddNewSeries(
-                  repetitions: repetitions,
-                  weight: weight,
-                ),
-              );
-            } catch (e) {
-              print(e);
-            }
+            context.read<ExerciseBloc>().add(
+                  AddNewSeries(
+                    repetitions: repetitions,
+                    weight: weight,
+                  ),
+                );
           }
 
           return Scaffold(
             resizeToAvoidBottomInset: true,
-            // app bar eith button to go to analytics page
+            // app bar with button to go to analytics page
             appBar: AppBar(
               title: Text(
                 exerciseName,
@@ -75,7 +70,7 @@ class ExercisePage extends StatelessWidget {
             // floatingActionButton:
             //     FloatingActionButtonNewSeries(saveExercise: saveExercise),
             body: Container(
-              child: (state.status == ExerciseStatus.loading)
+              child: (state.status is ExercisePageStatusLoading)
                   ? const LoadingPage()
                   : Column(
                       spacing: 8,

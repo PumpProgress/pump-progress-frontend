@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/features/workout/view/workout_exercise_item.dart';
-import 'package:pump_progress_frontend/repositories/models/exercise.dart';
+import 'package:pump_progress_frontend/repositories/models/index.dart';
 
 class ExerciseList extends StatelessWidget {
   const ExerciseList({
     super.key,
-    required this.exercises,
+    required this.exercisesAtWorkout,
     required this.addExerciseToWorkout,
   });
 
-  final List<Exercise> exercises;
+  final List<ExerciseAtWorkout> exercisesAtWorkout;
 
   final void Function(String exerciseId) addExerciseToWorkout;
 
@@ -18,11 +18,11 @@ class ExerciseList extends StatelessWidget {
     return Container(
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: exercises.length,
+        itemCount: exercisesAtWorkout.length,
         itemBuilder: (context, index) {
-          final exercise = exercises[index];
+          final exerciseAtWorkout = exercisesAtWorkout[index];
           return ExerciseItemWidget(
-            exercise: exercise,
+            exerciseAtWorkout: exerciseAtWorkout,
           );
         },
       ),

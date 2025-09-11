@@ -1,16 +1,35 @@
 part of 'exercise_bloc.dart';
 
-enum ExerciseStatus { initial, loading, success }
+sealed class ExercisePageStatus {
+  const ExercisePageStatus();
+}
+
+class ExercisePageStatusInitial implements ExercisePageStatus {
+  const ExercisePageStatusInitial();
+}
+
+class ExercisePageStatusLoading implements ExercisePageStatus {
+  const ExercisePageStatusLoading();
+}
+
+class ExercisePageStatusSuccess implements ExercisePageStatus {
+  const ExercisePageStatusSuccess();
+}
+
+class ExercisePageStatusError extends ErrorStatus
+    implements ExercisePageStatus {
+  ExercisePageStatusError(super.errorMsg);
+}
 
 class ExerciseState extends Equatable {
   const ExerciseState({
-    this.status = ExerciseStatus.initial,
+    this.status = const ExercisePageStatusInitial(),
     this.sets = const <Series>[],
     this.exerciseId = '',
     this.exerciseName = '',
   });
 
-  final ExerciseStatus status;
+  final ExercisePageStatus status;
   final List<Series> sets;
   final String exerciseId;
   final String exerciseName;
@@ -19,7 +38,7 @@ class ExerciseState extends Equatable {
   List<Object> get props => [status, sets, exerciseId];
 
   ExerciseState copyWith({
-    ExerciseStatus? status,
+    ExercisePageStatus? status,
     List<Series>? sets,
     String? exerciseId,
     String? exerciseName,
