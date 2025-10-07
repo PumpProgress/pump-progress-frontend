@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_exercises/exercises_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
+import 'package:pump_progress_frontend/app/sync_bloc/sync_bloc.dart';
 
 import 'package:pump_progress_frontend/config/constants/theme.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
+import 'package:pump_progress_frontend/features/loading/loading_page.dart';
 import 'package:pump_progress_frontend/flavors.dart';
 
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
@@ -64,7 +66,12 @@ class _AppState extends State<App> {
         return ExercisesBloc(
           pumpProgressRepository: context.read<PumpProgressRepository>(),
         )..add(FetchExercisesEvent());
-      })
+      }),
+      BlocProvider(create: (context) {
+        return SyncBloc(
+          pumpProgressRepository: context.read<PumpProgressRepository>(),
+        );
+      }),
     ];
 
     return MultiRepositoryProvider(
@@ -76,15 +83,34 @@ class _AppState extends State<App> {
             )..add(const CoreInit());
           },
           child: MultiBlocProvider(
-            providers: blocProviders,
-            child: MaterialApp(
-              scaffoldMessengerKey: messengerKey,
-              theme: theme,
-              onGenerateRoute: App.router.onGenerateRoute,
-              navigatorObservers: [routeObserver],
-              debugShowCheckedModeBanner: false,
-            ),
-          )),
+              providers: blocProviders,
+              child: BlocConsumer<CoreBloc, CoreState>(
+                listener: (context, state) {
+                  if (state.status == AuthenticationStatus.authenticated) {
+                    context.read<SyncBloc>().add(StartSyncEvent());
+                  }
+                },
+                builder: (context, state) {
+                  final syncStateStatus = context.select<SyncBloc, SyncStatus>(
+                      (bloc) => bloc.state.status);
+
+                  if (syncStateStatus == SyncStatus.inProgress) {
+                    return LoadingPage();
+                  }
+
+                  if (syncStateStatus == SyncStatus.failure) {
+                    return LoadingPage();
+                  }
+
+                  return MaterialApp(
+                    scaffoldMessengerKey: messengerKey,
+                    theme: theme,
+                    onGenerateRoute: App.router.onGenerateRoute,
+                    navigatorObservers: [routeObserver],
+                    debugShowCheckedModeBanner: false,
+                  );
+                },
+              ))),
     );
   }
 }

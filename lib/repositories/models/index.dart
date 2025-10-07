@@ -7,3 +7,8 @@ export 'workout.dart';
 export 'workout_session.dart';
 export 'exercise_analytics.dart';
 export 'exercise_at_workout.dart';
+export 'muscle_row.dart';
+export 'equipment_row.dart';
+export 'category_row.dart';
+export 'exercise_row.dart';
+export 'secondary_muscles_row.dart';

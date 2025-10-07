@@ -338,4 +338,77 @@ class PumpProgressApiProvider {
           : throw GeneralException('An error ocurred', '000', stackTrace);
     }
   }
+
+  //* SYNC
+
+  Future<CategoriesGetResponse> getRowsCategories({String? since}) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/sync/categories',
+        queryParameters: {'since': since},
+      );
+      return CategoriesGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<MusclesGetResponse> getRowsMuscles({String? since}) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/sync/muscles',
+        queryParameters: {'since': since},
+      );
+      return MusclesGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<EquipmentGetResponse> getRowsEquipment({String? since}) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/sync/equipment',
+        queryParameters: {'since': since},
+      );
+      return EquipmentGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<ExercisesGetResponse> getRowsExercises({String? since}) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/sync/exercises',
+        queryParameters: {'since': since},
+      );
+      return ExercisesGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
+
+  Future<SecondaryMusclesGetResponse> getRowsSecondaryMuscles(
+      {String? since}) async {
+    try {
+      final response = await ppApiClient.get<String>(
+        '/sync/exercises-secondary-muscles',
+        queryParameters: {'since': since},
+      );
+      return SecondaryMusclesGetResponse.fromJson(response.data!);
+    } on DioException catch (error, stackTrace) {
+      (error.error is GeneralException)
+          ? throw error.error as GeneralException
+          : throw GeneralException('An error ocurred', '000', stackTrace);
+    }
+  }
 }
