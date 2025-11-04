@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-class ExerciseRowAPI {
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
+
+class ExerciseRow implements DBRow {
   final int id;
   final String code;
   final String name;
@@ -14,7 +16,13 @@ class ExerciseRowAPI {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
-  ExerciseRowAPI({
+
+  static const String tableNameStatic = 'exercises';
+
+  @override
+  String get tableName => tableNameStatic;
+
+  ExerciseRow({
     required this.id,
     required this.code,
     required this.name,
@@ -30,7 +38,7 @@ class ExerciseRowAPI {
     this.deletedAt,
   });
 
-  ExerciseRowAPI copyWith({
+  ExerciseRow copyWith({
     int? id,
     String? code,
     String? name,
@@ -45,7 +53,7 @@ class ExerciseRowAPI {
     DateTime? updatedAt,
     DateTime? deletedAt,
   }) {
-    return ExerciseRowAPI(
+    return ExerciseRow(
       id: id ?? this.id,
       code: code ?? this.code,
       name: name ?? this.name,
@@ -62,6 +70,7 @@ class ExerciseRowAPI {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -74,32 +83,14 @@ class ExerciseRowAPI {
       'equipmentId': equipmentId,
       'categoryId': categoryId,
       'instructions': instructions,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
-      'deletedAt': deletedAt?.millisecondsSinceEpoch,
+      'createdAt': createdAt.toUtc().toIso8601String(),
+      'updatedAt': updatedAt.toUtc().toIso8601String(),
+      'deletedAt': deletedAt?.toUtc().toIso8601String(),
     };
   }
 
-  Map<String, dynamic> toDB() {
-    return <String, dynamic>{
-      'id': id,
-      'code': code,
-      'name': name,
-      'primary_muscle_id': primaryMuscleId,
-      'force': force,
-      'level': level,
-      'mechanic': mechanic,
-      'equipment_id': equipmentId,
-      'category_id': categoryId,
-      'instructions': instructions,
-      'created_at': createdAt.millisecondsSinceEpoch,
-      'updated_at': updatedAt.millisecondsSinceEpoch,
-      'deleted_at': deletedAt?.millisecondsSinceEpoch,
-    };
-  }
-
-  factory ExerciseRowAPI.fromMap(Map<String, dynamic> map) {
-    return ExerciseRowAPI(
+  factory ExerciseRow.fromMap(Map<String, dynamic> map) {
+    return ExerciseRow(
       id: map['id'] as int,
       code: map['code'] as String,
       name: map['name'] as String,
@@ -122,18 +113,60 @@ class ExerciseRowAPI {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory ExerciseRowAPI.fromJson(String source) =>
-      ExerciseRowAPI.fromMap(json.decode(source) as Map<String, dynamic>);
-
   @override
-  String toString() {
-    return 'ExerciseRowAPI(id: $id, code: $code, name: $name, primaryMuscleId: $primaryMuscleId, force: $force, level: $level, mechanic: $mechanic, equipmentId: $equipmentId, categoryId: $categoryId, instructions: $instructions, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+  Map<String, dynamic> toDB() {
+    return <String, dynamic>{
+      'id': id,
+      'code': code,
+      'name': name,
+      'primary_muscle_id': primaryMuscleId,
+      'force': force,
+      'level': level,
+      'mechanic': mechanic,
+      'equipment_id': equipmentId,
+      'category_id': categoryId,
+      'instructions': jsonEncode(instructions),
+      'created_at': createdAt.millisecondsSinceEpoch,
+      'updated_at': updatedAt.millisecondsSinceEpoch,
+      'deleted_at': deletedAt?.millisecondsSinceEpoch,
+    };
   }
 
   @override
-  bool operator ==(covariant ExerciseRowAPI other) {
+  factory ExerciseRow.fromDB(Map<String, dynamic> map) {
+    return ExerciseRow(
+      id: map['id'] as int,
+      code: map['code'] as String,
+      name: map['name'] as String,
+      primaryMuscleId: map['primary_muscle_id'] as int,
+      force: map['force'] as String,
+      level: map['level'] as String,
+      mechanic: map['mechanic'] as String,
+      equipmentId: map['equipment_id'] as int,
+      categoryId: map['category_id'] as int,
+      instructions: (map['instructions'] as String?) != null
+          ? List<String>.from(jsonDecode(map['instructions']))
+          : null,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
+      deletedAt: map['deleted_at'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['deleted_at'] as int)
+          : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ExerciseRow.fromJson(String source) =>
+      ExerciseRow.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'ExerciseRow(id: $id, code: $code, name: $name, primaryMuscleId: $primaryMuscleId, force: $force, level: $level, mechanic: $mechanic, equipmentId: $equipmentId, categoryId: $categoryId, instructions: $instructions, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+  }
+
+  @override
+  bool operator ==(covariant ExerciseRow other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&

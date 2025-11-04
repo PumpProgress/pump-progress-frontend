@@ -1,12 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class CategoryRow {
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
+
+class CategoryRow implements DBRow {
   final int id;
   final String name;
   final DateTime updatedAt;
   final DateTime createdAt;
   final DateTime? deletedAt;
+
+  @override
+  String get tableName => tableNameStatic;
+
+  static const String tableNameStatic = 'category_types';
 
   CategoryRow({
     required this.id,
@@ -32,6 +39,7 @@ class CategoryRow {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -42,6 +50,19 @@ class CategoryRow {
     };
   }
 
+  factory CategoryRow.fromMap(Map<String, dynamic> map) {
+    return CategoryRow(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      updatedAt: DateTime.parse(map['updatedAt'] as String),
+      createdAt: DateTime.parse(map['createdAt'] as String),
+      deletedAt: map['deletedAt'] != null
+          ? DateTime.parse(map['deletedAt'] as String)
+          : null,
+    );
+  }
+
+  @override
   Map<String, dynamic> toDB() {
     return <String, dynamic>{
       'id': id,
@@ -52,14 +73,14 @@ class CategoryRow {
     };
   }
 
-  factory CategoryRow.fromMap(Map<String, dynamic> map) {
+  factory CategoryRow.fromDB(Map<String, dynamic> map) {
     return CategoryRow(
       id: map['id'] as int,
       name: map['name'] as String,
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      deletedAt: map['deletedAt'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['deletedAt'] as int)
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      deletedAt: map['deleted_at'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['deleted_at'] as int)
           : null,
     );
   }

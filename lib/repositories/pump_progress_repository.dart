@@ -1,4 +1,5 @@
 import 'package:pump_progress_frontend/data/pump_progress_api/pump_progress_api.dart';
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
 import 'package:pump_progress_frontend/repositories/models/index.dart';
 
 class PumpProgressRepository {
@@ -172,37 +173,22 @@ class PumpProgressRepository {
     return Workout.fromJson(data.toJson());
   }
 
-  Future<List<CategoryRow>> getRowsCategories({String? since}) async {
-    final res = await pumpProgressApiProvider.getRowsCategories(since: since);
-    final data = res.data.map((e) => CategoryRow.fromJson(e.toJson())).toList();
-    return data;
+  Future<List<T>> postRowsSync<T extends DBRow>({
+    required String tableName,
+    required List<T> updates,
+    required DateTime time,
+  }) async {
+    final res = await pumpProgressApiProvider.postRowsSync<T>(
+        tableName: tableName, updates: updates, time: time);
+    return res.updates;
   }
 
-  Future<List<EquipmentRow>> getRowsEquipment({String? since}) async {
-    final res = await pumpProgressApiProvider.getRowsEquipment(since: since);
-    final data =
-        res.data.map((e) => EquipmentRow.fromJson(e.toJson())).toList();
-    return data;
-  }
-
-  Future<List<MuscleRow>> getRowsMuscles({String? since}) async {
-    final res = await pumpProgressApiProvider.getRowsMuscles(since: since);
-    final data = res.data.map((e) => MuscleRow.fromJson(e.toJson())).toList();
-    return data;
-  }
-
-  Future<List<ExerciseRow>> getRowsExercises({String? since}) async {
-    final res = await pumpProgressApiProvider.getRowsExercises(since: since);
-    final data = res.data.map((e) => ExerciseRow.fromJson(e.toJson())).toList();
-    return data;
-  }
-
-  Future<List<SecondaryMuscleRow>> getRowsSecondaryMuscles(
-      {String? since}) async {
-    final res =
-        await pumpProgressApiProvider.getRowsSecondaryMuscles(since: since);
-    final data =
-        res.data.map((e) => SecondaryMuscleRow.fromJson(e.toJson())).toList();
-    return data;
+  Future<List<T>> getRowsSync<T extends DBRow>({
+    required String tableName,
+    DateTime? time,
+  }) async {
+    final res = await pumpProgressApiProvider.getRowsSync<T>(
+        tableName: tableName, time: time);
+    return res.data;
   }
 }

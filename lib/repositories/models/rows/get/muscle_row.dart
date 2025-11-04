@@ -1,13 +1,21 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class MuscleRow {
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
+
+class MuscleRow implements DBRow {
   final int id;
   final String name;
   final String code;
   final DateTime updatedAt;
   final DateTime createdAt;
   final DateTime? deletedAt;
+
+  @override
+  String get tableName => tableNameStatic;
+  static const String tableNameStatic = 'muscles';
+
+  @override
   MuscleRow({
     required this.id,
     required this.name,
@@ -35,6 +43,7 @@ class MuscleRow {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -46,6 +55,26 @@ class MuscleRow {
     };
   }
 
+  factory MuscleRow.fromMap(Map<String, dynamic> map) {
+    return MuscleRow(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      code: map['code'] as String,
+      updatedAt: DateTime.parse(map['updatedAt'] as String),
+      createdAt: DateTime.parse(map['createdAt'] as String),
+      deletedAt: map['deletedAt'] != null
+          ? DateTime.parse(map['deletedAt'] as String)
+          : null,
+    );
+  }
+
+  @override
+  String toJson() => json.encode(toMap());
+
+  factory MuscleRow.fromJson(String source) =>
+      MuscleRow.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
   Map<String, dynamic> toDB() {
     return <String, dynamic>{
       'id': id,
@@ -57,23 +86,18 @@ class MuscleRow {
     };
   }
 
-  factory MuscleRow.fromMap(Map<String, dynamic> map) {
+  factory MuscleRow.fromDB(Map<String, dynamic> map) {
     return MuscleRow(
       id: map['id'] as int,
       name: map['name'] as String,
       code: map['code'] as String,
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      deletedAt: map['deletedAt'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['deletedAt'] as int)
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      deletedAt: map['deleted_at'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['deleted_at'] as int)
           : null,
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory MuscleRow.fromJson(String source) =>
-      MuscleRow.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

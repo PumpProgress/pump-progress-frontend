@@ -87,6 +87,8 @@ class _AuthInterceptor extends Interceptor {
 class _ErrorLogInterceptor extends Interceptor {
   @override
   void onError(DioException error, ErrorInterceptorHandler handler) {
+    // print request debug
+    print(error.requestOptions);
     print(error);
     print("error interceptor !!!");
     Sentry.captureException(error, stackTrace: error.stackTrace);

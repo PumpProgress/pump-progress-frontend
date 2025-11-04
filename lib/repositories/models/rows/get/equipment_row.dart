@@ -1,13 +1,21 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class CategoryAPI {
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
+
+class EquipmentRow implements DBRow {
   final int id;
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
-  CategoryAPI({
+
+  static const String tableNameStatic = 'equipment_types';
+
+  @override
+  String get tableName => tableNameStatic;
+
+  EquipmentRow({
     required this.id,
     required this.name,
     required this.createdAt,
@@ -15,14 +23,14 @@ class CategoryAPI {
     this.deletedAt,
   });
 
-  CategoryAPI copyWith({
+  EquipmentRow copyWith({
     int? id,
     String? name,
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? deletedAt,
   }) {
-    return CategoryAPI(
+    return EquipmentRow(
       id: id ?? this.id,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
@@ -41,8 +49,8 @@ class CategoryAPI {
     };
   }
 
-  factory CategoryAPI.fromMap(Map<String, dynamic> map) {
-    return CategoryAPI(
+  factory EquipmentRow.fromMap(Map<String, dynamic> map) {
+    return EquipmentRow(
       id: map['id'] as int,
       name: map['name'] as String,
       createdAt: DateTime.parse(map['createdAt'] as String),
@@ -53,18 +61,40 @@ class CategoryAPI {
     );
   }
 
+  Map<String, dynamic> toDB() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'created_at': createdAt.millisecondsSinceEpoch,
+      'updated_at': updatedAt.millisecondsSinceEpoch,
+      'deleted_at': deletedAt?.millisecondsSinceEpoch,
+    };
+  }
+
+  factory EquipmentRow.fromDB(Map<String, dynamic> map) {
+    return EquipmentRow(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updated_at'] as int),
+      deletedAt: map['deleted_at'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['deleted_at'] as int)
+          : null,
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
-  factory CategoryAPI.fromJson(String source) =>
-      CategoryAPI.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory EquipmentRow.fromJson(String source) =>
+      EquipmentRow.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'CategoryAPI(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+    return 'EquipmentRow(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
   }
 
   @override
-  bool operator ==(covariant CategoryAPI other) {
+  bool operator ==(covariant EquipmentRow other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&

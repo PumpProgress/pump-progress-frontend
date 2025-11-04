@@ -52,3 +52,6 @@ app.*.map.json
 .fvm/
 
 sentry.properties
+
+# LLM Models
+./assets/models/

@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/requests.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/requests/sync/post_sync.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/exercises/exercise_analytics_get_response.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/me/me.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/series_api.dart';
+import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sync/get_sync.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workouts_api.dart';
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
 import 'package:pump_progress_frontend/utils/helpers/general_exception.dart';
 
 import 'package:pump_progress_frontend/config/constants/flavor.dart';
@@ -341,13 +344,17 @@ class PumpProgressApiProvider {
 
   //* SYNC
 
-  Future<CategoriesGetResponse> getRowsCategories({String? since}) async {
+  Future<PostSync<T>> postRowsSync<T extends DBRow>({
+    required String tableName,
+    required List<T> updates,
+    required DateTime time,
+  }) async {
     try {
-      final response = await ppApiClient.get<String>(
-        '/sync/categories',
-        queryParameters: {'since': since},
+      final response = await ppApiClient.post<String>(
+        '/sync/$tableName',
+        data: PostSync<T>(updates: updates, time: time).toJson(),
       );
-      return CategoriesGetResponse.fromJson(response.data!);
+      return PostSync<T>.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException
@@ -355,56 +362,18 @@ class PumpProgressApiProvider {
     }
   }
 
-  Future<MusclesGetResponse> getRowsMuscles({String? since}) async {
+  Future<GetSync<T>> getRowsSync<T extends DBRow>({
+    required String tableName,
+    DateTime? time,
+  }) async {
     try {
       final response = await ppApiClient.get<String>(
-        '/sync/muscles',
-        queryParameters: {'since': since},
+        '/sync/$tableName',
+        queryParameters: {
+          'since': time?.toUtc().toIso8601String(),
+        },
       );
-      return MusclesGetResponse.fromJson(response.data!);
-    } on DioException catch (error, stackTrace) {
-      (error.error is GeneralException)
-          ? throw error.error as GeneralException
-          : throw GeneralException('An error ocurred', '000', stackTrace);
-    }
-  }
-
-  Future<EquipmentGetResponse> getRowsEquipment({String? since}) async {
-    try {
-      final response = await ppApiClient.get<String>(
-        '/sync/equipment',
-        queryParameters: {'since': since},
-      );
-      return EquipmentGetResponse.fromJson(response.data!);
-    } on DioException catch (error, stackTrace) {
-      (error.error is GeneralException)
-          ? throw error.error as GeneralException
-          : throw GeneralException('An error ocurred', '000', stackTrace);
-    }
-  }
-
-  Future<ExercisesGetResponse> getRowsExercises({String? since}) async {
-    try {
-      final response = await ppApiClient.get<String>(
-        '/sync/exercises',
-        queryParameters: {'since': since},
-      );
-      return ExercisesGetResponse.fromJson(response.data!);
-    } on DioException catch (error, stackTrace) {
-      (error.error is GeneralException)
-          ? throw error.error as GeneralException
-          : throw GeneralException('An error ocurred', '000', stackTrace);
-    }
-  }
-
-  Future<SecondaryMusclesGetResponse> getRowsSecondaryMuscles(
-      {String? since}) async {
-    try {
-      final response = await ppApiClient.get<String>(
-        '/sync/exercises-secondary-muscles',
-        queryParameters: {'since': since},
-      );
-      return SecondaryMusclesGetResponse.fromJson(response.data!);
+      return GetSync<T>.fromJson(response.data!);
     } on DioException catch (error, stackTrace) {
       (error.error is GeneralException)
           ? throw error.error as GeneralException

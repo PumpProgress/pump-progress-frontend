@@ -69,6 +69,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           await SharedPreferences.getInstance();
       final session = await userPool.getTokenDataFromCode(event.code);
 
+      // print debug
+      print('Access Token: ${session.accessToken.jwtToken}');
+      print('ID Token: ${session.idToken.jwtToken}');
+      print('Refresh Token: ${session.refreshToken!.token}');
+
       await sharedPref.setString(accessTokenKey, session.idToken.jwtToken!);
       await sharedPref.setString(refreshTokenKey, session.refreshToken!.token!);
       await sharedPref.setString(idTokenKey, session.accessToken.jwtToken!);

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_exercises/exercises_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
-import 'package:pump_progress_frontend/app/sync_bloc/sync_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_sync/sync_bloc.dart';
 
 import 'package:pump_progress_frontend/config/constants/theme.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';

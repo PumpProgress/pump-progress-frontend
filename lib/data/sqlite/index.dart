@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:path/path.dart';
+import 'package:pump_progress_frontend/data/sqlite/db_row.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:pump_progress_frontend/repositories/models/index.dart';
 
 class DatabaseHelper {
   // Singleton instance
@@ -19,7 +19,7 @@ class DatabaseHelper {
   }
 
   Future<String> get getDatabasePath async {
-    final db = await database;
+    final db = await instance.database;
     return db.path;
   }
 
@@ -40,6 +40,7 @@ class DatabaseHelper {
   Future _createDB(Database db, int version) async {
     await db.execute('PRAGMA foreign_keys = ON;');
 
+    // Read tables
     await db.execute('''
       CREATE TABLE IF NOT EXISTS muscles (
           id INTEGER PRIMARY KEY,
@@ -99,95 +100,120 @@ class DatabaseHelper {
           FOREIGN KEY (exercise_id) REFERENCES exercises(id) ON DELETE CASCADE,
           FOREIGN KEY (muscle_id) REFERENCES muscles(id) ON DELETE CASCADE
       );''');
+
+    // Read/write tables
+    // workouts
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS workouts (
+          id TEXT PRIMARY KEY,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          deleted_at INTEGER,
+          user_id TEXT NOT NULL,
+          name TEXT NOT NULL,
+          is_dirty INTEGER NOT NULL DEFAULT 0
+      );''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS workout_exercises (
+          id TEXT PRIMARY KEY,
+          user_id TEXT NOT NULL,
+          workout_id TEXT NOT NULL,
+          exercise_id INTEGER NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          deleted_at INTEGER,
+          is_dirty INTEGER NOT NULL DEFAULT 0,
+          FOREIGN KEY (workout_id) REFERENCES workouts(id),
+          FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+        );''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS sets (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      exercise_id INTEGER NOT NULL,
+      repetitions INTEGER NOT NULL,
+      weight REAL NOT NULL,
+      intensity REAL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      deleted_at INTEGER,
+      is_dirty INTEGER NOT NULL DEFAULT 0,
+      FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+    );''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS sync_state (
+      table_name TEXT PRIMARY KEY,
+      last_sync TEXT
+    ); ''');
   }
 
-  Future<void> insertMuscles(List<MuscleRow> muscles) async {
+  Future<void> insertGeneric<T extends DBRow>(List<T> items) async {
     final db = await instance.database;
-
     final batch = db.batch();
-    for (var muscle in muscles) {
+
+    for (var item in items) {
       batch.insert(
-        'muscles',
-        muscle.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace, // upsert
+        item.tableName,
+        item.toDB(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
     await batch.commit(noResult: true);
   }
 
-  Future<void> insertEquipment(List<EquipmentRow> equipment) async {
+  Future<DateTime> getLastSync(String table) async {
+    // query the latest updated_at from the table table and is_dirty = 0
     final db = await instance.database;
+    final hasIsDirty = await hasColumn(db, table, 'is_dirty');
 
+    final where = hasIsDirty ? 'is_dirty = 0' : null;
+
+    final result = await db.query(
+      table,
+      columns: ['updated_at'],
+      orderBy: 'updated_at DESC',
+      where: where,
+      limit: 1,
+    );
+
+    if (result.isNotEmpty && result.first['updated_at'] != null) {
+      return DateTime.fromMillisecondsSinceEpoch(
+          result.first['updated_at'] as int);
+    }
+
+    // Default: 1970 (never synced)
+    return DateTime.fromMillisecondsSinceEpoch(0);
+  }
+
+  Future<bool> hasColumn(Database db, String table, String column) async {
+    final result = await db.rawQuery('PRAGMA table_info($table);');
+    return result.any((row) => row['name'] == column);
+  }
+
+  Future<List<T>> getDirtyRows<T extends DBRow>(String table) async {
+    final db = await instance.database;
+    final results = await db.query(table, where: 'is_dirty = 1');
+    return results.map((e) => DBRowFactory.fromMap<T>(e)).toList();
+  }
+
+  Future<void> markClean<T extends DbRowWrite>(
+      String table, List<T> rows) async {
+    final db = await instance.database;
     final batch = db.batch();
-    for (var e in equipment) {
-      batch.insert(
-        'equipment_types',
-        e.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace, // upsert
-      );
+    for (final row in rows) {
+      batch.update(table, {'is_dirty': 0},
+          where: 'id = ?', whereArgs: [row.id]);
     }
     await batch.commit(noResult: true);
   }
 
-  Future<void> insertCategories(List<CategoryRow> categories) async {
+  Future<List<T>> readTable<T extends DBRow>(String table) async {
     final db = await instance.database;
-
-    final batch = db.batch();
-    for (var cat in categories) {
-      batch.insert(
-        'category_types',
-        cat.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace, // upsert
-      );
-    }
-    await batch.commit(noResult: true);
-  }
-
-  Future<void> insertExercises(List<ExerciseRow> exercises) async {
-    final db = await instance.database;
-
-    final batch = db.batch();
-    for (var ex in exercises) {
-      batch.insert(
-        'exercises',
-        ex.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace, // upsert
-      );
-    }
-    await batch.commit(noResult: true);
-  }
-
-  Future<void> insertSecondaryMuscles(
-      List<SecondaryMuscleRow> secondaryMuscles) async {
-    final db = await instance.database;
-
-    final batch = db.batch();
-    for (var muscle in secondaryMuscles) {
-      batch.insert(
-        'exercise_secondary_muscles',
-        muscle.toDB(),
-        conflictAlgorithm: ConflictAlgorithm.replace, // upsert
-      );
-    }
-    await batch.commit(noResult: true);
-  }
-
-  Future<int?> getLastCategoryChange() async {
-    final db = await instance.database;
-
-    final result = await db.rawQuery('''
-    SELECT MAX(
-      COALESCE(updated_at, 0),
-      COALESCE(created_at, 0),
-      COALESCE(deleted_at, 0)
-    ) as latest
-    FROM category_types
-  ''');
-
-    if (result.isNotEmpty && result.first['latest'] != null) {
-      return result.first['latest'] as int; // epoch ms
-    }
-    return null;
+    final results = await db.query(table);
+    return results.map((e) => DBRowFactory.fromDB<T>(e)).toList();
   }
 
   // Example query
@@ -204,15 +230,3 @@ class DatabaseHelper {
     }
   }
 }
-
-// Future<void> createTables(Database db) async {
-//   await db.execute('''
-//     CREATE TABLE IF NOT EXISTS categories (
-//       id INTEGER PRIMARY KEY,
-//       name TEXT,
-//       updated_at TEXT,
-//       created_at TEXT,
-//       deleted_at TEXT
-//     )
-//   ''');
-// }

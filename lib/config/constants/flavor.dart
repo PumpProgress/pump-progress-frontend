@@ -6,7 +6,8 @@ class FlavorConfig {
     const urlProd =
         'https://23xlv17ugb.execute-api.us-east-1.amazonaws.com/api';
 
-    const urlLocal = 'http://localhost:6000';
+    // const urlLocal = 'http://localhost:6000';
+    const urlLocal = 'http://192.168.1.17:6000';
 
     switch (F.appFlavor) {
       case Flavor.local:
