@@ -1,6 +1,0 @@
-#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
-#include "Generated.xcconfig"
-
-ASSET_PREFIX=local
-BUNDLE_NAME=L.PumpProgress
-BUNDLE_DISPLAY_NAME=L.PumpProgress
