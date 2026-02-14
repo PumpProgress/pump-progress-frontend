@@ -87,8 +87,10 @@ class _AuthInterceptor extends Interceptor {
 class _ErrorLogInterceptor extends Interceptor {
   @override
   void onError(DioException error, ErrorInterceptorHandler handler) {
-    print(error);
-    print("error interceptor !!!");
+    AppLogger.error(
+        "Error in PumpProgress API request - ${error.requestOptions.method} ${error.requestOptions.path}",
+        error: error,
+        stackTrace: error.stackTrace);
     Sentry.captureException(error, stackTrace: error.stackTrace);
     super.onError(error, handler);
   }
