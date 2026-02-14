@@ -24,7 +24,6 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       )
           .fromNetwork(
         'https://huggingface.co/litert-community/gemma-3-270m-it/resolve/main/gemma3-270m-it-q8.task',
-        // token: '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',
       )
           .withProgress((progress) {
         AppLogger.debug('Downloading: ${progress}%');

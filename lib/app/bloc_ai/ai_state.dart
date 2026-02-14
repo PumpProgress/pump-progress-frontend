@@ -1,6 +1,5 @@
 part of 'ai_bloc.dart';
 
-// enum AiStatus { uninitiated, installing, loaded, error }
 sealed class AiStatus {
   const AiStatus();
 }
