@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/app/bloc_ai/ai_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_exercises/exercises_bloc.dart';
 import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/flavors.dart';
 
 import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
+import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
 import 'package:pump_progress_frontend/utils/helpers/route_observer.dart';
 import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
@@ -44,7 +46,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    print("Flavor: ${F.appFlavor}");
+    AppLogger.info("Flavor: ${F.appFlavor}");
 
     final repositoryProviders = [
       RepositoryProvider<PumpProgressRepository>(
@@ -64,7 +66,12 @@ class _AppState extends State<App> {
         return ExercisesBloc(
           pumpProgressRepository: context.read<PumpProgressRepository>(),
         )..add(FetchExercisesEvent());
-      })
+      }),
+      BlocProvider(
+          lazy: false,
+          create: (context) {
+            return AiBloc()..add(const AiInitEvent());
+          }),
     ];
 
     return MultiRepositoryProvider(

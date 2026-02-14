@@ -5,6 +5,7 @@ import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/m
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/responses.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/sets/series_api.dart';
 import 'package:pump_progress_frontend/data/pump_progress_api/models/responses/workouts/workouts_api.dart';
+import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 import 'package:pump_progress_frontend/utils/helpers/general_exception.dart';
 
 import 'package:pump_progress_frontend/config/constants/flavor.dart';
