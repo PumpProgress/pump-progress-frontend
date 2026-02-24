@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+@Deprecated('Use Exercise from features instead')
 @immutable
 class Exercise {
   const Exercise({

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pump_progress_frontend/config/routes/protected_route.dart';
-import 'package:pump_progress_frontend/features/error/error_page.dart';
-import 'package:pump_progress_frontend/features/exercise/view/exercise_page.dart';
-import 'package:pump_progress_frontend/features/exercise_analytics/exercise_analytics_page.dart';
-import 'package:pump_progress_frontend/features/start/start_page.dart';
-import 'package:pump_progress_frontend/features/login/login.dart';
-import 'package:pump_progress_frontend/features/workout/workout_page.dart';
-import 'package:pump_progress_frontend/repositories/models/workout.dart';
+import 'package:pump_progress_frontend/features/workout/domain/domain.dart';
+import 'package:pump_progress_frontend/screens/error/error_page.dart';
+import 'package:pump_progress_frontend/screens/exercise/exercise_page.dart';
+
+import 'package:pump_progress_frontend/screens/exercise_analytics/exercise_analytics_page.dart';
+import 'package:pump_progress_frontend/screens/start/start_page.dart';
+import 'package:pump_progress_frontend/screens/login/login_page.dart';
+import 'package:pump_progress_frontend/screens/workout/workout_page.dart';
+import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 
 class PumpProgressRouter {
   const PumpProgressRouter();
 
   Route<void> onGenerateRoute(RouteSettings settings) {
-    print("onGenerateRoute");
-    print(settings.name);
+    AppLogger.debug("onGenerateRoute");
+    AppLogger.debug(settings.name);
 
     switch (settings.name) {
       case '/':
@@ -24,17 +26,16 @@ class PumpProgressRouter {
       case '/login':
         return MaterialPageRoute<void>(
           settings: const RouteSettings(name: '/login'),
-          builder: (_) => const LoginPage(),
+          builder: (_) => const PageLogin(),
         );
 
-      case ExercisePage.routeName:
+      case PageExercise.routeName:
         final args = settings.arguments! as ExercisesPageArguments;
         return MaterialPageRoute<void>(
-          settings: const RouteSettings(name: ExercisePage.routeName),
+          settings: const RouteSettings(name: PageExercise.routeName),
           builder: (_) => ProtectedRoute(
-            child: ExercisePage(
+            child: PageExercise(
               exerciseId: args.exerciseId,
-              exerciseName: args.exerciseName,
             ),
           ),
         );
@@ -75,7 +76,7 @@ class ExercisesPageArguments {
     required this.exerciseId,
     required this.exerciseName,
   });
-  final String exerciseId;
+  final int exerciseId;
   final String exerciseName;
 }
 

@@ -2,20 +2,32 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_ai/ai_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_exercises/exercises_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_workouts/workouts_bloc.dart';
+import 'package:pump_progress_frontend/features/auth/repository/repository.dart';
+import 'package:pump_progress_frontend/features/sets/repositories/repositories.dart';
 
-import 'package:pump_progress_frontend/config/constants/theme.dart';
-import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/flavors.dart';
 
-import 'package:pump_progress_frontend/repositories/pump_progress_repository.dart';
+// * Config
+import 'package:pump_progress_frontend/config/theme/theme.dart';
+import 'package:pump_progress_frontend/config/routes/router.dart';
+
+// * Features
+import 'package:pump_progress_frontend/features/user/repository/repository.dart';
+import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
+import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
+import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
+import 'package:pump_progress_frontend/features/sync/blocs/blocs.dart';
+import 'package:pump_progress_frontend/features/sync/repository/repository.dart';
+import 'package:pump_progress_frontend/features/workout/blocs/blocs.dart';
+import 'package:pump_progress_frontend/features/workout/repository/repository.dart';
+
+// * Utils
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
 import 'package:pump_progress_frontend/utils/helpers/route_observer.dart';
-import 'package:pump_progress_frontend/utils/services/cognito_user_pool/cognito_user_pool.dart';
+
+import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -49,49 +61,87 @@ class _AppState extends State<App> {
     AppLogger.info("Flavor: ${F.appFlavor}");
 
     final repositoryProviders = [
-      RepositoryProvider<PumpProgressRepository>(
-        create: (context) => PumpProgressRepository(),
+      RepositoryProvider<RepositoryUser>(
+        create: (context) => RepositoryUser(),
       ),
-      RepositoryProvider<PPUserPool>(
-        create: (context) => PPUserPool(),
-      )
+      RepositoryProvider<RepositorySync>(
+        create: (context) => RepositorySync(),
+      ),
+      RepositoryProvider<RepositoryAuth>(
+        create: (context) => RepositoryAuth(),
+      ),
+      RepositoryProvider<RepositoryWorkout>(
+        create: (context) => RepositoryWorkout(),
+      ),
+      RepositoryProvider<RepositoryExercises>(
+        create: (context) => RepositoryExercises(),
+      ),
+      RepositoryProvider<RepositorySets>(
+        create: (context) => RepositorySets(),
+      ),
     ];
+
     final blocProviders = [
       BlocProvider(create: (context) {
-        return WorkoutsBloc(
-          pumpProgressRepository: context.read<PumpProgressRepository>(),
-        );
+        return WorkoutBloc(
+            repositoryWorkout: context.read<RepositoryWorkout>());
       }),
-      BlocProvider(create: (context) {
-        return ExercisesBloc(
-          pumpProgressRepository: context.read<PumpProgressRepository>(),
-        )..add(FetchExercisesEvent());
-      }),
+      BlocProvider(
+          lazy: false,
+          create: (context) {
+            return ExercisesBloc(
+                repositoryExercises: context.read<RepositoryExercises>());
+          }),
       BlocProvider(
           lazy: false,
           create: (context) {
             return AiBloc()..add(const AiInitEvent());
           }),
+      BlocProvider(create: (context) {
+        return SyncBloc(
+          repositorySync: context.read<RepositorySync>(),
+        );
+      }),
     ];
 
     return MultiRepositoryProvider(
       providers: repositoryProviders,
       child: BlocProvider(
-          create: (context) {
-            return CoreBloc(
-              pumpProgressRepository: context.read<PumpProgressRepository>(),
-            )..add(const CoreInit());
-          },
-          child: MultiBlocProvider(
-            providers: blocProviders,
-            child: MaterialApp(
-              scaffoldMessengerKey: messengerKey,
-              theme: theme,
-              onGenerateRoute: App.router.onGenerateRoute,
-              navigatorObservers: [routeObserver],
-              debugShowCheckedModeBanner: false,
-            ),
-          )),
+        create: (context) {
+          return UserSessionBloc(repositoryUser: context.read<RepositoryUser>())
+            ..add(const UserSessionInitEvent());
+        },
+        child: MultiBlocProvider(
+          providers: blocProviders,
+          child: BlocConsumer<UserSessionBloc, UserSessionState>(
+            listener: (context, state) {
+              if (state.status is UserSessionStatusAuthenticated) {
+                context.read<SyncBloc>().add(StartSyncEvent());
+              }
+            },
+            builder: (context, state) {
+              final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
+                  (bloc) => bloc.state.status);
+
+              if (syncStateStatus is SyncBlocStatusInProgress) {
+                return LoadingPage();
+              }
+
+              if (syncStateStatus is SyncBlocStatusError) {
+                return LoadingPage();
+              }
+
+              return MaterialApp(
+                scaffoldMessengerKey: messengerKey,
+                theme: theme,
+                onGenerateRoute: App.router.onGenerateRoute,
+                navigatorObservers: [routeObserver],
+                debugShowCheckedModeBanner: false,
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }

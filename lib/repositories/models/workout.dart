@@ -1,10 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:pump_progress_frontend/repositories/models/index.dart';
 
+@Deprecated('use features model')
 class Workout {
   final String id;
   final String name;
