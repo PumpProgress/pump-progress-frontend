@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/app/bloc_core/core_bloc.dart';
-import 'package:pump_progress_frontend/features/loading/loading_page.dart';
-
-import 'package:pump_progress_frontend/features/splash/splash_page.dart';
+import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
+import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
+import 'package:pump_progress_frontend/screens/splash/splash_page.dart';
+import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 
 class ProtectedRoute extends StatelessWidget {
   const ProtectedRoute({super.key, required this.child});
@@ -11,24 +11,25 @@ class ProtectedRoute extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CoreBloc, CoreState>(
+    return BlocListener<UserSessionBloc, UserSessionState>(
       listener: (context, state) {
-        if (state.status == AuthenticationStatus.unauthenticated) {
+        if (state.status is UserSessionStatusUnauthenticated) {
           Navigator.of(context).popAndPushNamed('/login');
           return;
         }
       },
-      child: BlocBuilder<CoreBloc, CoreState>(
+      child: BlocBuilder<UserSessionBloc, UserSessionState>(
         builder: (context, state) {
           switch (state.status) {
-            case AuthenticationStatus.authenticated:
+            case UserSessionStatusAuthenticated():
               return child;
-            case AuthenticationStatus.unauthenticated:
-              print('protected route: unauthenticated');
+            case UserSessionStatusUnauthenticated():
               return const SplashPage();
-            case AuthenticationStatus.loading:
-              print('protected route: authenticating');
+            case UserSessionStatusLoading():
               return const LoadingPage();
+            case UserSessionStatusError():
+              AppLogger.error('Error in ProtectedRoute: ${state.status}');
+              return const SplashPage();
           }
         },
       ),

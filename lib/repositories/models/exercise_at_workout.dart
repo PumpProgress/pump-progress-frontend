@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:pump_progress_frontend/repositories/models/index.dart';
 
+@Deprecated('use features model')
 class ExerciseAtWorkout {
   final Exercise exercise;
   final int seriesToday;

@@ -1,0 +1,205 @@
+import 'package:pump_progress_frontend/features/sets/models/entities/entities.dart';
+import 'package:pump_progress_frontend/utils/services/sql_database_service/sql_database_service.dart';
+import 'package:uuid/uuid.dart';
+
+class LocalSets {
+  final db = SqlDatabaseService.instance.database;
+
+  Future<List<SetsRow>> getSeriesByExercise({
+    required int exerciseId,
+    required String userId,
+  }) async {
+    final database = await db;
+    final seriesResult = await database.rawQuery('''SELECT * FROM sets 
+        WHERE exercise_id = ? AND user_id = ? AND deleted_at IS NULL
+        ''', [exerciseId, userId]);
+    return seriesResult.map((series) => SetsRow.fromDB(series)).toList();
+  }
+
+  Future<SetsRow> createSeries({
+    required int exerciseId,
+    required int repetitions,
+    required double weight,
+    required String userId,
+    int intensity = 0,
+  }) async {
+    final database = await db;
+
+    final now = DateTime.now();
+    final id = Uuid().v4();
+    await database.insert('sets', {
+      'id': id,
+      'user_id': userId,
+      'exercise_id': exerciseId,
+      'repetitions': repetitions,
+      'weight': weight,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+      'updated_at': DateTime.now().millisecondsSinceEpoch,
+      'intensity': intensity,
+    });
+    return SetsRow(
+      id: id,
+      userId: userId,
+      exerciseId: exerciseId,
+      createdAt: now,
+      updatedAt: now,
+      repetitions: repetitions,
+      weight: weight,
+      intensity: intensity,
+    );
+  }
+
+  Future<SetsRow> updateSeries({
+    required String seriesId,
+    required int repetitions,
+    required double weight,
+    int intensity = 0,
+  }) async {
+    final database = await db;
+    final now = DateTime.now();
+    await database.update(
+      'sets',
+      {
+        'repetitions': repetitions,
+        'weight': weight,
+        'intensity': intensity,
+        'updated_at': now.millisecondsSinceEpoch,
+      },
+      where: 'id = ?',
+      whereArgs: [seriesId],
+    );
+    final result = await database.query(
+      'sets',
+      where: 'id = ?',
+      whereArgs: [seriesId],
+    );
+    return SetsRow.fromDB(result.first);
+  }
+
+  Future<void> deleteSeries(String seriesId) async {
+    final database = await db;
+    final now = DateTime.now();
+    await database.update(
+      'sets',
+      {
+        'deleted_at': now.millisecondsSinceEpoch,
+        'updated_at': now.millisecondsSinceEpoch,
+      },
+      where: 'id = ?',
+      whereArgs: [seriesId],
+    );
+  }
+
+  Future<List<ExerciseAnalyticsRow>> getExerciseAnalytics({
+    required int exerciseId,
+    required String userId,
+    required String timeZoneOffset, // e.g. '+05:30' or '-05:00'
+  }) async {
+    final database = await db;
+
+    final now = DateTime.now();
+    final threeMonthsAgo = now.subtract(const Duration(days: 90));
+
+    final analyticsResult = await database.rawQuery('''
+      SELECT
+        DATE(created_at / 1000, 'unixepoch', ?) AS date,
+        SUM(repetitions * weight) AS sessionVolume,
+        COUNT(*) AS totalSets,
+        SUM(repetitions) AS totalReps,
+        CASE
+          WHEN SUM(repetitions) > 0 THEN SUM(repetitions * weight) / SUM(repetitions)
+          ELSE 0
+        END AS avgWeightPerRep,
+        MAX(weight) AS maxWeight,
+        MIN(weight) AS minWeight
+      FROM sets
+      WHERE
+        user_id = ?
+        AND exercise_id = ?
+        AND deleted_at IS NULL
+        AND created_at >= ?
+        AND created_at <= ?
+      GROUP BY
+        DATE(created_at / 1000, 'unixepoch', ?)
+      ORDER BY
+        date ASC;
+    ''', [
+      timeZoneOffset,
+      userId,
+      exerciseId,
+      threeMonthsAgo.millisecondsSinceEpoch,
+      now.millisecondsSinceEpoch,
+      timeZoneOffset,
+    ]);
+
+    return analyticsResult
+        .map((row) => ExerciseAnalyticsRow.fromDB(row))
+        .toList();
+  }
+
+  Future<List<CalendarSeriesRow>> getCalendarInfoByUserId({
+    required String userId,
+    required int month,
+    required int year,
+  }) async {
+    final database = await db;
+
+    final startOfMonth = DateTime(year, month, 1);
+    final endOfMonth =
+        DateTime(year, month + 1, 1).subtract(const Duration(seconds: 1));
+
+    final calendarInfoResult = await database.rawQuery('''
+      SELECT
+        DATE(created_at / 1000, 'unixepoch') AS date,
+        COUNT(*) AS totalSets,
+        SUM(repetitions) AS totalReps,
+        SUM(repetitions * weight) AS totalVolume
+      FROM sets
+      WHERE
+        user_id = ?
+        AND deleted_at IS NULL
+        AND created_at >= ?
+        AND created_at <= ?
+      GROUP BY
+        DATE(created_at)
+      ORDER BY
+        date ASC
+    ''', [
+      userId,
+      startOfMonth.millisecondsSinceEpoch,
+      endOfMonth.millisecondsSinceEpoch,
+    ]);
+
+    return calendarInfoResult
+        .map((row) => CalendarSeriesRow.fromDB(row))
+        .toList();
+  }
+
+  Future<List<SetsRow>> getSetsByUserIdAndDate({
+    required String userId,
+    required DateTime date,
+  }) async {
+    final database = await db;
+
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final endOfDay = startOfDay
+        .add(const Duration(days: 1))
+        .subtract(const Duration(seconds: 1));
+
+    final setsResult = await database.rawQuery('''
+      SELECT * FROM sets
+      WHERE
+        user_id = ?
+        AND deleted_at IS NULL
+        AND created_at >= ?
+        AND created_at <= ?
+      ORDER BY created_at ASC
+    ''', [
+      userId,
+      startOfDay.millisecondsSinceEpoch,
+      endOfDay.millisecondsSinceEpoch,
+    ]);
+
+    return setsResult.map((row) => SetsRow.fromDB(row)).toList();
+  }
+}

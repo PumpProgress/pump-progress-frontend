@@ -15,3 +15,5 @@ export 'workouts/workout_by_id.dart';
 
 export 'workout_sessions/workout_session.dart';
 export 'workout_sessions/workout_session_response.dart';
+
+export 'sync/get_sync.dart';
