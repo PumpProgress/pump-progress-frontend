@@ -5,7 +5,7 @@
 Before working on this repo, read the documentation at:
 
 ```
-~/repos/pumpProgress/pump-progress-documentation/frontend/README.md
+/Users/sergiocarbone/repos/pumpProgress/pump-progress-documentation/frontend/README.md
 ```
 
 This is the authoritative guide for contributing to this repo. It covers architecture,
