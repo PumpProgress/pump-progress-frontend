@@ -148,7 +148,23 @@ Stateless. Takes `List<DayExerciseSummary>`. Aggregates muscle → set count and
 
 ### `_ExerciseCardWidget`
 
-Stateless. Takes a single `DayExerciseSummary`. Renders header, set rows, and RPE footer. RPE footer is omitted when `!summary.hasRpe`.
+Stateless. Takes a single `DayExerciseSummary` and a `VoidCallback onTap`. Renders header, set rows, and RPE footer. RPE footer is omitted when `!summary.hasRpe`. The whole card is wrapped in `InkWell` (or `GestureDetector`) to handle taps.
+
+### Navigation from exercise card
+
+Tapping a card navigates to the analytics screen for that exercise:
+
+```dart
+Navigator.of(context).pushNamed(
+  '/exercises/analytics',
+  arguments: ExercisesPageArguments(
+    exerciseId: summary.exercise.id,
+    exerciseName: summary.exercise.name,
+  ),
+);
+```
+
+This reuses the existing `ExerciseAnalyticsPage` and `ExercisesPageArguments` already defined in `lib/config/routes/router.dart`. No router changes are needed.
 
 ---
 
@@ -162,6 +178,5 @@ Stateless. Takes a single `DayExerciseSummary`. Renders header, set rows, and RP
 
 ## Out of Scope
 
-- Navigation from a card to the exercise detail screen.
 - Editing sets from this view.
 - Comparing the selected day to a previous session.
