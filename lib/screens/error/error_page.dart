@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ErrorPage extends StatelessWidget {
-  const ErrorPage({super.key});
+class PageError extends StatelessWidget {
+  const PageError({super.key});
+
+  static const String routeName = '/error';
 
   @override
   Widget build(BuildContext context) {

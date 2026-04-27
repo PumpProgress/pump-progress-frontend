@@ -11,10 +11,7 @@ class _AuthInterceptor extends Interceptor {
   late Dio client;
   late PoolUsers userPool;
 
-  _AuthInterceptor(Dio client, Dio userPool) {
-    client = client;
-    userPool = userPool;
-  }
+  _AuthInterceptor(this.client, this.userPool);
 
   @override
   void onRequest(
@@ -85,7 +82,11 @@ class _AuthInterceptor extends Interceptor {
         return;
       }
     } catch (e) {
-      return;
+      handler.next(DioException(
+          requestOptions: error.requestOptions,
+          error: "Failed to refresh token: $e",
+          stackTrace: StackTrace.current));
+      // return;
     }
     handler.next(error);
   }
@@ -117,7 +118,7 @@ class PumpProgressApiDio {
     );
     client = Dio(options);
     client.interceptors.addAll([
-      _AuthInterceptor(client, userPool.service.client),
+      _AuthInterceptor(client, userPool),
       _ErrorLogInterceptor(),
     ]);
   }

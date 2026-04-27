@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/workout/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/workout/domain/domain.dart';
 import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
-import 'package:pump_progress_frontend/screens/workout/view/workout_add_exercise_button.dart';
-import 'package:pump_progress_frontend/screens/workout/view/workout_exercise_list.dart';
+import 'package:pump_progress_frontend/screens/workout/view/widgets/workout_add_exercise_button.dart';
+import 'package:pump_progress_frontend/screens/workout/view/widgets/workout_exercise_list.dart';
 
 class WorkoutView extends StatefulWidget {
   const WorkoutView({

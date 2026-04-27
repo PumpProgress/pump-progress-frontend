@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/sets/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
-import 'package:pump_progress_frontend/screens/exercise/view/button_add_seriers.dart';
-import 'package:pump_progress_frontend/screens/exercise/view/series_timer.dart';
-import 'package:pump_progress_frontend/screens/exercise/view/sets_list.dart';
+import 'package:pump_progress_frontend/screens/exercise/view/widgets/button_add_seriers.dart';
+import 'package:pump_progress_frontend/screens/exercise/view/widgets/series_timer.dart';
+import 'package:pump_progress_frontend/screens/exercise/view/widgets/sets_list.dart';
 import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
 
 class ViewExercise extends StatelessWidget {

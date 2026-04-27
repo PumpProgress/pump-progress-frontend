@@ -17,6 +17,11 @@ class ProtectedRoute extends StatelessWidget {
           Navigator.of(context).popAndPushNamed('/login');
           return;
         }
+        if (state.status is UserSessionStatusError) {
+          AppLogger.error('Error in ProtectedRoute: ${state.status}');
+          Navigator.of(context).popAndPushNamed('/login');
+          return;
+        }
       },
       child: BlocBuilder<UserSessionBloc, UserSessionState>(
         builder: (context, state) {

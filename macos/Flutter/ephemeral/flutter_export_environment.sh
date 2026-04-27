@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/xrok/fvm/versions/3.32.6"
-export "FLUTTER_APPLICATION_PATH=/Users/xrok/repos/pumpProgress/pump-progress-frontend"
+export "FLUTTER_ROOT=/Users/sergiocarbone/fvm/versions/3.32.6"
+export "FLUTTER_APPLICATION_PATH=/Users/sergiocarbone/repos/pumpProgress/pump-progress-frontend"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=3.9.0"

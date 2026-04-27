@@ -1,9 +1,4 @@
-@Deprecated("User accessToken or idToken")
-const jwtKey = 'jwt';
-
-@Deprecated("Use user from core bloc")
-const userKey = 'user';
-
+// todo: maybe rename tis to capital snake case
 const accessTokenKey = 'accessToken';
 const refreshTokenKey = 'refreshToken';
 const idTokenKey = 'idToken';

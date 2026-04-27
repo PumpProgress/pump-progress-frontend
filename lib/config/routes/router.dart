@@ -5,7 +5,7 @@ import 'package:pump_progress_frontend/screens/error/error_page.dart';
 import 'package:pump_progress_frontend/screens/exercise/exercise_page.dart';
 
 import 'package:pump_progress_frontend/screens/exercise_analytics/exercise_analytics_page.dart';
-import 'package:pump_progress_frontend/screens/start/start_page.dart';
+import 'package:pump_progress_frontend/screens/main/start/start_page.dart';
 import 'package:pump_progress_frontend/screens/login/login_page.dart';
 import 'package:pump_progress_frontend/screens/workout/workout_page.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
@@ -18,14 +18,14 @@ class PumpProgressRouter {
     AppLogger.debug(settings.name);
 
     switch (settings.name) {
-      case '/':
+      case PageStart.routeName:
         return MaterialPageRoute<void>(
-          settings: const RouteSettings(name: '/'),
-          builder: (_) => const ProtectedRoute(child: Start()),
+          settings: const RouteSettings(name: PageStart.routeName),
+          builder: (_) => const ProtectedRoute(child: PageStart()),
         );
-      case '/login':
+      case PageLogin.routeName:
         return MaterialPageRoute<void>(
-          settings: const RouteSettings(name: '/login'),
+          settings: const RouteSettings(name: PageLogin.routeName),
           builder: (_) => const PageLogin(),
         );
 
@@ -64,8 +64,8 @@ class PumpProgressRouter {
 
       default:
         return MaterialPageRoute<void>(
-          settings: const RouteSettings(name: '/error'),
-          builder: (_) => const ErrorPage(),
+          settings: const RouteSettings(name: PageError.routeName),
+          builder: (_) => const PageError(),
         );
     }
   }

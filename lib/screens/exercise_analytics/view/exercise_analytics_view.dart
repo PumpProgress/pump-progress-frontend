@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/sets/blocs/blocs.dart';
 
-import 'package:pump_progress_frontend/screens/exercise_analytics/view/average_bar_chart.dart';
-import 'package:pump_progress_frontend/screens/exercise_analytics/view/max_bar_chart.dart';
-import 'package:pump_progress_frontend/screens/exercise_analytics/view/volume_bar_chart.dart';
+import 'package:pump_progress_frontend/screens/exercise_analytics/view/widgets/average_bar_chart.dart';
+import 'package:pump_progress_frontend/screens/exercise_analytics/view/widgets/max_bar_chart.dart';
+import 'package:pump_progress_frontend/screens/exercise_analytics/view/widgets/volume_bar_chart.dart';
 
 class ExerciseAnalyticsView extends StatefulWidget {
   const ExerciseAnalyticsView({super.key});
