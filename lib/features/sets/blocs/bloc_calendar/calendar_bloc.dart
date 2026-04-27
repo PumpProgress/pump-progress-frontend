@@ -22,7 +22,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         month: event.month,
         year: event.year,
       );
-      emit(state.copyWith(userCalendar: userCalendar));
+      emit(state.copyWith(userCalendar: userCalendar, exerciseSummaries: []));
     });
   }
 
