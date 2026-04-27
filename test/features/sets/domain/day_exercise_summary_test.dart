@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pump_progress_frontend/features/exercise/domain/domain.dart';
-import 'package:pump_progress_frontend/features/sets/domain/day_exercise_summary.dart';
+import 'package:pump_progress_frontend/features/sets/domain/domain.dart';
 
 void main() {
   const exercise = Exercise(
