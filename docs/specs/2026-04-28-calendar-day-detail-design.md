@@ -152,11 +152,11 @@ Stateless. Takes a single `DayExerciseSummary` and a `VoidCallback onTap`. Rende
 
 ### Navigation from exercise card
 
-Tapping a card navigates to the analytics screen for that exercise:
+Tapping a card navigates to the exercise detail screen:
 
 ```dart
 Navigator.of(context).pushNamed(
-  '/exercises/analytics',
+  PageExercise.routeName,
   arguments: ExercisesPageArguments(
     exerciseId: summary.exercise.id,
     exerciseName: summary.exercise.name,
@@ -164,7 +164,7 @@ Navigator.of(context).pushNamed(
 );
 ```
 
-This reuses the existing `ExerciseAnalyticsPage` and `ExercisesPageArguments` already defined in `lib/config/routes/router.dart`. No router changes are needed.
+This reuses the existing `PageExercise` and `ExercisesPageArguments` already defined in `lib/config/routes/router.dart`. No router changes are needed.
 
 ---
 
