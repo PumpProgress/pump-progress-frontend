@@ -20,27 +20,27 @@ class CalendarState extends Equatable {
   const CalendarState({
     this.status = const CalendarStatusLoading(),
     this.userCalendar = CalendarSeries.empty,
-    this.setsAtDay = const [],
+    this.exerciseSummaries = const [],
   });
 
   final CalendarStatus status;
   final CalendarSeries userCalendar;
-  final List<Exercise> setsAtDay;
+  final List<DayExerciseSummary> exerciseSummaries;
 
   CalendarState copyWith({
     CalendarStatus? status,
     CalendarSeries? userCalendar,
-    List<Exercise>? setsAtDay,
+    List<DayExerciseSummary>? exerciseSummaries,
   }) {
     return CalendarState(
       status: status ?? this.status,
       userCalendar: userCalendar ?? this.userCalendar,
-      setsAtDay: setsAtDay ?? this.setsAtDay,
+      exerciseSummaries: exerciseSummaries ?? this.exerciseSummaries,
     );
   }
 
   @override
-  List<Object> get props => [status, userCalendar, setsAtDay];
+  List<Object> get props => [status, userCalendar, exerciseSummaries];
 }
 
 final class CalendarInitial extends CalendarState {}

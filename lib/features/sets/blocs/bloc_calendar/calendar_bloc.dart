@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:pump_progress_frontend/features/exercise/domain/domain.dart';
-import 'package:pump_progress_frontend/features/sets/domain/calendar_series.dart';
+import 'package:pump_progress_frontend/features/sets/domain/domain.dart';
 import 'package:pump_progress_frontend/features/sets/repositories/repositories.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_status.dart';
 
@@ -30,11 +29,11 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   Future<void> _onDaySelectedAtCalendar(
       DaySelectedAtCalendar event, Emitter<CalendarState> emit) async {
     await runSafeEvent(emit, state, CalendarStatusError.new, () async {
-      final setsAtDay = await repositorySets.getSetsByUserIdAndDate(
+      final summaries = await repositorySets.getExerciseSummariesByDate(
         userId: event.userId,
         date: event.day,
       );
-      emit(state.copyWith(setsAtDay: setsAtDay));
+      emit(state.copyWith(exerciseSummaries: summaries));
     });
   }
 }

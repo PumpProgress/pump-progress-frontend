@@ -132,10 +132,10 @@ class _StartCalendarViewState extends State<StartCalendarView> {
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: state.setsAtDay.length,
+                  itemCount: state.exerciseSummaries.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(state.setsAtDay[index].name),
+                      title: Text(state.exerciseSummaries[index].exercise.name),
                       // subtitle: Text(e.exerciseId),
                     );
                   }),
