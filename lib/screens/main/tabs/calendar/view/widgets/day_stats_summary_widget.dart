@@ -25,15 +25,17 @@ class DayStatsSummaryWidget extends StatelessWidget {
         color: PPColors.amethyst500,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _StatColumn(label: 'Exercises', value: '${summaries.length}'),
-          const VerticalDivider(color: Color(0xFF5D3888), width: 1),
-          _StatColumn(label: 'Total Sets', value: '$totalSets'),
-          const VerticalDivider(color: Color(0xFF5D3888), width: 1),
-          _StatColumn(label: 'Volume', value: _formatVolume(totalVolume)),
-        ],
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _StatColumn(label: 'Exercises', value: '${summaries.length}'),
+            const VerticalDivider(color: Color(0xFF5D3888), width: 1),
+            _StatColumn(label: 'Total Sets', value: '$totalSets'),
+            const VerticalDivider(color: Color(0xFF5D3888), width: 1),
+            _StatColumn(label: 'Volume', value: _formatVolume(totalVolume)),
+          ],
+        ),
       ),
     );
   }

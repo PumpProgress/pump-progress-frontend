@@ -28,6 +28,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   Future<void> _onDaySelectedAtCalendar(
       DaySelectedAtCalendar event, Emitter<CalendarState> emit) async {
+    emit(state.copyWith(
+      status: const CalendarStatusLoading(),
+      exerciseSummaries: [],
+    ));
     await runSafeEvent(emit, state, CalendarStatusError.new, () async {
       final summaries = await repositorySets.getExerciseSummariesByDate(
         userId: event.userId,
