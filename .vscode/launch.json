@@ -32,6 +32,7 @@
       "flutterMode": "debug",
       "args": ["--flavor", "dev"],
       "program": "lib/main_dev.dart"
+      // "toolArgs": ["-v"]
     },
     {
       "name": "dev Profile",

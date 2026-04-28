@@ -1,5 +1,8 @@
 name: pump_progress_frontend
-description: Welcome to PumpProgress, the innovative app designed to enhance, streamline, and revolutionize your gym experience! PumpProgress makes tracking your gym workouts easier than ever before, allowing you to focus on what truly matters ~ your fitness journey.
+description: Welcome to PumpProgress, the innovative app designed to enhance,
+  streamline, and revolutionize your gym experience! PumpProgress makes tracking
+  your gym workouts easier than ever before, allowing you to focus on what truly
+  matters ~ your fitness journey.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -17,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 
-version: 3.8.0+19
+version: 3.10.0+21
 
 environment:
   sdk: '>=3.0.3 <4.0.0'
@@ -52,6 +55,10 @@ dependencies:
   sentry_flutter: ^9.3.0
   permission_handler: ^12.0.0+1
   fl_chart: ^1.0.0
+  flutter_gemma: ^0.12.3
+  logger: ^2.6.2
+  sqflite: ^2.4.2
+  uuid: ^4.5.2
 
 dev_dependencies:
   sentry_dart_plugin: ^3.1.0
