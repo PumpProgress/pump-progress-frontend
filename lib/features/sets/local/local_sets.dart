@@ -227,6 +227,7 @@ class LocalSets {
       LEFT JOIN category_types ct ON e.category_id = ct.id
       WHERE s.user_id = ?
         AND s.deleted_at IS NULL
+        AND e.deleted_at IS NULL
         AND s.created_at >= ?
         AND s.created_at <= ?
       ORDER BY s.created_at ASC
