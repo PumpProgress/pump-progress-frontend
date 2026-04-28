@@ -1,7 +1,7 @@
 # Claude Skills
 # ## Superpowers
 */superpowers/*
-*/.superpowers/*
+**/.superpowers/*
 
 # Flutter flavorizr
 .tmp/

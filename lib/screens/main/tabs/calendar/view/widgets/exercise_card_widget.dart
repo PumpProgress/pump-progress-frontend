@@ -42,16 +42,16 @@ class ExerciseCardWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (summary.exercise.category.isNotEmpty)
+                if (summary.exercise.muscles.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 9, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                     decoration: BoxDecoration(
                       color: PPColors.amethyst400,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      summary.exercise.category,
+                      summary.exercise.muscles.first,
                       style: const TextStyle(
                         color: PPColors.amethyst100,
                         fontSize: 10,
@@ -66,20 +66,20 @@ class ExerciseCardWidget extends StatelessWidget {
                 SizedBox(
                   width: 40,
                   child: Text('SET',
-                      style: TextStyle(
-                          color: PPColors.neutral400, fontSize: 10)),
+                      style:
+                          TextStyle(color: PPColors.neutral400, fontSize: 10)),
                 ),
                 Expanded(
                   child: Text('REPS',
                       textAlign: TextAlign.right,
-                      style: TextStyle(
-                          color: PPColors.neutral400, fontSize: 10)),
+                      style:
+                          TextStyle(color: PPColors.neutral400, fontSize: 10)),
                 ),
                 Expanded(
                   child: Text('WEIGHT',
                       textAlign: TextAlign.right,
-                      style: TextStyle(
-                          color: PPColors.neutral400, fontSize: 10)),
+                      style:
+                          TextStyle(color: PPColors.neutral400, fontSize: 10)),
                 ),
               ],
             ),
@@ -134,13 +134,12 @@ class ExerciseCardWidget extends StatelessWidget {
                 children: [
                   const Text(
                     'Avg RPE',
-                    style: TextStyle(
-                        color: PPColors.neutral300, fontSize: 11),
+                    style: TextStyle(color: PPColors.neutral300, fontSize: 11),
                   ),
                   const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                     decoration: BoxDecoration(
                       color: PPColors.amethyst500,
                       borderRadius: BorderRadius.circular(10),
@@ -163,8 +162,7 @@ class ExerciseCardWidget extends StatelessWidget {
     );
   }
 
-  String _formatWeight(double weight) =>
-      weight == weight.truncateToDouble()
-          ? '${weight.toInt()} kg'
-          : '$weight kg';
+  String _formatWeight(double weight) => weight == weight.truncateToDouble()
+      ? '${weight.toInt()} kg'
+      : '$weight kg';
 }

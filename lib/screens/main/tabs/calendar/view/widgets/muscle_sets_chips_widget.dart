@@ -18,17 +18,12 @@ class MuscleSetsChipsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final muscleSetCount = <String, int>{};
     for (final summary in summaries) {
-      final labels = summary.exercise.muscles.isNotEmpty
-          ? summary.exercise.muscles
-          : [
-              summary.exercise.category.isNotEmpty
-                  ? summary.exercise.category
-                  : 'Other',
-            ];
-      for (final label in labels) {
-        muscleSetCount[label] =
-            (muscleSetCount[label] ?? 0) + summary.sets.length;
-      }
+      final label = summary.exercise.muscles.isNotEmpty
+          ? summary.exercise.muscles.first
+          : 'Other';
+
+      muscleSetCount[label] =
+          (muscleSetCount[label] ?? 0) + summary.sets.length;
     }
 
     if (muscleSetCount.isEmpty) return const SizedBox.shrink();
