@@ -175,34 +175,6 @@ class LocalSets {
         .toList();
   }
 
-  Future<List<SetsRow>> getSetsByUserIdAndDate({
-    required String userId,
-    required DateTime date,
-  }) async {
-    final database = await db;
-
-    final startOfDay = DateTime(date.year, date.month, date.day);
-    final endOfDay = startOfDay
-        .add(const Duration(days: 1))
-        .subtract(const Duration(seconds: 1));
-
-    final setsResult = await database.rawQuery('''
-      SELECT * FROM sets
-      WHERE
-        user_id = ?
-        AND deleted_at IS NULL
-        AND created_at >= ?
-        AND created_at <= ?
-      ORDER BY created_at ASC
-    ''', [
-      userId,
-      startOfDay.millisecondsSinceEpoch,
-      endOfDay.millisecondsSinceEpoch,
-    ]);
-
-    return setsResult.map((row) => SetsRow.fromDB(row)).toList();
-  }
-
   Future<List<Map<String, dynamic>>> getDaySetsWithExercise({
     required String userId,
     required DateTime date,

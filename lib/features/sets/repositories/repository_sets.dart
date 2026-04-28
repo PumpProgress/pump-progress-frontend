@@ -1,12 +1,10 @@
 import 'package:pump_progress_frontend/features/exercise/domain/domain.dart';
-import 'package:pump_progress_frontend/features/exercise/local/local.dart';
 import 'package:pump_progress_frontend/features/sets/domain/domain.dart';
 import 'package:pump_progress_frontend/features/sets/local/local.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 
 class RepositorySets {
   final LocalSets localSets = LocalSets();
-  final LocalExercise localExercise = LocalExercise();
 
   Future<List<Series>> getSeriesByExercise({
     required int exerciseId,
@@ -140,7 +138,7 @@ class RepositorySets {
           .map((r) => ExerciseSetEntry(
                 repetitions: r['repetitions'] as int,
                 weight: (r['weight'] as num).toDouble(),
-                intensity: r['intensity'] as int,
+                intensity: (r['intensity'] as int?) ?? 0,
               ))
           .toList();
       return DayExerciseSummary(exercise: exercise, sets: sets);
