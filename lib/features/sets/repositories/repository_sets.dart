@@ -82,7 +82,6 @@ class RepositorySets {
       year: year,
     );
     final Map<String, dynamic> dates;
-    // for each calednarInfoRow add an entro to dates
     if (calendarInfoRows.isEmpty) {
       dates = {};
     } else {
@@ -99,21 +98,52 @@ class RepositorySets {
     return CalendarSeries(dates: dates);
   }
 
-  Future<List<Exercise>> getSetsByUserIdAndDate({
+  Future<List<DayExerciseSummary>> getExerciseSummariesByDate({
     required String userId,
     required DateTime date,
   }) async {
-    final setsRows = await localSets.getSetsByUserIdAndDate(
-      userId: userId,
-      date: date,
-    );
-    final Set<int> exerciseIds = setsRows.map((row) => row.exerciseId).toSet();
-    final exerciseRows = await localExercise.getExercises(
-      exerciseIds: exerciseIds.toList(),
-    );
-    final exercises = exerciseRows
-        .map((exerciseRow) => Exercise.fromMap(exerciseRow.toMap()))
-        .toList();
-    return exercises;
+    final rows =
+        await localSets.getDaySetsWithExercise(userId: userId, date: date);
+    if (rows.isEmpty) return [];
+
+    final orderedIds = <int>[];
+    final seenIds = <int>{};
+    for (final row in rows) {
+      final eid = row['exercise_id'] as int;
+      if (seenIds.add(eid)) orderedIds.add(eid);
+    }
+
+    final muscleRows = await localSets.getMusclesForExercises(
+        exerciseIds: orderedIds);
+
+    final muscleMap = <int, List<String>>{};
+    for (final mRow in muscleRows) {
+      final eid = mRow['exercise_id'] as int;
+      (muscleMap[eid] ??= []).add(mRow['muscle_name'] as String);
+    }
+
+    final grouped = <int, List<Map<String, dynamic>>>{};
+    for (final row in rows) {
+      final eid = row['exercise_id'] as int;
+      (grouped[eid] ??= []).add(row);
+    }
+
+    return orderedIds.map((exerciseId) {
+      final setRows = grouped[exerciseId]!;
+      final exercise = Exercise(
+        id: exerciseId,
+        name: setRows.first['exercise_name'] as String,
+        category: setRows.first['category_name'] as String? ?? '',
+        muscles: muscleMap[exerciseId] ?? [],
+      );
+      final sets = setRows
+          .map((r) => ExerciseSetEntry(
+                repetitions: r['repetitions'] as int,
+                weight: (r['weight'] as num).toDouble(),
+                intensity: r['intensity'] as int,
+              ))
+          .toList();
+      return DayExerciseSummary(exercise: exercise, sets: sets);
+    }).toList();
   }
 }
