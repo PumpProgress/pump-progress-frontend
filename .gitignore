@@ -1,6 +1,10 @@
 # Claude Skills
 # ## Superpowers
 */superpowers/*
+**/.superpowers/*
+docs/plans/*
+docs/specs/*
+
 
 # Flutter flavorizr
 .tmp/
@@ -436,4 +440,4 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
-# End of https://www.toptal.com/developers/gitignore/api/flutter,dart,macos,linux,windows,xcode,android,androidstudio,cocoapods,gradle
+# End of https://www.toptal.com/developers/gitignore/api/flutter,dart,macos,linux,windows,xcode,android,androidstudio,cocoapods,gradle.worktrees/

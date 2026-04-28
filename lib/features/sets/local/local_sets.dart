@@ -175,31 +175,62 @@ class LocalSets {
         .toList();
   }
 
-  Future<List<SetsRow>> getSetsByUserIdAndDate({
+  Future<List<Map<String, dynamic>>> getDaySetsWithExercise({
     required String userId,
     required DateTime date,
   }) async {
     final database = await db;
-
     final startOfDay = DateTime(date.year, date.month, date.day);
     final endOfDay = startOfDay
         .add(const Duration(days: 1))
         .subtract(const Duration(seconds: 1));
 
-    final setsResult = await database.rawQuery('''
-      SELECT * FROM sets
-      WHERE
-        user_id = ?
-        AND deleted_at IS NULL
-        AND created_at >= ?
-        AND created_at <= ?
-      ORDER BY created_at ASC
+    return database.rawQuery('''
+      SELECT
+        s.exercise_id,
+        e.name AS exercise_name,
+        ct.name AS category_name,
+        s.repetitions,
+        s.weight,
+        s.intensity,
+        s.created_at
+      FROM sets s
+      JOIN exercises e ON s.exercise_id = e.id
+      LEFT JOIN category_types ct ON e.category_id = ct.id
+      WHERE s.user_id = ?
+        AND s.deleted_at IS NULL
+        AND e.deleted_at IS NULL
+        AND s.created_at >= ?
+        AND s.created_at <= ?
+      ORDER BY s.created_at ASC
     ''', [
       userId,
       startOfDay.millisecondsSinceEpoch,
       endOfDay.millisecondsSinceEpoch,
     ]);
+  }
 
-    return setsResult.map((row) => SetsRow.fromDB(row)).toList();
+  Future<List<Map<String, dynamic>>> getMusclesForExercises({
+    required List<int> exerciseIds,
+  }) async {
+    if (exerciseIds.isEmpty) return [];
+    final database = await db;
+    final placeholders = exerciseIds.map((_) => '?').join(',');
+    return database.rawQuery('''
+      SELECT e.id AS exercise_id, m.name AS muscle_name
+      FROM exercises e
+      JOIN muscles m ON e.primary_muscle_id = m.id
+      WHERE e.id IN ($placeholders)
+        AND e.primary_muscle_id IS NOT NULL
+        AND e.deleted_at IS NULL
+        AND m.deleted_at IS NULL
+      UNION
+      SELECT esm.exercise_id, m.name AS muscle_name
+      FROM exercise_secondary_muscles esm
+      JOIN muscles m ON esm.muscle_id = m.id
+      WHERE esm.exercise_id IN ($placeholders)
+        AND esm.deleted_at IS NULL
+        AND m.deleted_at IS NULL
+    ''', [...exerciseIds, ...exerciseIds]);
   }
 }
