@@ -36,7 +36,8 @@ class _StartCalendarViewState extends State<StartCalendarView> {
     return BlocConsumer<CalendarBloc, CalendarState>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Column(
+        return ListView(
+          padding: const EdgeInsets.only(bottom: 16),
           children: [
             TableCalendar(
               firstDay: DateTime.utc(2024, 1, 1),
@@ -115,40 +116,22 @@ class _StartCalendarViewState extends State<StartCalendarView> {
                 ),
               ),
             ),
-            Expanded(
-              child: Column(
-                children: [
-                  if (state.exerciseSummaries.isNotEmpty) ...[
-                    DayStatsSummaryWidget(
-                        summaries: state.exerciseSummaries),
-                    MuscleSetsChipsWidget(
-                        summaries: state.exerciseSummaries),
-                  ],
-                  Expanded(
-                    child: _selectedDay == null
-                        ? const Center(
-                            child:
-                                Text('Select a day to see your workout'),
-                          )
-                        : state.exerciseSummaries.isEmpty
-                            ? const Center(
-                                child: Text(
-                                    'No workout logged for this day.'),
-                              )
-                            : ListView.builder(
-                                padding:
-                                    const EdgeInsets.only(bottom: 16),
-                                itemCount: state.exerciseSummaries.length,
-                                itemBuilder: (context, index) =>
-                                    ExerciseCardWidget(
-                                  summary:
-                                      state.exerciseSummaries[index],
-                                ),
-                              ),
+            if (state.exerciseSummaries.isNotEmpty) ...[
+              DayStatsSummaryWidget(summaries: state.exerciseSummaries),
+              MuscleSetsChipsWidget(summaries: state.exerciseSummaries),
+              ...state.exerciseSummaries
+                  .map((s) => ExerciseCardWidget(summary: s)),
+            ] else
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
+                child: Center(
+                  child: Text(
+                    _selectedDay == null
+                        ? 'Select a day to see your workout'
+                        : 'No workout logged for this day.',
                   ),
-                ],
+                ),
               ),
-            ),
           ],
         );
       },
