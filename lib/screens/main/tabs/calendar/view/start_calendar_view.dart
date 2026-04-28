@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:pump_progress_frontend/config/theme/colors.dart';
 import 'package:pump_progress_frontend/features/sets/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
+import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/widgets/day_stats_summary_widget.dart';
+import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/widgets/exercise_card_widget.dart';
+import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/widgets/muscle_sets_chips_widget.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/widgets/start_calendar_day_widget.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -41,9 +44,7 @@ class _StartCalendarViewState extends State<StartCalendarView> {
               focusedDay: _selectedDay ?? _focusedDay,
               headerVisible: true,
               startingDayOfWeek: StartingDayOfWeek.monday,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   _selectedDay = selectedDay;
@@ -71,38 +72,23 @@ class _StartCalendarViewState extends State<StartCalendarView> {
               calendarFormat: _calendarFormat,
               availableCalendarFormats: const {
                 CalendarFormat.month: 'Month',
-                // CalendarFormat.twoWeeks: '2 weeks',
-                // CalendarFormat.week: 'Week'
               },
               onFormatChanged: (format) {
                 if (_calendarFormat != format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
+                  setState(() => _calendarFormat = format);
                 }
               },
-              headerStyle: HeaderStyle(
-                  // titleTextStyle:
-                  // PPFontStyles.h6.copyWith(color: PPColors.neutral100),
-                  titleCentered: true),
+              headerStyle: const HeaderStyle(titleCentered: true),
               calendarBuilders: CalendarBuilders(
                 dowBuilder: (context, day) {
-                  final text = DateFormat.E().format(day);
-                  return Center(
-                    child: Text(
-                      text,
-                      // style: PPFontStyles.small
-                      //     .copyWith(color: PPColors.neutral100),
-                    ),
-                  );
+                  return Center(child: Text(DateFormat.E().format(day)));
                 },
-                selectedBuilder: (context, day, focusedDay) {
-                  return StartCalendarDayWidget(
-                    day: day,
-                    bgColor: PPColors.amethyst400,
-                    textColor: PPColors.white,
-                  );
-                },
+                selectedBuilder: (context, day, focusedDay) =>
+                    StartCalendarDayWidget(
+                  day: day,
+                  bgColor: PPColors.amethyst400,
+                  textColor: PPColors.white,
+                ),
                 markerBuilder: (context, day, events) {
                   if (hasEvent(state.userCalendar.dates, day)) {
                     return StartCalendarDayWidget(
@@ -114,9 +100,8 @@ class _StartCalendarViewState extends State<StartCalendarView> {
                           ? PPColors.coral300
                           : null,
                     );
-                  } else {
-                    return null;
                   }
+                  return null;
                 },
                 todayBuilder: (context, day, focusedDay) =>
                     StartCalendarDayWidget(
@@ -131,14 +116,38 @@ class _StartCalendarViewState extends State<StartCalendarView> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: state.exerciseSummaries.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(state.exerciseSummaries[index].exercise.name),
-                      // subtitle: Text(e.exerciseId),
-                    );
-                  }),
+              child: Column(
+                children: [
+                  if (state.exerciseSummaries.isNotEmpty) ...[
+                    DayStatsSummaryWidget(
+                        summaries: state.exerciseSummaries),
+                    MuscleSetsChipsWidget(
+                        summaries: state.exerciseSummaries),
+                  ],
+                  Expanded(
+                    child: _selectedDay == null
+                        ? const Center(
+                            child:
+                                Text('Select a day to see your workout'),
+                          )
+                        : state.exerciseSummaries.isEmpty
+                            ? const Center(
+                                child: Text(
+                                    'No workout logged for this day.'),
+                              )
+                            : ListView.builder(
+                                padding:
+                                    const EdgeInsets.only(bottom: 16),
+                                itemCount: state.exerciseSummaries.length,
+                                itemBuilder: (context, index) =>
+                                    ExerciseCardWidget(
+                                  summary:
+                                      state.exerciseSummaries[index],
+                                ),
+                              ),
+                  ),
+                ],
+              ),
             ),
           ],
         );
@@ -147,7 +156,6 @@ class _StartCalendarViewState extends State<StartCalendarView> {
   }
 }
 
-// function to check if there is an event at an specific day
 bool hasEvent(Map<String, dynamic> map, DateTime day) {
   final key = DateFormat('yyyy-MM-dd').format(day);
   return map.containsKey(key);
