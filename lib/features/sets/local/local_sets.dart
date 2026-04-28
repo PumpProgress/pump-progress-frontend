@@ -217,11 +217,20 @@ class LocalSets {
     final database = await db;
     final placeholders = exerciseIds.map((_) => '?').join(',');
     return database.rawQuery('''
+      SELECT e.id AS exercise_id, m.name AS muscle_name
+      FROM exercises e
+      JOIN muscles m ON e.primary_muscle_id = m.id
+      WHERE e.id IN ($placeholders)
+        AND e.primary_muscle_id IS NOT NULL
+        AND e.deleted_at IS NULL
+        AND m.deleted_at IS NULL
+      UNION
       SELECT esm.exercise_id, m.name AS muscle_name
       FROM exercise_secondary_muscles esm
       JOIN muscles m ON esm.muscle_id = m.id
       WHERE esm.exercise_id IN ($placeholders)
         AND esm.deleted_at IS NULL
-    ''', exerciseIds);
+        AND m.deleted_at IS NULL
+    ''', [...exerciseIds, ...exerciseIds]);
   }
 }
