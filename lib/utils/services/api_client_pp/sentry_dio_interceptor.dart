@@ -10,7 +10,7 @@ class SentryDioInterceptor extends Interceptor {
     if (headers == null) return {};
     return headers.map((key, value) {
       final lower = key.toLowerCase();
-      if (_sensitiveKeys.any((k) => lower.contains(k))) {
+      if (_sensitiveKeys.contains(lower)) {
         return MapEntry(key, '[REDACTED]');
       }
       return MapEntry(key, value);
@@ -41,7 +41,7 @@ class SentryDioInterceptor extends Interceptor {
         'method': options.method,
         'url': options.uri.toString(),
         'queryParameters': options.queryParameters,
-        'headers': sanitizeHeaders(options.headers.cast<String, dynamic>()),
+        'headers': sanitizeHeaders(options.headers),
         'body': formatBody(options.data),
       },
     ));
@@ -60,7 +60,7 @@ class SentryDioInterceptor extends Interceptor {
         'url': response.requestOptions.uri.toString(),
         'statusCode': statusCode,
         'headers': sanitizeHeaders(
-          response.headers.map.cast<String, dynamic>(),
+          response.headers.map.map((k, v) => MapEntry(k, v.join(', '))),
         ),
         'body': formatBody(response.data),
       },
@@ -79,12 +79,12 @@ class SentryDioInterceptor extends Interceptor {
         'url': err.requestOptions.uri.toString(),
         'statusCode': err.response?.statusCode,
         'requestHeaders': sanitizeHeaders(
-          err.requestOptions.headers.cast<String, dynamic>(),
+          err.requestOptions.headers,
         ),
         'requestBody': formatBody(err.requestOptions.data),
         'responseHeaders': err.response != null
             ? sanitizeHeaders(
-                err.response!.headers.map.cast<String, dynamic>(),
+                err.response!.headers.map.map((k, v) => MapEntry(k, v.join(', '))),
               )
             : null,
         'responseBody':
