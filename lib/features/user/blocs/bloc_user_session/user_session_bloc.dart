@@ -5,6 +5,7 @@ import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/features/user/domain/domain.dart';
 import 'package:pump_progress_frontend/features/user/repository/repository.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_status.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'user_session_event.dart';
@@ -45,9 +46,20 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
             user: user,
           ),
         );
+
+        await Sentry.configureScope(
+          (scope) => scope.setUser(
+            SentryUser(
+              id: user.id,
+              email: user.email,
+              username: user.name,
+            ),
+          ),
+        );
         return;
       } catch (e) {
         _clearLocalStorage(prefs);
+        await Sentry.configureScope((scope) => scope.setUser(null));
         rethrow;
       }
     });
@@ -59,6 +71,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       _clearLocalStorage(prefs);
       emit(state.copyWith(status: const UserSessionStatusUnauthenticated()));
+      await Sentry.configureScope((scope) => scope.setUser(null));
     });
   }
 
