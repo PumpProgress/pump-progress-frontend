@@ -4,6 +4,7 @@ import 'package:pump_progress_frontend/config/constants/local_storage.dart';
 import 'package:pump_progress_frontend/features/auth/user_pool/user_pool.dart';
 import 'package:pump_progress_frontend/flavors.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
+import 'package:pump_progress_frontend/utils/services/api_client_pp/sentry_dio_interceptor.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -118,6 +119,7 @@ class PumpProgressApiDio {
     );
     client = Dio(options);
     client.interceptors.addAll([
+      SentryDioInterceptor(),
       _AuthInterceptor(client, userPool),
       _ErrorLogInterceptor(),
     ]);
