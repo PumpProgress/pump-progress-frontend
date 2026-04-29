@@ -3,9 +3,7 @@ part of 'cognito_user_pool.dart';
 class _ErrorLogInterceptor extends Interceptor {
   @override
   void onError(DioException error, ErrorInterceptorHandler handler) {
-    print(error);
-    // final hint = Hint();
-    // Sentry.captureException(error, stackTrace: error.stackTrace, hint: hint);
+    Sentry.captureException(error, stackTrace: error.stackTrace);
     super.onError(error, handler);
   }
 }
@@ -23,6 +21,7 @@ class UsersPoolService {
     );
     client = Dio(options);
     client.interceptors.addAll([
+      SentryDioInterceptor(),
       _ErrorLogInterceptor(),
     ]);
   }
