@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pump_progress_frontend/utils/services/api_client_pp/sentry_dio_interceptor.dart';
 
@@ -72,6 +73,14 @@ void main() {
     test('calls toString on unknown types', () {
       expect(SentryDioInterceptor.formatBody(42), '42');
       expect(SentryDioInterceptor.formatBody(true), 'true');
+    });
+
+    test('formats FormData into fields and file names', () {
+      final form = FormData.fromMap({'username': 'sergio'});
+      final result = SentryDioInterceptor.formatBody(form) as Map;
+      expect(result['fields'], isA<List>());
+      expect(result['files'], isA<List>());
+      expect((result['fields'] as List).first, contains('username'));
     });
   });
 }
