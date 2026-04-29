@@ -37,7 +37,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
           return;
         }
 
-        final userId = CognitoAccessToken(accessToken).payload['custom:userID'];
+        final userId = CognitoAccessToken(idToken).payload['custom:userID'];
         final user = await repositoryUser.getUser(userId);
 
         emit(
