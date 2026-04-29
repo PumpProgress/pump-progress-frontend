@@ -37,9 +37,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       final session = await repositoryAuth.getTokenDataFromCode(event.code);
 
-      await sharedPref.setString(accessTokenKey, session.idToken.jwtToken!);
+      await sharedPref.setString(accessTokenKey, session.accessToken.jwtToken!);
       await sharedPref.setString(refreshTokenKey, session.refreshToken!.token!);
-      await sharedPref.setString(idTokenKey, session.accessToken.jwtToken!);
+      await sharedPref.setString(idTokenKey, session.idToken.jwtToken!);
 
       emit(
         state.copyWith(status: LoginStatusSuccess()),
