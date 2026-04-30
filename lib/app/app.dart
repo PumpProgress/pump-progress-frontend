@@ -116,7 +116,9 @@ class _AppState extends State<App> {
           child: BlocConsumer<UserSessionBloc, UserSessionState>(
             listener: (context, state) {
               if (state.status is UserSessionStatusAuthenticated) {
-                context.read<SyncBloc>().add(StartSyncEvent());
+                context.read<SyncBloc>()
+                  ..add(const StartSyncEvent())
+                  ..add(const StartPeriodicSyncEvent());
               }
             },
             builder: (context, state) {
