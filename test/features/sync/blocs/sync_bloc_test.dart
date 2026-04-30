@@ -159,6 +159,35 @@ void main() {
         bloc.close();
       });
     });
+
+    test('cancels backoff retry timer when stopped during backoff', () {
+      fakeAsync((async) {
+        var callCount = 0;
+        when(() => mockRepo.syncTables()).thenAnswer((_) async {
+          callCount++;
+          if (callCount == 1) throw Exception('fail');
+        });
+
+        final bloc = SyncBloc(repositorySync: mockRepo);
+        bloc.add(const StartPeriodicSyncEvent(interval: Duration(minutes: 5)));
+
+        // First tick → fails → schedules 30s backoff retry
+        async.elapse(const Duration(minutes: 5));
+        async.flushMicrotasks();
+        expect(callCount, 1);
+
+        // Stop sync while in backoff (before retry fires)
+        bloc.add(const StopPeriodicSyncEvent());
+        async.flushMicrotasks();
+
+        // Advance past the backoff duration — retry must NOT fire
+        async.elapse(const Duration(seconds: 30));
+        async.flushMicrotasks();
+        expect(callCount, 1); // no retry fired
+
+        bloc.close();
+      });
+    });
   });
 
   // ─── Backoff retry ────────────────────────────────────────────────────────

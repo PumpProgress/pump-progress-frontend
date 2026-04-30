@@ -119,6 +119,8 @@ class _AppState extends State<App> {
                 context.read<SyncBloc>()
                   ..add(const StartSyncEvent())
                   ..add(const StartPeriodicSyncEvent());
+              } else if (state.status is UserSessionStatusUnauthenticated) {
+                context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
               }
             },
             builder: (context, state) {
