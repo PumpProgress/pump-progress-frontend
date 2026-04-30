@@ -440,4 +440,6 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
-# End of https://www.toptal.com/developers/gitignore/api/flutter,dart,macos,linux,windows,xcode,android,androidstudio,cocoapods,gradle.worktrees/
+# End of https://www.toptal.com/developers/gitignore/api/flutter,dart,macos,linux,windows,xcode,android,androidstudio,cocoapods,gradle
+
+.worktrees/
