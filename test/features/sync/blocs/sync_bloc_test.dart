@@ -67,6 +67,16 @@ void main() {
         // No second InProgress — de-dup worked
       ],
     );
+
+    test('close() while sync in progress does not throw', () async {
+      final completer = Completer<void>();
+      when(() => mockRepo.syncTables()).thenAnswer((_) => completer.future);
+      final bloc = SyncBloc(repositorySync: mockRepo);
+      bloc.add(const StartSyncEvent());
+      await Future<void>.delayed(Duration.zero); // let the event start
+      // close() before syncTables() completes — must not throw
+      await expectLater(bloc.close(), completes);
+    });
   });
 
   // ─── StartPeriodicSyncEvent ───────────────────────────────────────────────
@@ -143,7 +153,7 @@ void main() {
         bloc.add(const StopPeriodicSyncEvent());
 
         async.elapse(const Duration(seconds: 20));
-        async.flushMicrotasks();
+        async.flushTimers();
 
         verifyNever(() => mockRepo.syncTables());
         bloc.close();
@@ -201,6 +211,51 @@ void main() {
         async.flushMicrotasks();
 
         expect(callCount, 3); // initial tick + retry + resumed periodic tick
+        bloc.close();
+      });
+    });
+
+    test('consecutive failures cap backoff at 5 minutes', () {
+      fakeAsync((async) {
+        var callCount = 0;
+        when(() => mockRepo.syncTables()).thenAnswer((_) async {
+          callCount++;
+          throw Exception('always fails');
+        });
+
+        final bloc = SyncBloc(repositorySync: mockRepo);
+        bloc.add(const StartPeriodicSyncEvent(interval: Duration(minutes: 5)));
+
+        // 1st tick → fail → retry in 30s
+        async.elapse(const Duration(minutes: 5));
+        async.flushMicrotasks();
+        expect(callCount, 1);
+
+        // retry 1 → fail → retry in 1m
+        async.elapse(const Duration(seconds: 30));
+        async.flushMicrotasks();
+        expect(callCount, 2);
+
+        // retry 2 → fail → retry in 2m
+        async.elapse(const Duration(minutes: 1));
+        async.flushMicrotasks();
+        expect(callCount, 3);
+
+        // retry 3 → fail → retry in 5m
+        async.elapse(const Duration(minutes: 2));
+        async.flushMicrotasks();
+        expect(callCount, 4);
+
+        // retry 4 → fail → retry in 5m (capped, not longer)
+        async.elapse(const Duration(minutes: 5));
+        async.flushMicrotasks();
+        expect(callCount, 5);
+
+        // retry 5 → fail → retry still in 5m (not out-of-bounds)
+        async.elapse(const Duration(minutes: 5));
+        async.flushMicrotasks();
+        expect(callCount, 6);
+
         bloc.close();
       });
     });
