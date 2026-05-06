@@ -50,7 +50,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
         _startPeriodicTimer(_periodicInterval!);
       }
     } else if (state.status is SyncBlocStatusError) {
-      // runSafeEvent already emitted the error status; now append history.
+      // this.state is now the error state (runSafeEvent emitted it synchronously).
       emit(state.copyWith(
         history: _appendAttempt(state.history, success: false),
       ));

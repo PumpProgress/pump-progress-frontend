@@ -107,17 +107,22 @@ void main() {
       },
     );
 
-    test('history caps at 50 entries', () async {
-      when(() => mockRepo.syncTables()).thenAnswer((_) async {});
-      final bloc = SyncBloc(repositorySync: mockRepo);
-      for (var i = 0; i < 51; i++) {
-        bloc.add(const StartSyncEvent());
-        await Future<void>.delayed(Duration.zero);
-      }
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-      expect(bloc.state.history.length, 50);
-      await bloc.close();
-    });
+    blocTest<SyncBloc, SyncState>(
+      'history caps at 50 entries',
+      build: () {
+        when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+        return SyncBloc(repositorySync: mockRepo);
+      },
+      act: (bloc) async {
+        for (var i = 0; i < 51; i++) {
+          bloc.add(const StartSyncEvent());
+          await Future<void>.delayed(Duration.zero);
+        }
+      },
+      verify: (bloc) {
+        expect(bloc.state.history.length, 50);
+      },
+    );
   });
 
   // ─── StartSyncEvent ───────────────────────────────────────────────────────
