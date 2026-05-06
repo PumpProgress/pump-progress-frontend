@@ -27,7 +27,7 @@ class _ProfileChatViewState extends State<ProfileChatView> {
         builder: (context, state) {
           if (state.status is AiStatusInitial ||
               state.status is AiStatusInstalling) {
-            return _buildLoadingBody(context);
+            return _buildLoadingBody(context, state.status);
           }
           if (state.status is AiStatusError) {
             return _buildErrorBody(context, state.status as AiStatusError);
@@ -38,25 +38,28 @@ class _ProfileChatViewState extends State<ProfileChatView> {
     );
   }
 
-  Widget _buildLoadingBody(BuildContext context) {
+  Widget _buildLoadingBody(BuildContext context, AiStatus status) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.auto_awesome, size: 48, color: PPColors.amethyst300),
           const SizedBox(height: 16),
           Text('Getting AI ready…',
               style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Text(
-            'Downloading model for the first time. This only happens once.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: PPColors.neutral300),
-          ),
+          if (status is AiStatusInstalling) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Downloading model for the first time. This only happens once.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: PPColors.neutral300),
+            ),
+          ],
           const SizedBox(height: 24),
           const LinearProgressIndicator(),
         ],
@@ -69,6 +72,7 @@ class _ProfileChatViewState extends State<ProfileChatView> {
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.error_outline, size: 48, color: PPColors.coral300),
           const SizedBox(height: 16),

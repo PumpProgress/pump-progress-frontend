@@ -18,6 +18,7 @@ void main() {
   setUp(() {
     bloc = MockAiBloc();
     when(() => bloc.stream).thenAnswer((_) => const Stream.empty());
+    addTearDown(() => bloc.close());
   });
 
   testWidgets('shows loading UI when status is AiStatusInstalling',
