@@ -52,11 +52,79 @@ void main() {
     });
   });
 
+  // ─── SyncBloc history recording ──────────────────────────────────────────
+
+  group('SyncBloc history recording', () {
+    blocTest<SyncBloc, SyncState>(
+      'appends success attempt on manual sync success',
+      build: () {
+        when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+        return SyncBloc(repositorySync: mockRepo);
+      },
+      act: (bloc) => bloc.add(const StartSyncEvent()),
+      verify: (bloc) {
+        expect(bloc.state.history.length, 1);
+        expect(bloc.state.history.last.success, true);
+      },
+    );
+
+    blocTest<SyncBloc, SyncState>(
+      'appends failure attempt on manual sync error',
+      build: () {
+        when(() => mockRepo.syncTables()).thenThrow(Exception('fail'));
+        return SyncBloc(repositorySync: mockRepo);
+      },
+      act: (bloc) => bloc.add(const StartSyncEvent()),
+      verify: (bloc) {
+        expect(bloc.state.history.length, 1);
+        expect(bloc.state.history.last.success, false);
+      },
+    );
+
+    blocTest<SyncBloc, SyncState>(
+      'accumulates history across multiple syncs',
+      build: () {
+        var count = 0;
+        when(() => mockRepo.syncTables()).thenAnswer((_) async {
+          count++;
+          if (count == 2) throw Exception('transient');
+        });
+        return SyncBloc(repositorySync: mockRepo);
+      },
+      act: (bloc) async {
+        bloc.add(const StartSyncEvent());
+        await Future<void>.delayed(Duration.zero);
+        bloc.add(const StartSyncEvent());
+        await Future<void>.delayed(Duration.zero);
+        bloc.add(const StartSyncEvent());
+        await Future<void>.delayed(Duration.zero);
+      },
+      verify: (bloc) {
+        expect(bloc.state.history.length, 3);
+        expect(bloc.state.history[0].success, true);
+        expect(bloc.state.history[1].success, false);
+        expect(bloc.state.history[2].success, true);
+      },
+    );
+
+    test('history caps at 50 entries', () async {
+      when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+      final bloc = SyncBloc(repositorySync: mockRepo);
+      for (var i = 0; i < 51; i++) {
+        bloc.add(const StartSyncEvent());
+        await Future<void>.delayed(Duration.zero);
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(bloc.state.history.length, 50);
+      await bloc.close();
+    });
+  });
+
   // ─── StartSyncEvent ───────────────────────────────────────────────────────
 
   group('StartSyncEvent', () {
     blocTest<SyncBloc, SyncState>(
-      'emits [InProgress, Success] on successful sync',
+      'emits [InProgress, Success+history] on successful sync',
       build: () {
         when(() => mockRepo.syncTables()).thenAnswer((_) async {});
         return SyncBloc(repositorySync: mockRepo);
@@ -64,12 +132,15 @@ void main() {
       act: (bloc) => bloc.add(const StartSyncEvent()),
       expect: () => [
         SyncState(status: SyncBlocStatusInProgress()),
-        SyncState(status: SyncBlocStatusSuccess()),
+        isA<SyncState>()
+            .having((s) => s.status, 'status', isA<SyncBlocStatusSuccess>())
+            .having((s) => s.history.length, 'history length', 1)
+            .having((s) => s.history.last.success, 'success', true),
       ],
     );
 
     blocTest<SyncBloc, SyncState>(
-      'emits [InProgress, Error] when syncTables throws',
+      'emits [InProgress, Error, Error+history] when syncTables throws',
       build: () {
         when(() => mockRepo.syncTables()).thenThrow(Exception('network error'));
         return SyncBloc(repositorySync: mockRepo);
@@ -82,6 +153,10 @@ void main() {
           'status',
           isA<SyncBlocStatusError>(),
         ),
+        isA<SyncState>()
+            .having((s) => s.status, 'status', isA<SyncBlocStatusError>())
+            .having((s) => s.history.length, 'history length', 1)
+            .having((s) => s.history.last.success, 'success', false),
       ],
     );
 

@@ -37,7 +37,10 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     await runSafeEvent(emit, state, SyncBlocStatusError.new, () async {
       emit(state.copyWith(status: SyncBlocStatusInProgress()));
       await repositorySync.syncTables();
-      emit(state.copyWith(status: SyncBlocStatusSuccess()));
+      emit(state.copyWith(
+        status: SyncBlocStatusSuccess(),
+        history: _appendAttempt(state.history, success: true),
+      ));
     });
 
     if (state.status is SyncBlocStatusSuccess) {
@@ -46,10 +49,15 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       if (_periodicTimer == null && _periodicInterval != null) {
         _startPeriodicTimer(_periodicInterval!);
       }
-    } else if (state.status is SyncBlocStatusError &&
-        _periodicInterval != null) {
-      _consecutiveFailures++;
-      _scheduleBackoffRetry();
+    } else if (state.status is SyncBlocStatusError) {
+      // runSafeEvent already emitted the error status; now append history.
+      emit(state.copyWith(
+        history: _appendAttempt(state.history, success: false),
+      ));
+      if (_periodicInterval != null) {
+        _consecutiveFailures++;
+        _scheduleBackoffRetry();
+      }
     }
   }
 
@@ -91,6 +99,17 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       _retryTimer = null;
       add(const StartSyncEvent());
     });
+  }
+
+  List<SyncAttempt> _appendAttempt(
+    List<SyncAttempt> history, {
+    required bool success,
+  }) {
+    final next = [
+      ...history,
+      SyncAttempt(timestamp: DateTime.now(), success: success),
+    ];
+    return next.length > 50 ? next.sublist(next.length - 50) : next;
   }
 
   @override
