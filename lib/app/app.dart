@@ -27,7 +27,7 @@ import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
 import 'package:pump_progress_frontend/utils/helpers/route_observer.dart';
 
-import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
+// import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -116,20 +116,16 @@ class _AppState extends State<App> {
           child: BlocConsumer<UserSessionBloc, UserSessionState>(
             listener: (context, state) {
               if (state.status is UserSessionStatusAuthenticated) {
-                context.read<SyncBloc>().add(StartSyncEvent());
+                context.read<SyncBloc>()
+                  ..add(const StartSyncEvent())
+                  ..add(const StartPeriodicSyncEvent());
+              } else if (state.status is UserSessionStatusUnauthenticated) {
+                context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
               }
             },
             builder: (context, state) {
-              final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
-                  (bloc) => bloc.state.status);
-
-              if (syncStateStatus is SyncBlocStatusInProgress) {
-                return LoadingPage();
-              }
-
-              if (syncStateStatus is SyncBlocStatusError) {
-                return LoadingPage();
-              }
+              // final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
+              //     (bloc) => bloc.state.status);
 
               return MaterialApp(
                 scaffoldMessengerKey: messengerKey,
