@@ -13,17 +13,18 @@ class StartDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final coreBloc = context.read<UserSessionBloc>();
     final user = coreBloc.state.user;
+    final syncHistory = context.watch<SyncBloc>().state.history;
+    final lastAttempt = syncHistory.isEmpty ? null : syncHistory.last;
+
     return Drawer(
       child: SafeArea(
         child: Column(
-          // padding: EdgeInsets.zero,
           children: <Widget>[
             ListTile(
               title: Text("Profile"),
               subtitle: Text("${user.name} (${user.email})"),
               leading: const Icon(Icons.person_rounded),
               onLongPress: () async {
-                // Send a test error to Sentry
                 await Sentry.captureException(
                   Exception(
                       'Test Sentry error from Profile - connection is working!'),
@@ -47,9 +48,29 @@ class StartDrawer extends StatelessWidget {
               leading: const Icon(Icons.notifications_active_rounded),
             ),
             ListTile(
-              title: const Text('Syc tables'),
+              leading: Icon(
+                lastAttempt == null
+                    ? Icons.cloud_rounded
+                    : lastAttempt.success
+                        ? Icons.cloud_done_rounded
+                        : Icons.cloud_off_rounded,
+                color: lastAttempt == null
+                    ? null
+                    : lastAttempt.success
+                        ? Colors.green
+                        : Colors.red,
+              ),
+              title: const Text('Last sync'),
+              subtitle: Text(
+                lastAttempt == null
+                    ? 'Never synced'
+                    : _formatTimestamp(lastAttempt.timestamp),
+              ),
+            ),
+            ListTile(
+              title: const Text('Sync tables'),
               onTap: () async {
-                BlocProvider.of<SyncBloc>(context).add(StartSyncEvent());
+                BlocProvider.of<SyncBloc>(context).add(const StartSyncEvent());
               },
               leading: const Icon(Icons.cloud_sync_rounded),
             ),
@@ -60,35 +81,33 @@ class StartDrawer extends StatelessWidget {
               },
               leading: const Icon(Icons.power_settings_new_rounded),
             ),
-            Spacer(),
+            const Spacer(),
             ListTile(
-              title: Text(
+              title: const Text(
                 "Delete Account",
                 style: TextStyle(color: Colors.red),
               ),
               onTap: () {
-                // open a confirmation dialog before deleting
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text("Delete Account"),
-                      content: Text(
+                      title: const Text("Delete Account"),
+                      content: const Text(
                           "Are you sure you want to delete your account? This action cannot be undone."),
                       actions: <Widget>[
                         TextButton(
-                          child: Text("Cancel"),
+                          child: const Text("Cancel"),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         TextButton(
-                          child: Text(
+                          child: const Text(
                             "Delete",
                             style: TextStyle(color: Colors.red),
                           ),
                           onPressed: () {
-                            // Call the delete account function
                             coreBloc.add(const UserSessionDeleteAccountEvent());
                             Navigator.of(context).pop();
                           },
@@ -100,12 +119,22 @@ class StartDrawer extends StatelessWidget {
               },
               leading: const Icon(Icons.delete_rounded, color: Colors.red),
             ),
-            SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
+  }
+
+  String _formatTimestamp(DateTime dt) {
+    final now = DateTime.now();
+    final hh = dt.hour.toString().padLeft(2, '0');
+    final mm = dt.minute.toString().padLeft(2, '0');
+    if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
+      return '$hh:$mm';
+    }
+    final dd = dt.day.toString().padLeft(2, '0');
+    final mo = dt.month.toString().padLeft(2, '0');
+    return '$dd/$mo $hh:$mm';
   }
 }
