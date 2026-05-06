@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/ai/view/ai_tab_view.dart';
 
 void main() {
-  testWidgets('renders Complete Profile and Build Workout cards', (tester) async {
+  testWidgets('renders all three mode cards', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(home: Scaffold(body: AiTabView())),
     );
