@@ -37,6 +37,10 @@ void main() {
         .thenReturn(const AiState(status: AiStatusInitial()));
     await tester.pumpWidget(_wrap(const ProfileChatView(), bloc));
     expect(find.text('Getting AI ready…'), findsOneWidget);
+    expect(
+      find.text('Downloading model for the first time. This only happens once.'),
+      findsNothing,
+    );
   });
 
   testWidgets('shows chat input when status is AiStatusLoaded', (tester) async {
