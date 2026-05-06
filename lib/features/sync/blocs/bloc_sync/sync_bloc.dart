@@ -18,10 +18,10 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
   int _consecutiveFailures = 0;
 
   static const List<Duration> _backoffDurations = [
-    Duration(seconds: 30),
-    Duration(minutes: 1),
     Duration(minutes: 2),
-    Duration(minutes: 5),
+    Duration(minutes: 4),
+    Duration(minutes: 8),
+    Duration(minutes: 16),
   ];
 
   SyncBloc({required this.repositorySync}) : super(SyncState()) {
@@ -35,39 +35,43 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     if (state.status is SyncBlocStatusInProgress) return;
 
     await runSafeEvent(emit, state, SyncBlocStatusError.new, () async {
-      emit(state.copyWith(status: SyncBlocStatusInProgress()));
-      await repositorySync.syncTables();
-      emit(state.copyWith(
-        status: SyncBlocStatusSuccess(),
-        history: _appendAttempt(state.history, success: true),
-      ));
+      try {
+        emit(state.copyWith(status: SyncBlocStatusInProgress()));
+        await repositorySync.syncTables();
+        emit(state.copyWith(
+          status: SyncBlocStatusSuccess(),
+          history: _appendAttempt(state.history, success: true),
+        ));
+        _consecutiveFailures = 0;
+        if (_periodicTimer == null && _periodicInterval != null) {
+          _startPeriodicTimer(_periodicInterval!);
+        }
+      } catch (e) {
+        emit(state.copyWith(
+          history: _appendAttempt(state.history, success: false),
+        ));
+        if (_periodicInterval != null) {
+          _consecutiveFailures++;
+          _scheduleBackoffRetry();
+        }
+        rethrow;
+      }
     });
+  }
 
-    if (state.status is SyncBlocStatusSuccess) {
-      _consecutiveFailures = 0;
-      // Resume periodic if it was paused during backoff
-      if (_periodicTimer == null && _periodicInterval != null) {
-        _startPeriodicTimer(_periodicInterval!);
-      }
-    } else if (state.status is SyncBlocStatusError) {
-      // this.state is now the error state (runSafeEvent emitted it synchronously).
-      emit(state.copyWith(
-        history: _appendAttempt(state.history, success: false),
-      ));
-      if (_periodicInterval != null) {
-        _consecutiveFailures++;
-        _scheduleBackoffRetry();
-      }
-    }
+  Duration _getNextInterval() {
+    final index =
+        (_consecutiveFailures - 1).clamp(0, _backoffDurations.length - 1);
+    return _backoffDurations[index];
   }
 
   void _onStartPeriodicSyncEvent(
       StartPeriodicSyncEvent event, Emitter<SyncState> emit) {
     _periodicTimer?.cancel();
     _retryTimer?.cancel();
-    _periodicInterval = event.interval;
+    _periodicInterval = event.interval ?? _getNextInterval();
     _consecutiveFailures = 0;
-    _startPeriodicTimer(event.interval);
+    _startPeriodicTimer(_periodicInterval!);
   }
 
   void _onStopPeriodicSyncEvent(
@@ -93,9 +97,9 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     _periodicTimer?.cancel();
     _periodicTimer = null;
     _retryTimer?.cancel();
-    final index =
-        (_consecutiveFailures - 1).clamp(0, _backoffDurations.length - 1);
-    _retryTimer = Timer(_backoffDurations[index], () {
+    final nextInterval = _getNextInterval();
+
+    _retryTimer = Timer(nextInterval, () {
       _retryTimer = null;
       add(const StartSyncEvent());
     });

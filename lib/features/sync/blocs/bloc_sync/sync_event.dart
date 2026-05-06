@@ -12,11 +12,11 @@ final class StartSyncEvent extends SyncEvent {
 }
 
 final class StartPeriodicSyncEvent extends SyncEvent {
-  const StartPeriodicSyncEvent({this.interval = const Duration(minutes: 5)});
-  final Duration interval;
+  const StartPeriodicSyncEvent({this.interval});
+  final Duration? interval;
 
   @override
-  List<Object> get props => [interval];
+  List<Object> get props => [];
 }
 
 final class StopPeriodicSyncEvent extends SyncEvent {
