@@ -4,7 +4,6 @@ part of 'sync_bloc.dart';
 sealed class SyncBlocStatus extends Equatable {
   const SyncBlocStatus();
 }
-// initial, inProgress, success, failure
 
 class SyncBlocStatusInitial extends SyncBlocStatus {
   const SyncBlocStatusInitial();
@@ -36,19 +35,34 @@ class SyncBlocStatusError extends ErrorStatus
   List<Object> get props => [errorMsg];
 }
 
-class SyncState extends Equatable {
-  const SyncState({this.status = const SyncBlocStatusInitial()});
-
-  final SyncBlocStatus status;
+class SyncAttempt extends Equatable {
+  const SyncAttempt({required this.timestamp, required this.success});
+  final DateTime timestamp;
+  final bool success;
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [timestamp, success];
+}
+
+class SyncState extends Equatable {
+  const SyncState({
+    this.status = const SyncBlocStatusInitial(),
+    this.history = const [],
+  });
+
+  final SyncBlocStatus status;
+  final List<SyncAttempt> history;
+
+  @override
+  List<Object> get props => [status, history];
 
   SyncState copyWith({
     SyncBlocStatus? status,
+    List<SyncAttempt>? history,
   }) {
     return SyncState(
       status: status ?? this.status,
+      history: history ?? this.history,
     );
   }
 }
