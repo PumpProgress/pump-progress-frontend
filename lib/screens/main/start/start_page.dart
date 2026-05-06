@@ -8,6 +8,7 @@ import 'package:pump_progress_frontend/features/sets/repositories/repositories.d
 import 'package:pump_progress_frontend/screens/main/start/view/widgets/start_drawer.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/start_calendar_view.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/home/view/start_home_view.dart';
+import 'package:pump_progress_frontend/screens/main/tabs/ai/ai_tab_page.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/workouts/view/start_workouts_view.dart';
 
 List<String> _titles = [
@@ -15,7 +16,8 @@ List<String> _titles = [
   // 'Community',
   'Calendar',
   // 'Exercises',
-  'Workouts'
+  'Workouts',
+  'AI Assistant',
 ];
 
 const int _defaultIndex = 1;
@@ -100,6 +102,7 @@ class _PageStartState extends State<PageStart>
                 StartCalendarView(), // * Calendar View
                 // StartExercises(), // * Exercises View
                 StartWorkouts(), // * Workouts View
+                AiTabPage(), // * AI Assistant View
               ],
             ),
           ),
@@ -138,6 +141,12 @@ List<Tab> _tabs() {
     Tab(
       icon: Icon(
         Icomoon.icon_thunder,
+        size: 32,
+      ),
+    ),
+    Tab(
+      icon: Icon(
+        Icons.auto_awesome,
         size: 32,
       ),
     ),
