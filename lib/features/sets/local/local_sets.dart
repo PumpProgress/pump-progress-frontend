@@ -210,6 +210,42 @@ class LocalSets {
     ]);
   }
 
+  Future<Map<int, int>> getSeriesCountTodayByExercises({
+    required String userId,
+    required List<int> exerciseIds,
+  }) async {
+    if (exerciseIds.isEmpty) return {};
+    final database = await db;
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay =
+        startOfDay.add(const Duration(days: 1)).subtract(const Duration(milliseconds: 1));
+    final placeholders = exerciseIds.map((_) => '?').join(', ');
+
+    final result = await database.rawQuery('''
+      SELECT exercise_id, COUNT(*) as count
+      FROM sets
+      WHERE user_id = ?
+        AND exercise_id IN ($placeholders)
+        AND deleted_at IS NULL
+        AND created_at >= ?
+        AND created_at <= ?
+      GROUP BY exercise_id
+    ''', [
+      userId,
+      ...exerciseIds,
+      startOfDay.millisecondsSinceEpoch,
+      endOfDay.millisecondsSinceEpoch,
+    ]);
+
+    return Map.fromEntries(
+      result.map((row) => MapEntry(
+            row['exercise_id'] as int,
+            row['count'] as int,
+          )),
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getMusclesForExercises({
     required List<int> exerciseIds,
   }) async {

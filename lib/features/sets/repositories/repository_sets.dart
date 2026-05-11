@@ -96,6 +96,16 @@ class RepositorySets {
     return CalendarSeries(dates: dates);
   }
 
+  Future<Map<int, int>> getSeriesCountTodayByExercises({
+    required String userId,
+    required List<int> exerciseIds,
+  }) async {
+    return localSets.getSeriesCountTodayByExercises(
+      userId: userId,
+      exerciseIds: exerciseIds,
+    );
+  }
+
   Future<List<DayExerciseSummary>> getExerciseSummariesByDate({
     required String userId,
     required DateTime date,
