@@ -110,39 +110,42 @@ class _ProfileChatViewState extends State<ProfileChatView> {
   }
 
   Widget _buildInputBar(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          top: BorderSide(
-            color: PPColors.neutral300.withValues(alpha: 0.2),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _inputController,
-              decoration: const InputDecoration(
-                hintText: 'Type a message…',
-                border: InputBorder.none,
-              ),
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          border: Border(
+            top: BorderSide(
+              color: PPColors.neutral300.withValues(alpha: 0.2),
             ),
           ),
-          const SizedBox(width: 8),
-          IconButton(
-            onPressed: () {
-              final text = _inputController.text.trim();
-              if (text.isEmpty) return;
-              context.read<AiBloc>().add(SendPromptEvent(text));
-              _inputController.clear();
-            },
-            icon: const Icon(Icons.send),
-            color: PPColors.amethyst300,
-          ),
-        ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _inputController,
+                decoration: const InputDecoration(
+                  hintText: 'Type a message…',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: () {
+                final text = _inputController.text.trim();
+                if (text.isEmpty) return;
+                context.read<AiBloc>().add(SendPromptEvent(text));
+                _inputController.clear();
+              },
+              icon: const Icon(Icons.send),
+              color: PPColors.amethyst300,
+            ),
+          ],
+        ),
       ),
     );
   }
