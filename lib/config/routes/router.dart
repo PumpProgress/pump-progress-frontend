@@ -7,6 +7,8 @@ import 'package:pump_progress_frontend/screens/exercise/exercise_page.dart';
 import 'package:pump_progress_frontend/screens/exercise_analytics/exercise_analytics_page.dart';
 import 'package:pump_progress_frontend/screens/main/start/start_page.dart';
 import 'package:pump_progress_frontend/screens/login/login_page.dart';
+import 'package:pump_progress_frontend/screens/ai/profile_chat/profile_chat_page.dart';
+import 'package:pump_progress_frontend/screens/ai/workout_builder/workout_builder_page.dart';
 import 'package:pump_progress_frontend/screens/workout/workout_page.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 
@@ -60,6 +62,18 @@ class PumpProgressRouter {
               workout: args.workout,
             ),
           ),
+        );
+
+      case ProfileChatPage.routeName:
+        return MaterialPageRoute<void>(
+          settings: const RouteSettings(name: ProfileChatPage.routeName),
+          builder: (_) => const ProtectedRoute(child: ProfileChatPage()),
+        );
+
+      case WorkoutBuilderPage.routeName:
+        return MaterialPageRoute<void>(
+          settings: const RouteSettings(name: WorkoutBuilderPage.routeName),
+          builder: (_) => const ProtectedRoute(child: WorkoutBuilderPage()),
         );
 
       default:
