@@ -64,7 +64,7 @@ class Workout {
           (x) => ExerciseAtWorkout.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      exercisesCount: map['exercisesCount'] as int? ?? 0,
+      exercisesCount: map['exercises'].length as int,
     );
   }
 
