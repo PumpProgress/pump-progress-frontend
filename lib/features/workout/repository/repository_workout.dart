@@ -145,6 +145,7 @@ class RepositoryWorkout {
   }
 
   Future<void> deleteWorkout({required String workoutId}) async {
+    await localWorkoutExercises.deleteAllExercisesFromWorkout(workoutId: workoutId);
     await localWorkout.deleteWorkout(workoutId: workoutId);
   }
 }

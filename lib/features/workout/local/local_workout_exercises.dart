@@ -39,6 +39,21 @@ class LocalWorkoutExercises {
         .toList();
   }
 
+  Future<void> deleteAllExercisesFromWorkout({
+    required String workoutId,
+  }) async {
+    final database = await db;
+    await database.update(
+      'workout_exercises',
+      {
+        'deleted_at': DateTime.now().millisecondsSinceEpoch,
+        'is_dirty': 1,
+      },
+      where: 'workout_id = ?',
+      whereArgs: [workoutId],
+    );
+  }
+
   Future<List<WorkoutExercisesRow>> deleteExerciseFromWorkout({
     required String workoutId,
     required int exerciseId,
