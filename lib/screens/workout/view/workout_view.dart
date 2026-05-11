@@ -63,7 +63,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           ),
         );
       },
-    );
+    ).whenComplete(controller.dispose);
   }
 
   void _showDeleteDialog(BuildContext context, String workoutName) {
