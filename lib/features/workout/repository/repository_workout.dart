@@ -136,4 +136,16 @@ class RepositoryWorkout {
     return Workout.fromMap(
         {...workoutRow.toMap(), 'exercises': exercisesAtWorkoutMap});
   }
+
+  Future<void> updateWorkout({
+    required String workoutId,
+    required String name,
+  }) async {
+    await localWorkout.updateWorkout(workoutId: workoutId, name: name);
+  }
+
+  Future<void> deleteWorkout({required String workoutId}) async {
+    await localWorkoutExercises.deleteAllExercisesFromWorkout(workoutId: workoutId);
+    await localWorkout.deleteWorkout(workoutId: workoutId);
+  }
 }

@@ -17,6 +17,10 @@ class WorkoutDetailStatusError extends ErrorStatus
   WorkoutDetailStatusError(super.errorMsg);
 }
 
+class WorkoutDetailStatusUpdated implements WorkoutDetailStatus {}
+
+class WorkoutDetailStatusDeleted implements WorkoutDetailStatus {}
+
 class WorkoutDetailState extends Equatable {
   const WorkoutDetailState({
     this.workout = const Workout.empty(),

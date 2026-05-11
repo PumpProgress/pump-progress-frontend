@@ -18,6 +18,8 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
     on<RemoveExerciseWorkoutDetailEvent>(_onRemoveExerciseWorkoutDetailEvent);
     on<UpdateSearchValueWorkoutDetailEvent>(
         _onUpdateSearchValueWorkoutDetailEvent);
+    on<RenameWorkoutDetailEvent>(_onRenameWorkoutDetailEvent);
+    on<DeleteWorkoutDetailEvent>(_onDeleteWorkoutDetailEvent);
   }
   Future<void> _onLoadWorkoutDetailEvent(
       LoadWorkoutDetailEvent event, Emitter<WorkoutDetailState> emit) async {
@@ -84,6 +86,35 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
       emit(state.copyWith(
         status: WorkoutDetailStatusLoading(),
       ));
+    });
+  }
+
+  Future<void> _onRenameWorkoutDetailEvent(
+      RenameWorkoutDetailEvent event,
+      Emitter<WorkoutDetailState> emit) async {
+    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+      emit(state.copyWith(status: WorkoutDetailStatusLoading()));
+      await repositoryWorkout.updateWorkout(
+        workoutId: state.workout.id,
+        name: event.name,
+      );
+      emit(state.copyWith(status: WorkoutDetailStatusUpdated()));
+      final workout =
+          await repositoryWorkout.getWorkout(workoutId: state.workout.id);
+      emit(state.copyWith(
+        status: WorkoutDetailStatusSuccess(),
+        workout: workout,
+      ));
+    });
+  }
+
+  Future<void> _onDeleteWorkoutDetailEvent(
+      DeleteWorkoutDetailEvent event,
+      Emitter<WorkoutDetailState> emit) async {
+    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+      emit(state.copyWith(status: WorkoutDetailStatusLoading()));
+      await repositoryWorkout.deleteWorkout(workoutId: state.workout.id);
+      emit(state.copyWith(status: WorkoutDetailStatusDeleted()));
     });
   }
 }
