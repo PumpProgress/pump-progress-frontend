@@ -51,6 +51,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
+                  if (controller.text.trim().isEmpty) return;
                   context.read<WorkoutDetailBloc>().add(
                         RenameWorkoutDetailEvent(name: controller.text),
                       );
