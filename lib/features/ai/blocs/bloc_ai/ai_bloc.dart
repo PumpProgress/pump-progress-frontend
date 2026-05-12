@@ -45,6 +45,23 @@ class AiBloc extends Bloc<AiEvent, AiState> {
     }
 
     await runSafeEvent(emit, state, AiStatusError.new, () async {
+      // Add user message and mark generating
+      emit(state.copyWith(
+        messages: [
+          ...state.messages,
+          ChatMessage(text: event.prompt, isUser: true),
+        ],
+        isGenerating: true,
+      ));
+
+      // Add empty AI placeholder message
+      emit(state.copyWith(
+        messages: [
+          ...state.messages,
+          const ChatMessage(text: '', isUser: false, isStreaming: true),
+        ],
+      ));
+
       AppLogger.debug('AI Bloc: Creating model with configuration...');
       final model = await FlutterGemma.getActiveModel(
         maxTokens: 2048,
@@ -56,40 +73,42 @@ class AiBloc extends Bloc<AiEvent, AiState> {
         text: event.prompt,
         isUser: true,
       ));
-      StreamSubscription<ModelResponse>? streamSubscription;
 
-      String _message = '';
+      String accumulatedText = '';
       final responseStream = chat.generateChatResponseAsync();
 
-      streamSubscription = responseStream.listen(
-        (response) {
-          if (response is String) {
-            // _message = response as String;
-            _message = "$_message$response";
-          } else if (response is TextResponse) {
-            _message = "$_message${response.token}";
+      await for (final response in responseStream) {
+        String token = '';
+        if (response is TextResponse) {
+          token = response.token;
+          AppLogger.debug('📝 AI Bloc: Token: "${response.token}"');
+        } else if (response is ThinkingResponse) {
+          AppLogger.debug('💭 AI Bloc: Thinking: ${response.content}');
+          continue;
+        } else if (response is FunctionCallResponse) {
+          AppLogger.debug('🔧 AI Bloc: Function call: ${response.name}');
+          continue;
+        }
 
-            // DEBUG: Track text accumulation
-            AppLogger.debug(
-                '📝 GemmaInputField: Text accumulated: "${response.token}" -> total: "${_message}"');
-          } else if (response is ThinkingResponse) {
-            // print thinking content
-            AppLogger.debug(
-                '💭 GemmaInputField: Thinking: ${response.content}');
-          } else if (response is FunctionCallResponse) {
-            AppLogger.debug(
-                '🔧 GemmaInputField: Function call received: ${response.name}');
-          }
-        },
-        onError: (error) {
-          AppLogger.error('❌ GemmaInputField: Stream error: $error',
-              error: error);
-        },
-        onDone: () {
-          AppLogger.debug('🏁 GemmaInputField: Stream completed');
-          streamSubscription?.cancel();
-        },
-      );
+        if (token.isNotEmpty) {
+          accumulatedText += token;
+          final updatedMessages = List<ChatMessage>.from(state.messages);
+          updatedMessages[updatedMessages.length - 1] =
+              updatedMessages.last.copyWith(text: accumulatedText);
+          emit(state.copyWith(messages: updatedMessages));
+        }
+      }
+
+      // Finalize: mark streaming done, re-enable input
+      final finalMessages = List<ChatMessage>.from(state.messages);
+      finalMessages[finalMessages.length - 1] =
+          finalMessages.last.copyWith(text: accumulatedText, isStreaming: false);
+      emit(state.copyWith(
+        messages: finalMessages,
+        isGenerating: false,
+      ));
+
+      AppLogger.debug('🏁 AI Bloc: Stream completed');
     });
   }
 }
