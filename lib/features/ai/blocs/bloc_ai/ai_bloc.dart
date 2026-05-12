@@ -28,6 +28,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       )
           .withProgress((progress) {
         AppLogger.debug('Downloading: ${progress}%');
+        emit(state.copyWith(downloadProgress: progress));
       }).install();
 
       AppLogger.debug('AI Bloc initialized: Model installed successfully');
