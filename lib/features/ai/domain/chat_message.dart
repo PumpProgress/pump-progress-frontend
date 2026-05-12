@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 
+@immutable
 class ChatMessage extends Equatable {
   const ChatMessage({
     required this.text,
