@@ -46,7 +46,6 @@ class _AiChatScaffoldState extends State<AiChatScaffold> {
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.auto_awesome, size: 48, color: PPColors.amethyst300),
           const SizedBox(height: 16),
@@ -86,7 +85,6 @@ class _AiChatScaffoldState extends State<AiChatScaffold> {
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.error_outline, size: 48, color: PPColors.coral300),
           const SizedBox(height: 16),
@@ -115,12 +113,12 @@ class _AiChatScaffoldState extends State<AiChatScaffold> {
     return Column(
       children: [
         Expanded(child: _ChatMessageList(messages: state.messages)),
-        _buildInputBar(context, state),
+        _buildInputBar(context, state.isGenerating),
       ],
     );
   }
 
-  Widget _buildInputBar(BuildContext context, AiState state) {
+  Widget _buildInputBar(BuildContext context, bool isGenerating) {
     return SafeArea(
       top: false,
       child: Container(
@@ -138,7 +136,7 @@ class _AiChatScaffoldState extends State<AiChatScaffold> {
             Expanded(
               child: TextField(
                 controller: _inputController,
-                enabled: !state.isGenerating,
+                enabled: !isGenerating,
                 decoration: const InputDecoration(
                   hintText: 'Type a message…',
                   border: InputBorder.none,
@@ -147,7 +145,7 @@ class _AiChatScaffoldState extends State<AiChatScaffold> {
             ),
             const SizedBox(width: 8),
             IconButton(
-              onPressed: state.isGenerating
+              onPressed: isGenerating
                   ? null
                   : () {
                       final text = _inputController.text.trim();
@@ -173,7 +171,9 @@ class _ChatMessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (messages.isEmpty) {
-      return const SizedBox.shrink();
+      return const Center(
+        child: Text('Start a conversation'),
+      );
     }
     return ListView.builder(
       padding: const EdgeInsets.all(16),

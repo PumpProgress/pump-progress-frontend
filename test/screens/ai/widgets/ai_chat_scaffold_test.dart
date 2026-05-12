@@ -94,7 +94,7 @@ void main() {
           .thenReturn(const AiState(status: AiStatusLoaded()));
       await tester.pumpWidget(_wrap(const AiChatScaffold(title: 'Test'), bloc));
       final field = tester.widget<TextField>(find.byType(TextField));
-      expect(field.enabled, isNot(false));
+      expect(field.enabled, isTrue);
       expect(find.byType(LinearProgressIndicator), findsNothing);
     });
 
