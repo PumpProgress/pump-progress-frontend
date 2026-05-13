@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:pump_progress_frontend/config/theme/colors.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/domain/domain.dart';
@@ -191,6 +192,7 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = message.isStreaming ? '${message.text}…' : message.text;
+    final bodyStyle = Theme.of(context).textTheme.bodyMedium;
     return Align(
       alignment:
           message.isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -206,7 +208,13 @@ class _ChatBubble extends StatelessWidget {
             color: PPColors.neutral300.withValues(alpha: 0.2),
           ),
         ),
-        child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
+        child: message.isUser
+            ? Text(text, style: bodyStyle)
+            : MarkdownBody(
+                data: text,
+                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                    .copyWith(p: bodyStyle),
+              ),
       ),
     );
   }

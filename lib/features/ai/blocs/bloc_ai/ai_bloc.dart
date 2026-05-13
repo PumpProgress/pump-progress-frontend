@@ -10,11 +10,29 @@ import 'package:pump_progress_frontend/utils/helpers/error_status.dart';
 part 'ai_event.dart';
 part 'ai_state.dart';
 
+// Regex that matches any recognised backslash escape sequence in one pass.
+final _escapeSequencePattern = RegExp(r'\\(n|t|r|\\|")');
+
+String _decodeEscapes(String token) => token.replaceAllMapped(
+      _escapeSequencePattern,
+      (m) => switch (m.group(1)) {
+        'n' => '\n',
+        't' => '\t',
+        'r' => '\r',
+        '\\' => '\\',
+        '"' => '"',
+        _ => m.group(0)!,
+      },
+    );
+
 class AiBloc extends Bloc<AiEvent, AiState> {
   AiBloc() : super(AiState()) {
     on<AiInitEvent>(_onAiInitEvent);
     on<SendPromptEvent>(_onSendPromptEvent);
   }
+
+  InferenceChat? _chat;
+
   Future<void> _onAiInitEvent(AiInitEvent event, Emitter<AiState> emit) async {
     await runSafeEvent(emit, state, AiStatusError.new, () async {
       AppLogger.debug('Initializing AI Bloc: Installing model...');
@@ -31,6 +49,12 @@ class AiBloc extends Bloc<AiEvent, AiState> {
         emit(state.copyWith(downloadProgress: progress));
       }).install();
 
+      final model = await FlutterGemma.getActiveModel(
+        maxTokens: 2048,
+        preferredBackend: PreferredBackend.gpu,
+      );
+      _chat = await model.createChat();
+
       AppLogger.debug('AI Bloc initialized: Model installed successfully');
       emit(state.copyWith(status: AiStatusLoaded()));
     });
@@ -45,7 +69,6 @@ class AiBloc extends Bloc<AiEvent, AiState> {
     }
 
     await runSafeEvent(emit, state, AiStatusError.new, () async {
-      // Add user message and mark generating
       emit(state.copyWith(
         messages: [
           ...state.messages,
@@ -54,7 +77,6 @@ class AiBloc extends Bloc<AiEvent, AiState> {
         isGenerating: true,
       ));
 
-      // Add empty AI placeholder message
       emit(state.copyWith(
         messages: [
           ...state.messages,
@@ -62,53 +84,33 @@ class AiBloc extends Bloc<AiEvent, AiState> {
         ],
       ));
 
-      AppLogger.debug('AI Bloc: Creating model with configuration...');
-      final model = await FlutterGemma.getActiveModel(
-        maxTokens: 2048,
-        preferredBackend: PreferredBackend.gpu,
-      );
-
-      final chat = await model.createChat();
-      await chat.addQueryChunk(Message.text(
+      await _chat!.addQueryChunk(Message.text(
         text: event.prompt,
         isUser: true,
       ));
 
-      String accumulatedText = '';
-      final responseStream = chat.generateChatResponseAsync();
+      String rawAccumulated = '';
 
-      await for (final response in responseStream) {
-        String token = '';
-        if (response is TextResponse) {
-          token = response.token;
-          AppLogger.debug('📝 AI Bloc: Token: "${response.token}"');
-        } else if (response is ThinkingResponse) {
-          AppLogger.debug('💭 AI Bloc: Thinking: ${response.content}');
-          continue;
-        } else if (response is FunctionCallResponse) {
-          AppLogger.debug('🔧 AI Bloc: Function call: ${response.name}');
-          continue;
-        }
-
-        if (token.isNotEmpty) {
-          accumulatedText += token;
-          final updatedMessages = List<ChatMessage>.from(state.messages);
-          updatedMessages[updatedMessages.length - 1] =
-              updatedMessages.last.copyWith(text: accumulatedText);
-          emit(state.copyWith(messages: updatedMessages));
-        }
+      await for (final response in _chat!.generateChatResponseAsync()) {
+        if (response is! TextResponse) continue;
+        final token = response.token;
+        if (token.isEmpty) continue;
+        rawAccumulated += token;
+        final updatedMessages = List<ChatMessage>.from(state.messages);
+        updatedMessages[updatedMessages.length - 1] =
+            updatedMessages.last.copyWith(text: _decodeEscapes(rawAccumulated));
+        emit(state.copyWith(messages: updatedMessages));
       }
 
-      // Finalize: mark streaming done, re-enable input
       final finalMessages = List<ChatMessage>.from(state.messages);
-      finalMessages[finalMessages.length - 1] =
-          finalMessages.last.copyWith(text: accumulatedText, isStreaming: false);
+      finalMessages[finalMessages.length - 1] = finalMessages.last
+          .copyWith(text: _decodeEscapes(rawAccumulated), isStreaming: false);
       emit(state.copyWith(
         messages: finalMessages,
         isGenerating: false,
       ));
 
-      AppLogger.debug('🏁 AI Bloc: Stream completed');
+      AppLogger.debug('AI Bloc: Stream completed');
     });
   }
 }
