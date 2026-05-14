@@ -45,13 +45,12 @@ class LocalExercise {
     int limit = 10,
   }) async {
     final database = await db;
-    final result = await database.rawQuery('''
-      SELECT e.* FROM exercises e
-      JOIN muscles m ON e.primary_muscle_id = m.id
-      WHERE LOWER(m.name) LIKE LOWER(?)
-      AND e.deleted_at IS NULL
-      LIMIT ?
-    ''', ['%$muscleName%', limit]);
-    return result.map((row) => ExerciseRow.fromDB(row)).toList();
+    final exercisesResult = await database.rawQuery('''SELECT e.* FROM exercises e
+        JOIN muscles m ON e.primary_muscle_id = m.id
+        WHERE LOWER(m.name) LIKE LOWER(?)
+        AND e.deleted_at IS NULL
+        LIMIT ?
+        ''', ['%$muscleName%', limit]);
+    return exercisesResult.map((row) => ExerciseRow.fromDB(row)).toList();
   }
 }
