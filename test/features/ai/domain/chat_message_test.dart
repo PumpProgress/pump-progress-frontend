@@ -5,8 +5,8 @@ void main() {
   group('ChatMessage', () {
     const base = ChatMessage(text: 'Hello', isUser: true);
 
-    test('props include text, isUser, isStreaming', () {
-      expect(base.props, equals(['Hello', true, false]));
+    test('props include text, isUser, isStreaming, isSystemMessage', () {
+      expect(base.props, equals(['Hello', true, false, false]));
     });
 
     test('copyWith updates text', () {
