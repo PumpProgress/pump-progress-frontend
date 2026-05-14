@@ -79,117 +79,125 @@ class AiBloc extends Bloc<AiEvent, AiState> {
 
     await runSafeEvent(emit, state, AiStatusError.new, () async {
       // Append user message and initial streaming placeholder.
+      var currentMessages = [
+        ...state.messages,
+        ChatMessage(text: event.prompt, isUser: true),
+      ];
       emit(state.copyWith(
-        messages: [
-          ...state.messages,
-          ChatMessage(text: event.prompt, isUser: true),
-        ],
+        messages: currentMessages,
         isGenerating: true,
       ));
-      emit(state.copyWith(
-        messages: [
-          ...state.messages,
-          const ChatMessage(text: '', isUser: false, isStreaming: true),
-        ],
-      ));
+      currentMessages = [
+        ...currentMessages,
+        const ChatMessage(text: '', isUser: false, isStreaming: true),
+      ];
+      emit(state.copyWith(messages: currentMessages));
 
-      await _chat!.addQueryChunk(Message.text(
-        text: event.prompt,
-        isUser: true,
-      ));
+      try {
+        await _chat!.addQueryChunk(Message.text(
+          text: event.prompt,
+          isUser: true,
+        ));
 
-      String rawAccumulated = '';
-      bool handledToolCall = false;
+        String rawAccumulated = '';
+        bool handledToolCall = false;
 
-      await for (final response in _chat!.generateChatResponseAsync()) {
-        if (response is TextResponse) {
-          final token = response.token;
-          if (token.isEmpty) continue;
-          rawAccumulated += token;
-          final updatedMessages = List<ChatMessage>.from(state.messages);
-          updatedMessages[updatedMessages.length - 1] =
-              updatedMessages.last
-                  .copyWith(text: _decodeEscapes(rawAccumulated));
-          emit(state.copyWith(messages: updatedMessages));
-        } else if (response is FunctionCallResponse) {
-          handledToolCall = true;
-
-          // Remove the streaming placeholder.
-          final msgsBeforeTool = List<ChatMessage>.from(state.messages)
-            ..removeLast();
-
-          // Show a status chip while the tool runs.
-          final muscle =
-              response.args['muscle'] as String? ?? 'muscle';
-          emit(state.copyWith(messages: [
-            ...msgsBeforeTool,
-            ChatMessage(
-              text: 'Fetching exercises for "$muscle"...',
-              isUser: false,
-              isSystemMessage: true,
-            ),
-          ]));
-
-          // Execute the tool via the dispatcher.
-          final toolResult = await _toolDispatcher.dispatch(response);
-          AppLogger.debug('Tool result: $toolResult');
-
-          // Feed the result back to the model.
-          await _chat!.addQueryChunk(Message.toolResponse(
-            toolName: response.name,
-            response: toolResult,
-          ));
-
-          // Append a fresh streaming placeholder for the final response.
-          emit(state.copyWith(
-            messages: [
-              ...state.messages,
-              const ChatMessage(text: '', isUser: false, isStreaming: true),
-            ],
-          ));
-
-          // Stream the model's final response.
-          String finalAccumulated = '';
-          await for (final finalResponse
-              in _chat!.generateChatResponseAsync()) {
-            if (finalResponse is! TextResponse) continue;
-            final token = finalResponse.token;
+        await for (final response in _chat!.generateChatResponseAsync()) {
+          if (response is TextResponse) {
+            final token = response.token;
             if (token.isEmpty) continue;
-            finalAccumulated += token;
-            final updatedMessages = List<ChatMessage>.from(state.messages);
-            updatedMessages[updatedMessages.length - 1] =
-                updatedMessages.last
-                    .copyWith(text: _decodeEscapes(finalAccumulated));
-            emit(state.copyWith(messages: updatedMessages));
-          }
+            rawAccumulated += token;
+            currentMessages = List<ChatMessage>.from(currentMessages);
+            currentMessages[currentMessages.length - 1] =
+                currentMessages.last
+                    .copyWith(text: _decodeEscapes(rawAccumulated));
+            emit(state.copyWith(messages: currentMessages));
+          } else if (response is FunctionCallResponse) {
+            handledToolCall = true;
 
-          // Finalise the last message.
-          final finalMessages = List<ChatMessage>.from(state.messages);
-          finalMessages[finalMessages.length - 1] =
-              finalMessages.last.copyWith(
-            text: _decodeEscapes(finalAccumulated),
+            // Remove the streaming placeholder.
+            final msgsBeforeTool = List<ChatMessage>.from(currentMessages)
+              ..removeLast();
+
+            // Show a status chip while the tool runs.
+            final muscle = response.args['muscle'] as String? ?? 'muscle';
+            final msgsWithChip = [
+              ...msgsBeforeTool,
+              ChatMessage(
+                text: 'Fetching exercises for "$muscle"...',
+                isUser: false,
+                isSystemMessage: true,
+              ),
+            ];
+            currentMessages = msgsWithChip;
+            emit(state.copyWith(messages: currentMessages));
+
+            // Execute the tool via the dispatcher.
+            final toolResult = await _toolDispatcher.dispatch(response);
+            AppLogger.debug('Tool result: $toolResult');
+
+            // Feed the result back to the model.
+            await _chat!.addQueryChunk(Message.toolResponse(
+              toolName: response.name,
+              response: toolResult,
+            ));
+
+            // Append a fresh streaming placeholder for the final response.
+            currentMessages = [
+              ...msgsWithChip,
+              const ChatMessage(text: '', isUser: false, isStreaming: true),
+            ];
+            emit(state.copyWith(messages: currentMessages));
+
+            // Stream the model's final response.
+            String finalAccumulated = '';
+            await for (final finalResponse
+                in _chat!.generateChatResponseAsync()) {
+              if (finalResponse is! TextResponse) continue;
+              final token = finalResponse.token;
+              if (token.isEmpty) continue;
+              finalAccumulated += token;
+              currentMessages = List<ChatMessage>.from(currentMessages);
+              currentMessages[currentMessages.length - 1] =
+                  currentMessages.last
+                      .copyWith(text: _decodeEscapes(finalAccumulated));
+              emit(state.copyWith(messages: currentMessages));
+            }
+
+            // Finalise the last message.
+            currentMessages = List<ChatMessage>.from(currentMessages);
+            currentMessages[currentMessages.length - 1] =
+                currentMessages.last.copyWith(
+              text: _decodeEscapes(finalAccumulated),
+              isStreaming: false,
+            );
+            emit(state.copyWith(
+              messages: currentMessages,
+              isGenerating: false,
+            ));
+          }
+        }
+
+        // Pure text response — finalise the streaming placeholder normally.
+        if (!handledToolCall) {
+          currentMessages = List<ChatMessage>.from(currentMessages);
+          currentMessages[currentMessages.length - 1] =
+              currentMessages.last.copyWith(
+            text: _decodeEscapes(rawAccumulated),
             isStreaming: false,
           );
           emit(state.copyWith(
-            messages: finalMessages,
+            messages: currentMessages,
             isGenerating: false,
           ));
+          AppLogger.debug('AI Bloc: Stream completed');
         }
-      }
-
-      // Pure text response — finalise the streaming placeholder normally.
-      if (!handledToolCall) {
-        final finalMessages = List<ChatMessage>.from(state.messages);
-        finalMessages[finalMessages.length - 1] =
-            finalMessages.last.copyWith(
-          text: _decodeEscapes(rawAccumulated),
-          isStreaming: false,
-        );
+      } catch (_) {
         emit(state.copyWith(
-          messages: finalMessages,
           isGenerating: false,
+          messages: currentMessages,
         ));
-        AppLogger.debug('AI Bloc: Stream completed');
+        rethrow;
       }
     });
   }
