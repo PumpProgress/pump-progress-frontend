@@ -34,22 +34,21 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
       StartSyncEvent event, Emitter<SyncState> emit) async {
     if (state.status is SyncBlocStatusInProgress) return;
 
-    await runSafeEvent(emit, state, SyncBlocStatusError.new, () async {
+    var syncFailed = false;
+    await runSafeEvent(emit, () => state, SyncBlocStatusError.new, () async {
+      emit(state.copyWith(status: SyncBlocStatusInProgress()));
       try {
-        emit(state.copyWith(status: SyncBlocStatusInProgress()));
         await repositorySync.syncTables();
+        _consecutiveFailures = 0;
         emit(state.copyWith(
           status: SyncBlocStatusSuccess(),
           history: _appendAttempt(state.history, success: true),
         ));
-        _consecutiveFailures = 0;
         if (_periodicTimer == null && _periodicInterval != null) {
           _startPeriodicTimer(_periodicInterval!);
         }
       } catch (e) {
-        emit(state.copyWith(
-          history: _appendAttempt(state.history, success: false),
-        ));
+        syncFailed = true;
         if (_periodicInterval != null) {
           _consecutiveFailures++;
           _scheduleBackoffRetry();
@@ -57,6 +56,12 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
         rethrow;
       }
     });
+
+    if (syncFailed) {
+      emit(state.copyWith(
+        history: _appendAttempt(state.history, success: false),
+      ));
+    }
   }
 
   Duration _getNextInterval() {

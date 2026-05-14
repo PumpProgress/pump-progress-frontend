@@ -20,7 +20,7 @@ class ExerciseSearchBloc
     UpdateSearchTermEvent event,
     Emitter<ExerciseSearchState> emit,
   ) async {
-    await runSafeEvent(emit, state, ExerciseSearchError.new, () async {
+    await runSafeEvent(emit, () => state, ExerciseSearchError.new, () async {
       emit(state.copyWith(status: const ExerciseSearchLoading()));
 
       final exercises =

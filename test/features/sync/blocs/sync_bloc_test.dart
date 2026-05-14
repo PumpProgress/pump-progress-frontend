@@ -286,7 +286,7 @@ void main() {
         final bloc = SyncBloc(repositorySync: mockRepo);
         bloc.add(const StartPeriodicSyncEvent(interval: Duration(minutes: 5)));
 
-        // First tick → fails → schedules 30s backoff retry
+        // First tick → fails → schedules 2-minute backoff retry
         async.elapse(const Duration(minutes: 5));
         async.flushMicrotasks();
         expect(callCount, 1);
@@ -296,7 +296,7 @@ void main() {
         async.flushMicrotasks();
 
         // Advance past the backoff duration — retry must NOT fire
-        async.elapse(const Duration(seconds: 30));
+        async.elapse(const Duration(minutes: 2));
         async.flushMicrotasks();
         expect(callCount, 1); // no retry fired
 
@@ -308,7 +308,7 @@ void main() {
   // ─── Backoff retry ────────────────────────────────────────────────────────
 
   group('Backoff retry', () {
-    test('first failure schedules 30-second retry', () {
+    test('first failure schedules 2-minute retry', () {
       fakeAsync((async) {
         when(() => mockRepo.syncTables()).thenThrow(Exception('fail'));
         final bloc = SyncBloc(repositorySync: mockRepo);
@@ -321,8 +321,8 @@ void main() {
         // syncTables called once (from tick), failed
         verify(() => mockRepo.syncTables()).called(1);
 
-        // Periodic timer was cancelled; retry fires in 30s
-        async.elapse(const Duration(seconds: 30));
+        // Periodic timer was cancelled; retry fires in 2m
+        async.elapse(const Duration(minutes: 2));
         async.flushMicrotasks();
 
         verify(() => mockRepo.syncTables()).called(1); // called again for retry
@@ -346,8 +346,8 @@ void main() {
         async.elapse(const Duration(minutes: 5));
         async.flushMicrotasks();
 
-        // Backoff retry (30s) → succeeds, periodic should restart
-        async.elapse(const Duration(seconds: 30));
+        // Backoff retry (2m) → succeeds, periodic should restart
+        async.elapse(const Duration(minutes: 2));
         async.flushMicrotasks();
 
         // Now the periodic timer is running again; next 5-min tick fires
@@ -359,7 +359,7 @@ void main() {
       });
     });
 
-    test('consecutive failures cap backoff at 5 minutes', () {
+    test('consecutive failures cap backoff at 16 minutes', () {
       fakeAsync((async) {
         var callCount = 0;
         when(() => mockRepo.syncTables()).thenAnswer((_) async {
@@ -370,33 +370,33 @@ void main() {
         final bloc = SyncBloc(repositorySync: mockRepo);
         bloc.add(const StartPeriodicSyncEvent(interval: Duration(minutes: 5)));
 
-        // 1st tick → fail → retry in 30s
+        // 1st tick → fail → retry in 2m
         async.elapse(const Duration(minutes: 5));
         async.flushMicrotasks();
         expect(callCount, 1);
 
-        // retry 1 → fail → retry in 1m
-        async.elapse(const Duration(seconds: 30));
+        // retry 1 → fail → retry in 4m
+        async.elapse(const Duration(minutes: 2));
         async.flushMicrotasks();
         expect(callCount, 2);
 
-        // retry 2 → fail → retry in 2m
-        async.elapse(const Duration(minutes: 1));
+        // retry 2 → fail → retry in 8m
+        async.elapse(const Duration(minutes: 4));
         async.flushMicrotasks();
         expect(callCount, 3);
 
-        // retry 3 → fail → retry in 5m
-        async.elapse(const Duration(minutes: 2));
+        // retry 3 → fail → retry in 16m
+        async.elapse(const Duration(minutes: 8));
         async.flushMicrotasks();
         expect(callCount, 4);
 
-        // retry 4 → fail → retry in 5m (capped, not longer)
-        async.elapse(const Duration(minutes: 5));
+        // retry 4 → fail → retry in 16m (capped, not longer)
+        async.elapse(const Duration(minutes: 16));
         async.flushMicrotasks();
         expect(callCount, 5);
 
-        // retry 5 → fail → retry still in 5m (not out-of-bounds)
-        async.elapse(const Duration(minutes: 5));
+        // retry 5 → fail → retry still in 16m (not out-of-bounds)
+        async.elapse(const Duration(minutes: 16));
         async.flushMicrotasks();
         expect(callCount, 6);
 

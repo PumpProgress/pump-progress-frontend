@@ -11,7 +11,7 @@ abstract class ErrorStatus {
 
 Future<void> runSafeEvent(
   Emitter emit,
-  state,
+  dynamic Function() getState,
   Function(String) errorStatus,
   Future<void> Function() action,
 ) async {
@@ -24,7 +24,7 @@ Future<void> runSafeEvent(
       error: e,
     );
     ErrorEventBus.emitError(e.toString());
-    emit(state.copyWith(
+    emit(getState().copyWith(
       status: errorStatus(e.toString()),
     ));
     await Sentry.captureException(e, stackTrace: stackTrace);

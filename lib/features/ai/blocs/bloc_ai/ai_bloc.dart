@@ -39,7 +39,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
   InferenceChat? _chat;
 
   Future<void> _onAiInitEvent(AiInitEvent event, Emitter<AiState> emit) async {
-    await runSafeEvent(emit, state, AiStatusError.new, () async {
+    await runSafeEvent(emit, () => state, AiStatusError.new, () async {
       AppLogger.debug('Initializing AI Bloc: Installing model...');
       emit(state.copyWith(status: AiStatusInstalling()));
 
@@ -78,7 +78,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       return;
     }
 
-    await runSafeEvent(emit, state, AiStatusError.new, () async {
+    await runSafeEvent(emit, () => state, AiStatusError.new, () async {
       // Append user message and initial streaming placeholder.
       var currentMessages = [
         ...state.messages,

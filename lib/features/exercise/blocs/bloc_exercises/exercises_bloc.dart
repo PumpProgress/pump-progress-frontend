@@ -17,7 +17,7 @@ class ExercisesBloc extends Bloc<ExercisesEvent, ExercisesState> {
 
   Future<void> _onFetchExercisesEvent(
       ExercisesEvent event, Emitter<ExercisesState> emit) async {
-    await runSafeEvent(emit, state, ExercisesStatusError.new, () async {
+    await runSafeEvent(emit, () => state, ExercisesStatusError.new, () async {
       emit(state.copyWith(status: ExercisesStatusLoading()));
 
       final exercises = await repositoryExercises.getExercises();

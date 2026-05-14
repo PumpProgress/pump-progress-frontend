@@ -39,6 +39,7 @@ class EquipmentRow implements DBRow {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -61,6 +62,7 @@ class EquipmentRow implements DBRow {
     );
   }
 
+  @override
   Map<String, dynamic> toDB() {
     return <String, dynamic>{
       'id': id,
@@ -83,6 +85,7 @@ class EquipmentRow implements DBRow {
     );
   }
 
+  @override
   String toJson() => json.encode(toMap());
 
   factory EquipmentRow.fromJson(String source) =>

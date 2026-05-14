@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:pump_progress_frontend/utils/helpers/sql_database_helper/db_rows.dart';
 
 class WorkoutRow implements DbRowWrite {
+  @override
   final String id;
   final String userId;
   final String name;
@@ -85,6 +86,7 @@ class WorkoutRow implements DbRowWrite {
     );
   }
 
+  @override
   Map<String, dynamic> toDB() {
     return {
       'id': id,

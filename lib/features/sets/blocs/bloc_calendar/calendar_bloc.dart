@@ -16,7 +16,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   Future<void> _onFetchSeriesByMonthEvent(
       FetchSeriesByMonthEvent event, Emitter<CalendarState> emit) async {
-    await runSafeEvent(emit, state, CalendarStatusError.new, () async {
+    await runSafeEvent(emit, () => state, CalendarStatusError.new, () async {
       final userCalendar = await repositorySets.getCalendarInfoByUserId(
         userId: event.userId,
         month: event.month,
@@ -32,7 +32,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       status: const CalendarStatusLoading(),
       exerciseSummaries: [],
     ));
-    await runSafeEvent(emit, state, CalendarStatusError.new, () async {
+    await runSafeEvent(emit, () => state, CalendarStatusError.new, () async {
       final summaries = await repositorySets.getExerciseSummariesByDate(
         userId: event.userId,
         date: event.day,

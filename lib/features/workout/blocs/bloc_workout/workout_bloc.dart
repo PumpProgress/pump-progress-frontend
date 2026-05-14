@@ -18,7 +18,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   }
   Future<void> _onFetchWorkouts(
       FetchWorkoutEvent event, Emitter<WorkoutState> emit) async {
-    await runSafeEvent(emit, state, WorkoutsBlocStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutsBlocStatusError.new, () async {
       final workouts =
           await repositoryWorkout.getWorkouts(userId: event.userId);
       AppLogger.debug('WorkoutBloc._onFetchWorkouts: $workouts');
@@ -31,7 +31,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
   Future<void> _onAddWorkoutWorkoutEvent(
       AddWorkoutWorkoutEvent event, Emitter<WorkoutState> emit) async {
-    await runSafeEvent(emit, state, WorkoutsBlocStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutsBlocStatusError.new, () async {
       emit(state.copyWith(status: WorkoutsBlocStatusLoading()));
 
       final workout = await repositoryWorkout.createWorkout(
@@ -50,7 +50,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     AddExerciseToWorkoutEvent event,
     Emitter<WorkoutState> emit,
   ) async {
-    await runSafeEvent(emit, state, WorkoutsBlocStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutsBlocStatusError.new, () async {
       emit(state.copyWith(status: WorkoutsBlocStatusLoading()));
       final updatedWorkout = await repositoryWorkout.addExerciseToWorkout(
         workoutId: event.workoutId,

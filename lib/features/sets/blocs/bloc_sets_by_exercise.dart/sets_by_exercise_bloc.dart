@@ -25,7 +25,7 @@ class SetsByExerciseBloc
   }
   Future<void> _onLoadSeriesByExercise(LoadSeriesByExerciseEvent event,
       Emitter<SetsByExerciseState> emit) async {
-    await runSafeEvent(emit, state, ExercisePageStatusError.new, () async {
+    await runSafeEvent(emit, () => state, ExercisePageStatusError.new, () async {
       emit(state.copyWith(status: SetsByExerciseStatusLoading()));
       final sets = await repositorySets.getSeriesByExercise(
           exerciseId: event.exerciseId, userId: event.userId);
@@ -44,7 +44,7 @@ class SetsByExerciseBloc
 
   Future<void> _onAddNewSeries(
       AddNewSeriesEvent event, Emitter<SetsByExerciseState> emit) async {
-    await runSafeEvent(emit, state, ExercisePageStatusError.new, () async {
+    await runSafeEvent(emit, () => state, ExercisePageStatusError.new, () async {
       final series = await repositorySets.createSeries(
         exerciseId: state.exercise.id,
         repetitions: event.repetitions,
@@ -60,7 +60,7 @@ class SetsByExerciseBloc
 
   Future<void> _onEditSeries(
       EditSeriesEvent event, Emitter<SetsByExerciseState> emit) async {
-    await runSafeEvent(emit, state, ExercisePageStatusError.new, () async {
+    await runSafeEvent(emit, () => state, ExercisePageStatusError.new, () async {
       final updatedSeries = await repositorySets.updateSeries(
         seriesId: event.seriesId,
         repetitions: event.repetitions,
@@ -78,7 +78,7 @@ class SetsByExerciseBloc
 
   Future<void> _onDeleteSeries(
       DeleteSeriesEvent event, Emitter<SetsByExerciseState> emit) async {
-    await runSafeEvent(emit, state, ExercisePageStatusError.new, () async {
+    await runSafeEvent(emit, () => state, ExercisePageStatusError.new, () async {
       await repositorySets.deleteSeries(seriesId: event.seriesId);
       final sets =
           state.sets.where((series) => series.id != event.seriesId).toList();
