@@ -39,10 +39,11 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       emit(state.copyWith(status: AiStatusInstalling()));
 
       await FlutterGemma.installModel(
-        modelType: ModelType.gemmaIt,
+        modelType: ModelType.gemma4,
+        fileType: ModelFileType.litertlm,
       )
           .fromNetwork(
-        'https://huggingface.co/litert-community/gemma-3-270m-it/resolve/main/gemma3-270m-it-q8.task',
+        'https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm',
       )
           .withProgress((progress) {
         AppLogger.debug('Downloading: $progress%');
