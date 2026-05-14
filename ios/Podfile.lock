@@ -2,30 +2,25 @@ PODS:
   - background_downloader (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_gemma (0.12.3):
+  - flutter_gemma (0.15.0):
     - Flutter
-    - MediaPipeTasksGenAI (= 0.10.24)
-    - MediaPipeTasksGenAIC (= 0.10.24)
+    - MediaPipeTasksGenAI (= 0.10.33)
+    - MediaPipeTasksGenAIC (= 0.10.33)
     - TensorFlowLiteC (= 0.0.1-nightly.20250619)
-    - TensorFlowLiteSelectTfOps (= 0.0.1-nightly.20250619)
-    - TensorFlowLiteSwift (= 0.0.1-nightly.20250619)
   - large_file_handler (0.0.1):
     - Flutter
-  - MediaPipeTasksGenAI (0.10.24):
-    - MediaPipeTasksGenAIC (= 0.10.24)
-  - MediaPipeTasksGenAIC (0.10.24)
+  - MediaPipeTasksGenAI (0.10.33):
+    - MediaPipeTasksGenAIC (= 0.10.33)
+  - MediaPipeTasksGenAIC (0.10.33)
   - package_info_plus (0.4.5):
     - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - Sentry/HybridSDK (8.52.1)
-  - sentry_flutter (9.6.0):
+  - Sentry/HybridSDK (8.58.2)
+  - sentry_flutter (9.20.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.52.1)
+    - Sentry/HybridSDK (= 8.58.2)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -35,13 +30,6 @@ PODS:
   - TensorFlowLiteC (0.0.1-nightly.20250619):
     - TensorFlowLiteC/Core (= 0.0.1-nightly.20250619)
   - TensorFlowLiteC/Core (0.0.1-nightly.20250619)
-  - TensorFlowLiteSelectTfOps (0.0.1-nightly.20250619)
-  - TensorFlowLiteSwift (0.0.1-nightly.20250619):
-    - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20250619)
-  - TensorFlowLiteSwift/Core (0.0.1-nightly.20250619):
-    - TensorFlowLiteC (= 0.0.1-nightly.20250619)
-    - TensorFlowLiteSwift/Privacy (= 0.0.1-nightly.20250619)
-  - TensorFlowLiteSwift/Privacy (0.0.1-nightly.20250619)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -52,7 +40,6 @@ DEPENDENCIES:
   - flutter_gemma (from `.symlinks/plugins/flutter_gemma/ios`)
   - large_file_handler (from `.symlinks/plugins/large_file_handler/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -65,8 +52,6 @@ SPEC REPOS:
     - MediaPipeTasksGenAIC
     - Sentry
     - TensorFlowLiteC
-    - TensorFlowLiteSelectTfOps
-    - TensorFlowLiteSwift
 
 EXTERNAL SOURCES:
   background_downloader:
@@ -79,8 +64,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/large_file_handler/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   sentry_flutter:
@@ -94,22 +77,19 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   background_downloader: 50e91d979067b82081aba359d7d916b3ba5fadad
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_gemma: 1ed92344566f8c14a815ce25d85f86e1781cf67e
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_gemma: 68d5423ddc75e003043fb2cefe3c4b0498a0a440
   large_file_handler: b37481e9b4972562ffcdc8f75700f47cd592bcec
-  MediaPipeTasksGenAI: 076ba7032a6e9da16db9c7cf0c3b67c751c18bc1
-  MediaPipeTasksGenAIC: ec35d9f431f6a6b651a0bc9f67a4ed149ffa575c
+  MediaPipeTasksGenAI: 8eed8e6d03fe26d30c4205cb5295ec7b394432ad
+  MediaPipeTasksGenAIC: cb098ecea44e248efe8fe7e2f62b4cb0df781802
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
-  sentry_flutter: 9b1e3e6934cb7040ffb71383c95a35f73523180c
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  Sentry: de29b881e83bd91cf99a927f82f1fd86bfb39db2
+  sentry_flutter: cbb414ef141b64f901bc1ba32daa871349510ce4
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   TensorFlowLiteC: 215ef57653dd0fa09a474e7d94d79ae64a870b28
-  TensorFlowLiteSelectTfOps: c71d7dcd063f5d66ae1b9a85cc5aa993f824eff9
-  TensorFlowLiteSwift: 6de8da348de331778167a0f751ad74c41d8b0554
-  webview_flutter_wkwebview: 1821ceac936eba6f7984d89a9f3bcb4dea99ebb2
+  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
 PODFILE CHECKSUM: 44ccf19c63d24856b04a2eb242c3bfac8cefbe23
 
