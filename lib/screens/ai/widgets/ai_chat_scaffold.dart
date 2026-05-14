@@ -191,6 +191,34 @@ class _ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (message.isSystemMessage) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: PPColors.amethyst400.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.construction,
+                  size: 12, color: PPColors.neutral300),
+              const SizedBox(width: 6),
+              Text(
+                message.text,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: PPColors.neutral300,
+                      fontStyle: FontStyle.italic,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final text = message.isStreaming ? '${message.text}…' : message.text;
     final bodyStyle = Theme.of(context).textTheme.bodyMedium;
     return Align(

@@ -15,6 +15,7 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/user/repository/repository.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/blocs.dart';
@@ -95,7 +96,11 @@ class _AppState extends State<App> {
       BlocProvider(
           lazy: false,
           create: (context) {
-            return AiBloc()..add(const AiInitEvent());
+            return AiBloc(
+              toolDispatcher: AiToolDispatcher(
+                repositoryExercises: context.read<RepositoryExercises>(),
+              ),
+            )..add(const AiInitEvent());
           }),
       BlocProvider(create: (context) {
         return SyncBloc(

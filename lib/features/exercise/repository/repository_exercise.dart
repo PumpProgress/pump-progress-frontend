@@ -26,4 +26,17 @@ class RepositoryExercises {
         .toList();
     return exercises;
   }
+
+  Future<List<Exercise>> getExercisesByMuscle(
+    String muscleName, {
+    int limit = 10,
+  }) async {
+    final exerciseRows = await localExercise.getExercisesByMuscle(
+      muscleName: muscleName,
+      limit: limit,
+    );
+    return exerciseRows
+        .map((exerciseRow) => Exercise.fromMap(exerciseRow.toMap()))
+        .toList();
+  }
 }
