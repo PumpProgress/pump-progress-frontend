@@ -6,6 +6,7 @@ import 'package:flutter_gemma/flutter_gemma.dart';
 import 'package:pump_progress_frontend/features/ai/domain/domain.dart';
 import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
+import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_status.dart';
 
 part 'ai_event.dart';
@@ -192,12 +193,19 @@ class AiBloc extends Bloc<AiEvent, AiState> {
           ));
           AppLogger.debug('AI Bloc: Stream completed');
         }
-      } catch (_) {
+      } catch (e, stackTrace) {
+        AppLogger.error(
+          'Error in SendPromptEvent: $e',
+          stackTrace: stackTrace,
+          error: e,
+        );
+        ErrorEventBus.emitError(e.toString());
         emit(state.copyWith(
           isGenerating: false,
           messages: currentMessages,
+          status: AiStatusError(e.toString()),
         ));
-        rethrow;
+        // Do NOT rethrow — runSafeEvent's catch would overwrite messages with stale snapshot
       }
     });
   }
