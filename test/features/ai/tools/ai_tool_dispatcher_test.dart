@@ -5,16 +5,40 @@ import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart
 import 'package:pump_progress_frontend/features/ai/tools/resolved_tool_use.dart';
 import 'package:pump_progress_frontend/features/exercise/domain/exercise.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
+import 'package:pump_progress_frontend/features/muscle/domain/muscle.dart';
+import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
 
 class MockRepositoryExercises extends Mock implements RepositoryExercises {}
 
+class MockProviderMuscle extends Mock implements ProviderMuscle {}
+
 void main() {
   late MockRepositoryExercises mockRepo;
+  late MockProviderMuscle mockMuscles;
   late AiToolDispatcher dispatcher;
 
-  setUp(() {
+  setUp(() async {
     mockRepo = MockRepositoryExercises();
-    dispatcher = AiToolDispatcher(repositoryExercises: mockRepo);
+    mockMuscles = MockProviderMuscle();
+    when(() => mockMuscles.getMuscles()).thenAnswer((_) async => [
+          Muscle(id: 1, name: 'chest', code: 'chest'),
+          Muscle(id: 2, name: 'biceps', code: 'biceps'),
+        ]);
+    dispatcher = AiToolDispatcher(
+      repositoryExercises: mockRepo,
+      providerMuscle: mockMuscles,
+    );
+    await dispatcher.init();
+  });
+
+  group('AiToolDispatcher.init', () {
+    test('populates tool enum with muscle names from provider', () {
+      final muscleEnum =
+          ((dispatcher.tools.first.parameters!['properties']
+                  as Map<String, dynamic>)['muscle']
+              as Map<String, dynamic>)['enum'] as List;
+      expect(muscleEnum, containsAll(['chest', 'biceps']));
+    });
   });
 
   group('AiToolDispatcher.tools', () {
@@ -41,14 +65,15 @@ void main() {
     test('message interpolates muscle arg', () {
       final call = FunctionCallResponse(
         name: 'get_exercises_by_muscle',
-        args: {'muscle': 'biceps'},
+        args: {'muscle': 'chest'},
       );
       final resolved = dispatcher.resolve(call);
-      expect(resolved.message, contains('biceps'));
+      expect(resolved.message, contains('chest'));
     });
 
     test('execute calls repository and returns exercises map', () async {
-      when(() => mockRepo.getExercisesByMuscle('chest', limit: any(named: 'limit')))
+      when(() => mockRepo.getExercisesByMuscle('chest',
+              limit: any(named: 'limit')))
           .thenAnswer((_) async => [
                 const Exercise(
                   id: 1,
