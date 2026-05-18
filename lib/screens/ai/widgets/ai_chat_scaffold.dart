@@ -206,12 +206,14 @@ class _ChatBubble extends StatelessWidget {
               const Icon(Icons.construction,
                   size: 12, color: PPColors.neutral300),
               const SizedBox(width: 6),
-              Text(
-                message.text,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: PPColors.neutral300,
-                      fontStyle: FontStyle.italic,
-                    ),
+              Flexible(
+                child: Text(
+                  message.text,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: PPColors.neutral300,
+                        fontStyle: FontStyle.italic,
+                      ),
+                ),
               ),
             ],
           ),
