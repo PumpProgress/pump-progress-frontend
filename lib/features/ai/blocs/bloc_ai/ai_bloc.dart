@@ -59,6 +59,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
         maxTokens: 2048,
         preferredBackend: PreferredBackend.gpu,
       );
+      await _toolDispatcher.init();
       _chat = await model.createChat(
         supportsFunctionCalls: true,
         tools: _toolDispatcher.tools,
