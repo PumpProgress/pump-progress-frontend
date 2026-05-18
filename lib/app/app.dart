@@ -18,6 +18,7 @@ import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
+import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/sync/repository/repository.dart';
 import 'package:pump_progress_frontend/features/workout/blocs/blocs.dart';
@@ -77,6 +78,9 @@ class _AppState extends State<App> {
       RepositoryProvider<RepositoryExercises>(
         create: (context) => RepositoryExercises(),
       ),
+      RepositoryProvider<ProviderMuscle>(
+        create: (context) => ProviderMuscle(),
+      ),
       RepositoryProvider<RepositorySets>(
         create: (context) => RepositorySets(),
       ),
@@ -99,6 +103,7 @@ class _AppState extends State<App> {
             return AiBloc(
               toolDispatcher: AiToolDispatcher(
                 repositoryExercises: context.read<RepositoryExercises>(),
+                providerMuscle: context.read<ProviderMuscle>(),
               ),
             )..add(const AiInitEvent());
           }),
