@@ -48,7 +48,10 @@ class AiToolDispatcher {
     ];
   }
 
-  List<Tool> get tools => _definitions.map((d) => d.tool).toList();
+  List<Tool> get tools {
+    assert(_definitions.isNotEmpty, 'AiToolDispatcher.init() must be called before accessing tools');
+    return _definitions.map((d) => d.tool).toList();
+  }
 
   ResolvedToolUse resolve(FunctionCallResponse call) {
     final def = _definitionFor(call.name);

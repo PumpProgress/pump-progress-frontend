@@ -37,7 +37,7 @@ void main() {
           ((dispatcher.tools.first.parameters!['properties']
                   as Map<String, dynamic>)['muscle']
               as Map<String, dynamic>)['enum'] as List;
-      expect(muscleEnum, containsAll(['chest', 'biceps']));
+      expect(muscleEnum, equals(['chest', 'biceps']));
     });
   });
 
