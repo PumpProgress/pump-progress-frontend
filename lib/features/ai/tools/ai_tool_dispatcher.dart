@@ -1,4 +1,6 @@
 import 'package:flutter_gemma/flutter_gemma.dart';
+import 'package:pump_progress_frontend/features/ai/tools/resolved_tool_use.dart';
+import 'package:pump_progress_frontend/features/ai/tools/tool_definition.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 
 class AiToolDispatcher {
@@ -6,35 +8,49 @@ class AiToolDispatcher {
 
   final RepositoryExercises repositoryExercises;
 
-  static const List<Tool> tools = [
-    Tool(
-      name: 'get_exercises_by_muscle',
-      description:
-          'Returns a list of exercises that target a specific muscle group.',
-      parameters: {
-        'type': 'object',
-        'properties': {
-          'muscle': {
-            'type': 'string',
-            'description': 'The muscle group to filter by.',
-            'enum': ['chest'], // TODO: fill in all muscle names from the DB
+  late final List<ToolDefinition> _definitions = [
+    ToolDefinition(
+      tool: const Tool(
+        name: 'get_exercises_by_muscle',
+        description:
+            'Returns a list of exercises that target a specific muscle group.',
+        parameters: {
+          'type': 'object',
+          'properties': {
+            'muscle': {
+              'type': 'string',
+              'description': 'The muscle group to filter by.',
+              'enum': ['chest'], // TODO: fill in all muscle names from the DB
+            },
+            'limit': {
+              'type': 'integer',
+              'description':
+                  'Maximum number of exercises to return. Defaults to 10.',
+            },
           },
-          'limit': {
-            'type': 'integer',
-            'description':
-                'Maximum number of exercises to return. Defaults to 10.',
-          },
+          'required': ['muscle'],
         },
-        'required': ['muscle'],
-      },
+      ),
+      messageBuilder: (args) =>
+          'Fetching exercises for "${args['muscle'] ?? 'muscle'}"...',
+      handler: _getExercisesByMuscle,
     ),
   ];
 
-  Future<Map<String, dynamic>> dispatch(FunctionCallResponse call) =>
-      switch (call.name) {
-        'get_exercises_by_muscle' => _getExercisesByMuscle(call.args),
-        _ => Future.value({'error': 'Unknown tool: ${call.name}'}),
-      };
+  List<Tool> get tools => _definitions.map((d) => d.tool).toList();
+
+  ResolvedToolUse resolve(FunctionCallResponse call) {
+    final def = _definitionFor(call.name);
+    return ResolvedToolUse(
+      message: def.messageBuilder(call.args),
+      execute: () => def.handler(call.args),
+    );
+  }
+
+  ToolDefinition _definitionFor(String name) => _definitions.firstWhere(
+        (d) => d.tool.name == name,
+        orElse: () => throw StateError('Unknown tool: $name'),
+      );
 
   Future<Map<String, dynamic>> _getExercisesByMuscle(
     Map<String, dynamic> args,
