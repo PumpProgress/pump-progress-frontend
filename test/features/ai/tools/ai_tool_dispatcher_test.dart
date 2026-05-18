@@ -34,7 +34,7 @@ void main() {
   group('AiToolDispatcher.init', () {
     test('populates tool enum with muscle names from provider', () {
       final muscleEnum =
-          ((dispatcher.tools.first.parameters!['properties']
+          ((dispatcher.tools.first.parameters['properties']
                   as Map<String, dynamic>)['muscle']
               as Map<String, dynamic>)['enum'] as List;
       expect(muscleEnum, equals(['chest', 'biceps']));
