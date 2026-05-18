@@ -4,38 +4,40 @@ import 'package:pump_progress_frontend/features/ai/tools/tool_definition.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 
 class AiToolDispatcher {
-  AiToolDispatcher({required this.repositoryExercises});
+  AiToolDispatcher({required this.repositoryExercises}) {
+    _definitions = [
+      ToolDefinition(
+        tool: const Tool(
+          name: 'get_exercises_by_muscle',
+          description:
+              'Returns a list of exercises that target a specific muscle group.',
+          parameters: {
+            'type': 'object',
+            'properties': {
+              'muscle': {
+                'type': 'string',
+                'description': 'The muscle group to filter by.',
+                'enum': ['chest'], // TODO: fill in all muscle names from the DB
+              },
+              'limit': {
+                'type': 'integer',
+                'description':
+                    'Maximum number of exercises to return. Defaults to 10.',
+              },
+            },
+            'required': ['muscle'],
+          },
+        ),
+        messageBuilder: (args) =>
+            'Fetching exercises for "${args['muscle'] ?? 'muscle'}"...',
+        handler: _getExercisesByMuscle,
+      ),
+    ];
+  }
 
   final RepositoryExercises repositoryExercises;
 
-  late final List<ToolDefinition> _definitions = [
-    ToolDefinition(
-      tool: const Tool(
-        name: 'get_exercises_by_muscle',
-        description:
-            'Returns a list of exercises that target a specific muscle group.',
-        parameters: {
-          'type': 'object',
-          'properties': {
-            'muscle': {
-              'type': 'string',
-              'description': 'The muscle group to filter by.',
-              'enum': ['chest'], // TODO: fill in all muscle names from the DB
-            },
-            'limit': {
-              'type': 'integer',
-              'description':
-                  'Maximum number of exercises to return. Defaults to 10.',
-            },
-          },
-          'required': ['muscle'],
-        },
-      ),
-      messageBuilder: (args) =>
-          'Fetching exercises for "${args['muscle'] ?? 'muscle'}"...',
-      handler: _getExercisesByMuscle,
-    ),
-  ];
+  late final List<ToolDefinition> _definitions;
 
   List<Tool> get tools => _definitions.map((d) => d.tool).toList();
 

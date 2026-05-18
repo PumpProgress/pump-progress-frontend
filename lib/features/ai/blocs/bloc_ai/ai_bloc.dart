@@ -61,7 +61,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       );
       _chat = await model.createChat(
         supportsFunctionCalls: true,
-        tools: AiToolDispatcher.tools,
+        tools: AiToolDispatcher.tools, // TODO(task-4): replace with _toolDispatcher.tools
         modelType: ModelType.gemma4,
       );
 
@@ -115,6 +115,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
             emit(state.copyWith(messages: currentMessages));
           } else if (response is FunctionCallResponse) {
             handledToolCall = true;
+            // TODO(task-4): replace block with _toolDispatcher.resolve(response)
 
             // Remove the streaming placeholder.
             final msgsBeforeTool = List<ChatMessage>.from(currentMessages)
