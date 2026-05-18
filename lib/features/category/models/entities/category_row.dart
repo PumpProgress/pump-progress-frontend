@@ -85,6 +85,7 @@ class CategoryRow implements DBRow {
     );
   }
 
+  @override
   String toJson() => json.encode(toMap());
 
   factory CategoryRow.fromJson(String source) =>

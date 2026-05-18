@@ -59,6 +59,7 @@ class SetsRow extends DbRowWrite {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -108,6 +109,7 @@ class SetsRow extends DbRowWrite {
     );
   }
 
+  @override
   Map<String, dynamic> toDB() {
     return <String, dynamic>{
       'id': id,
@@ -123,6 +125,7 @@ class SetsRow extends DbRowWrite {
     };
   }
 
+  @override
   String toJson() => json.encode(toMap());
 
   factory SetsRow.fromJson(String source) =>

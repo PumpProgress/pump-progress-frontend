@@ -23,7 +23,7 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
   }
   Future<void> _onLoadWorkoutDetailEvent(
       LoadWorkoutDetailEvent event, Emitter<WorkoutDetailState> emit) async {
-    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutDetailStatusError.new, () async {
       emit(state.copyWith(
         status: WorkoutDetailStatusLoading(),
       ));
@@ -40,7 +40,7 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
   Future<void> _onAddExerciseWorkoutDetailEvent(
       AddExerciseWorkoutDetailEvent event,
       Emitter<WorkoutDetailState> emit) async {
-    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutDetailStatusError.new, () async {
       emit(state.copyWith(
         status: WorkoutDetailStatusLoading(),
       ));
@@ -61,7 +61,7 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
   Future<void> _onRemoveExerciseWorkoutDetailEvent(
       RemoveExerciseWorkoutDetailEvent event,
       Emitter<WorkoutDetailState> emit) async {
-    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutDetailStatusError.new, () async {
       emit(state.copyWith(
         status: WorkoutDetailStatusLoading(),
       ));
@@ -82,7 +82,7 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
   Future<void> _onUpdateSearchValueWorkoutDetailEvent(
       UpdateSearchValueWorkoutDetailEvent event,
       Emitter<WorkoutDetailState> emit) async {
-    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutDetailStatusError.new, () async {
       emit(state.copyWith(
         status: WorkoutDetailStatusLoading(),
       ));
@@ -92,7 +92,7 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
   Future<void> _onRenameWorkoutDetailEvent(
       RenameWorkoutDetailEvent event,
       Emitter<WorkoutDetailState> emit) async {
-    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutDetailStatusError.new, () async {
       emit(state.copyWith(status: WorkoutDetailStatusLoading()));
       await repositoryWorkout.updateWorkout(
         workoutId: state.workout.id,
@@ -111,7 +111,7 @@ class WorkoutDetailBloc extends Bloc<WorkoutDetailEvent, WorkoutDetailState> {
   Future<void> _onDeleteWorkoutDetailEvent(
       DeleteWorkoutDetailEvent event,
       Emitter<WorkoutDetailState> emit) async {
-    await runSafeEvent(emit, state, WorkoutDetailStatusError.new, () async {
+    await runSafeEvent(emit, () => state, WorkoutDetailStatusError.new, () async {
       emit(state.copyWith(status: WorkoutDetailStatusLoading()));
       await repositoryWorkout.deleteWorkout(workoutId: state.workout.id);
       emit(state.copyWith(status: WorkoutDetailStatusDeleted()));

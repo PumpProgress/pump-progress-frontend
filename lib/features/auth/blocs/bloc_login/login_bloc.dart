@@ -20,7 +20,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _onLoginWithProvider(
       LoginWithProvider event, Emitter<LoginState> emit) async {
-    await runSafeEvent(emit, state, LoginStatusError.new, () async {
+    await runSafeEvent(emit, () => state, LoginStatusError.new, () async {
       emit(
         state.copyWith(
             status: LoginStatusProviderLogIn(), provider: event.provider),
@@ -29,7 +29,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Future<void> _onLogInCode(LogInCode event, Emitter<LoginState> emit) async {
-    await runSafeEvent(emit, state, LoginStatusError.new, () async {
+    await runSafeEvent(emit, () => state, LoginStatusError.new, () async {
       emit(state.copyWith(status: LoginStatusLoading()));
 
       final SharedPreferences sharedPref =
@@ -49,13 +49,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _onUnknownError(
       UnknownError event, Emitter<LoginState> emit) async {
-    await runSafeEvent(emit, state, LoginStatusError.new, () async {
+    await runSafeEvent(emit, () => state, LoginStatusError.new, () async {
       throw Exception("An unknown error occurred");
     });
   }
 
   Future<void> _onResetLogin(ResetLogin event, Emitter<LoginState> emit) async {
-    await runSafeEvent(emit, state, LoginStatusError.new, () async {
+    await runSafeEvent(emit, () => state, LoginStatusError.new, () async {
       emit(const LoginState());
     });
   }

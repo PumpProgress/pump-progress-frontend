@@ -155,6 +155,7 @@ class ExerciseRow implements DBRow {
     );
   }
 
+  @override
   String toJson() => json.encode(toMap());
 
   factory ExerciseRow.fromJson(String source) =>
