@@ -34,7 +34,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       options.sendDefaultPii = true;
       options.environment = F.name;
       options.tracesSampleRate = 1.0;
-      options.profilesSampleRate = 1.0;
       options.debug = true;
       // Add some additional safety options
       options.captureFailedRequests = true;
