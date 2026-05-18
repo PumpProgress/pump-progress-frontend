@@ -61,7 +61,7 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       );
       _chat = await model.createChat(
         supportsFunctionCalls: true,
-        tools: AiToolDispatcher.tools, // TODO(task-4): replace with _toolDispatcher.tools
+        tools: _toolDispatcher.tools,
         modelType: ModelType.gemma4,
       );
 
@@ -115,18 +115,17 @@ class AiBloc extends Bloc<AiEvent, AiState> {
             emit(state.copyWith(messages: currentMessages));
           } else if (response is FunctionCallResponse) {
             handledToolCall = true;
-            // TODO(task-4): replace block with _toolDispatcher.resolve(response)
 
             // Remove the streaming placeholder.
             final msgsBeforeTool = List<ChatMessage>.from(currentMessages)
               ..removeLast();
 
-            // Show a status chip while the tool runs.
-            final muscle = response.args['muscle'] as String? ?? 'muscle';
+            // Resolve message and executor from the dispatcher in one call.
+            final toolUse = _toolDispatcher.resolve(response);
             final msgsWithChip = [
               ...msgsBeforeTool,
               ChatMessage(
-                text: 'Fetching exercises for "$muscle"...',
+                text: toolUse.message,
                 isUser: false,
                 isSystemMessage: true,
               ),
@@ -134,8 +133,8 @@ class AiBloc extends Bloc<AiEvent, AiState> {
             currentMessages = msgsWithChip;
             emit(state.copyWith(messages: currentMessages));
 
-            // Execute the tool via the dispatcher.
-            final toolResult = await _toolDispatcher.dispatch(response);
+            // Execute the tool.
+            final toolResult = await toolUse.execute();
             AppLogger.debug('Tool result: $toolResult');
 
             // Feed the result back to the model.
