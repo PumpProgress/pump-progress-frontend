@@ -3,31 +3,68 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_gemma/flutter_gemma.dart';
+import 'package:pump_progress_frontend/features/ai/domain/domain.dart';
+import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
+import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_status.dart';
 
 part 'ai_event.dart';
 part 'ai_state.dart';
 
+// Regex that matches any recognised backslash escape sequence in one pass.
+final _escapeSequencePattern = RegExp(r'\\(n|t|r|\\|")');
+
+String _decodeEscapes(String token) => token.replaceAllMapped(
+      _escapeSequencePattern,
+      (m) => switch (m.group(1)) {
+        'n' => '\n',
+        't' => '\t',
+        'r' => '\r',
+        '\\' => '\\',
+        '"' => '"',
+        _ => m.group(0)!,
+      },
+    );
+
 class AiBloc extends Bloc<AiEvent, AiState> {
-  AiBloc() : super(AiState()) {
+  AiBloc({required AiToolDispatcher toolDispatcher})
+      : _toolDispatcher = toolDispatcher,
+        super(AiState()) {
     on<AiInitEvent>(_onAiInitEvent);
     on<SendPromptEvent>(_onSendPromptEvent);
   }
+
+  final AiToolDispatcher _toolDispatcher;
+  InferenceChat? _chat;
+
   Future<void> _onAiInitEvent(AiInitEvent event, Emitter<AiState> emit) async {
-    await runSafeEvent(emit, state, AiStatusError.new, () async {
+    await runSafeEvent(emit, () => state, AiStatusError.new, () async {
       AppLogger.debug('Initializing AI Bloc: Installing model...');
       emit(state.copyWith(status: AiStatusInstalling()));
 
       await FlutterGemma.installModel(
-        modelType: ModelType.gemmaIt,
+        modelType: ModelType.gemma4,
+        fileType: ModelFileType.litertlm,
       )
           .fromNetwork(
-        'https://huggingface.co/litert-community/gemma-3-270m-it/resolve/main/gemma3-270m-it-q8.task',
+        'https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm',
       )
           .withProgress((progress) {
-        AppLogger.debug('Downloading: ${progress}%');
+        AppLogger.debug('Downloading: $progress%');
+        emit(state.copyWith(downloadProgress: progress));
       }).install();
+
+      final model = await FlutterGemma.getActiveModel(
+        maxTokens: 2048,
+        preferredBackend: PreferredBackend.gpu,
+      );
+      await _toolDispatcher.init();
+      _chat = await model.createChat(
+        supportsFunctionCalls: true,
+        tools: _toolDispatcher.tools,
+        modelType: ModelType.gemma4,
+      );
 
       AppLogger.debug('AI Bloc initialized: Model installed successfully');
       emit(state.copyWith(status: AiStatusLoaded()));
@@ -42,52 +79,135 @@ class AiBloc extends Bloc<AiEvent, AiState> {
       return;
     }
 
-    await runSafeEvent(emit, state, AiStatusError.new, () async {
-      AppLogger.debug('AI Bloc: Creating model with configuration...');
-      final model = await FlutterGemma.getActiveModel(
-        maxTokens: 2048,
-        preferredBackend: PreferredBackend.gpu,
-      );
-
-      final chat = await model.createChat();
-      await chat.addQueryChunk(Message.text(
-        text: event.prompt,
-        isUser: true,
+    await runSafeEvent(emit, () => state, AiStatusError.new, () async {
+      // Append user message and initial streaming placeholder.
+      var currentMessages = [
+        ...state.messages,
+        ChatMessage(text: event.prompt, isUser: true),
+      ];
+      emit(state.copyWith(
+        messages: currentMessages,
+        isGenerating: true,
       ));
-      StreamSubscription<ModelResponse>? streamSubscription;
+      currentMessages = [
+        ...currentMessages,
+        const ChatMessage(text: '', isUser: false, isStreaming: true),
+      ];
+      emit(state.copyWith(messages: currentMessages));
 
-      String _message = '';
-      final responseStream = chat.generateChatResponseAsync();
+      try {
+        await _chat!.addQueryChunk(Message.text(
+          text: event.prompt,
+          isUser: true,
+        ));
 
-      streamSubscription = responseStream.listen(
-        (response) {
-          if (response is String) {
-            // _message = response as String;
-            _message = "$_message$response";
-          } else if (response is TextResponse) {
-            _message = "$_message${response.token}";
+        String rawAccumulated = '';
+        bool handledToolCall = false;
 
-            // DEBUG: Track text accumulation
-            AppLogger.debug(
-                '📝 GemmaInputField: Text accumulated: "${response.token}" -> total: "${_message}"');
-          } else if (response is ThinkingResponse) {
-            // print thinking content
-            AppLogger.debug(
-                '💭 GemmaInputField: Thinking: ${response.content}');
+        await for (final response in _chat!.generateChatResponseAsync()) {
+          if (response is TextResponse) {
+            final token = response.token;
+            if (token.isEmpty) continue;
+            rawAccumulated += token;
+            currentMessages = List<ChatMessage>.from(currentMessages);
+            currentMessages[currentMessages.length - 1] =
+                currentMessages.last
+                    .copyWith(text: _decodeEscapes(rawAccumulated));
+            emit(state.copyWith(messages: currentMessages));
           } else if (response is FunctionCallResponse) {
-            AppLogger.debug(
-                '🔧 GemmaInputField: Function call received: ${response.name}');
+            handledToolCall = true;
+
+            // Remove the streaming placeholder.
+            final msgsBeforeTool = List<ChatMessage>.from(currentMessages)
+              ..removeLast();
+
+            // Resolve message and executor from the dispatcher in one call.
+            final toolUse = _toolDispatcher.resolve(response);
+            final msgsWithChip = [
+              ...msgsBeforeTool,
+              ChatMessage(
+                text: toolUse.message,
+                isUser: false,
+                isSystemMessage: true,
+              ),
+            ];
+            currentMessages = msgsWithChip;
+            emit(state.copyWith(messages: currentMessages));
+
+            // Execute the tool.
+            final toolResult = await toolUse.execute();
+            AppLogger.debug('Tool result: $toolResult');
+
+            // Feed the result back to the model.
+            await _chat!.addQueryChunk(Message.toolResponse(
+              toolName: response.name,
+              response: toolResult,
+            ));
+
+            // Append a fresh streaming placeholder for the final response.
+            currentMessages = [
+              ...msgsWithChip,
+              const ChatMessage(text: '', isUser: false, isStreaming: true),
+            ];
+            emit(state.copyWith(messages: currentMessages));
+
+            // Stream the model's final response.
+            String finalAccumulated = '';
+            await for (final finalResponse
+                in _chat!.generateChatResponseAsync()) {
+              if (finalResponse is! TextResponse) continue;
+              final token = finalResponse.token;
+              if (token.isEmpty) continue;
+              finalAccumulated += token;
+              currentMessages = List<ChatMessage>.from(currentMessages);
+              currentMessages[currentMessages.length - 1] =
+                  currentMessages.last
+                      .copyWith(text: _decodeEscapes(finalAccumulated));
+              emit(state.copyWith(messages: currentMessages));
+            }
+
+            // Finalise the last message.
+            currentMessages = List<ChatMessage>.from(currentMessages);
+            currentMessages[currentMessages.length - 1] =
+                currentMessages.last.copyWith(
+              text: _decodeEscapes(finalAccumulated),
+              isStreaming: false,
+            );
+            emit(state.copyWith(
+              messages: currentMessages,
+              isGenerating: false,
+            ));
           }
-        },
-        onError: (error) {
-          AppLogger.error('❌ GemmaInputField: Stream error: $error',
-              error: error);
-        },
-        onDone: () {
-          AppLogger.debug('🏁 GemmaInputField: Stream completed');
-          streamSubscription?.cancel();
-        },
-      );
+        }
+
+        // Pure text response — finalise the streaming placeholder normally.
+        if (!handledToolCall) {
+          currentMessages = List<ChatMessage>.from(currentMessages);
+          currentMessages[currentMessages.length - 1] =
+              currentMessages.last.copyWith(
+            text: _decodeEscapes(rawAccumulated),
+            isStreaming: false,
+          );
+          emit(state.copyWith(
+            messages: currentMessages,
+            isGenerating: false,
+          ));
+          AppLogger.debug('AI Bloc: Stream completed');
+        }
+      } catch (e, stackTrace) {
+        AppLogger.error(
+          'Error in SendPromptEvent: $e',
+          stackTrace: stackTrace,
+          error: e,
+        );
+        ErrorEventBus.emitError(e.toString());
+        emit(state.copyWith(
+          isGenerating: false,
+          messages: currentMessages,
+          status: AiStatusError(e.toString()),
+        ));
+        // Do NOT rethrow — runSafeEvent's catch would overwrite messages with stale snapshot
+      }
     });
   }
 }

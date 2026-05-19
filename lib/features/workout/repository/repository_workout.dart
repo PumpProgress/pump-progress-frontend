@@ -1,4 +1,5 @@
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
+import 'package:pump_progress_frontend/features/sets/repositories/repositories.dart';
 import 'package:pump_progress_frontend/features/workout/domain/domain.dart';
 import 'package:pump_progress_frontend/features/workout/local/local.dart';
 
@@ -6,6 +7,7 @@ class RepositoryWorkout {
   final localWorkout = LocalWorkout();
   final localWorkoutExercises = LocalWorkoutExercises();
   final repositoryExercises = RepositoryExercises();
+  final repositorySets = RepositorySets();
 
   Future<Workout> getWorkout({required String workoutId}) async {
     final workoutRow = await localWorkout.getWorkout(workoutId: workoutId);
@@ -15,11 +17,16 @@ class RepositoryWorkout {
         workoutExercises.map((we) => we.exerciseId).toSet().toList();
     final exercises =
         await repositoryExercises.getExercises(exerciseIds: exerciseIds);
+    final seriesTodayMap = await repositorySets.getSeriesCountTodayByExercises(
+      userId: workoutRow.userId,
+      exerciseIds: exerciseIds,
+    );
 
     final List<ExerciseAtWorkout> exercisesAtWorkout =
         workoutExercises.map((we) {
       final exercise = exercises.firstWhere((e) => e.id == we.exerciseId);
-      return ExerciseAtWorkout(exercise: exercise, seriesToday: 0);
+      return ExerciseAtWorkout(
+          exercise: exercise, seriesToday: seriesTodayMap[we.exerciseId] ?? 0);
     }).toList();
     List<Map<String, dynamic>> exercisesAtWorkoutMap =
         exercisesAtWorkout.map((e) => e.toMap()).toList();
@@ -36,11 +43,15 @@ class RepositoryWorkout {
 
     final workoutExercises =
         await localWorkoutExercises.getWorkoutExercises(workoutIds: workoutIds);
-    final exercisesIds =
+    final exerciseIds =
         workoutExercises.map((we) => we.exerciseId).toSet().toList();
 
     final exercises =
-        await repositoryExercises.getExercises(exerciseIds: exercisesIds);
+        await repositoryExercises.getExercises(exerciseIds: exerciseIds);
+    final seriesTodayMap = await repositorySets.getSeriesCountTodayByExercises(
+      userId: userId,
+      exerciseIds: exerciseIds,
+    );
 
     final workouts = workoutRows.map((workoutRow) {
       final workoutExerciseForWorkout = workoutExercises
@@ -49,7 +60,9 @@ class RepositoryWorkout {
       final List<ExerciseAtWorkout> exercisesForWorkout =
           workoutExerciseForWorkout.map((we) {
         final exercise = exercises.firstWhere((e) => e.id == we.exerciseId);
-        return ExerciseAtWorkout(exercise: exercise, seriesToday: 0);
+        return ExerciseAtWorkout(
+            exercise: exercise,
+            seriesToday: seriesTodayMap[we.exerciseId] ?? 0);
       }).toList();
 
       return Workout.fromMap({
@@ -122,5 +135,17 @@ class RepositoryWorkout {
 
     return Workout.fromMap(
         {...workoutRow.toMap(), 'exercises': exercisesAtWorkoutMap});
+  }
+
+  Future<void> updateWorkout({
+    required String workoutId,
+    required String name,
+  }) async {
+    await localWorkout.updateWorkout(workoutId: workoutId, name: name);
+  }
+
+  Future<void> deleteWorkout({required String workoutId}) async {
+    await localWorkoutExercises.deleteAllExercisesFromWorkout(workoutId: workoutId);
+    await localWorkout.deleteWorkout(workoutId: workoutId);
   }
 }

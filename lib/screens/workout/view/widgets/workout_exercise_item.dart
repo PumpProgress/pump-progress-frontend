@@ -51,7 +51,14 @@ class ExerciseItemWidget extends StatelessWidget {
                     exerciseId: exerciseAtWorkout.exercise.id,
                     exerciseName: exerciseAtWorkout.exercise.name),
               );
-              // context.read<WorkoutBloc>().add(LoadExercisesWorkoutEvent());
+              if (context.mounted) {
+                context.read<WorkoutDetailBloc>().add(LoadWorkoutDetailEvent(
+                    workoutId: context
+                        .read<WorkoutDetailBloc>()
+                        .state
+                        .workout
+                        .id));
+              }
             },
             title: Text(
               exerciseAtWorkout.exercise.name,

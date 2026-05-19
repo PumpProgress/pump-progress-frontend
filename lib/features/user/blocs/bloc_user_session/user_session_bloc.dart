@@ -22,7 +22,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
   Future<void> _onUserSessionInitEvent(
       UserSessionInitEvent event, Emitter<UserSessionState> emit) async {
-    await runSafeEvent(emit, state, UserSessionStatusError.new, () async {
+    await runSafeEvent(emit, () => state, UserSessionStatusError.new, () async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       try {
         emit(state.copyWith(status: const UserSessionStatusLoading()));
@@ -67,7 +67,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
 
   Future<void> _onUserSessionLogoutEvent(
       UserSessionLogoutEvent event, Emitter<UserSessionState> emit) async {
-    await runSafeEvent(emit, state, UserSessionStatusError.new, () async {
+    await runSafeEvent(emit, () => state, UserSessionStatusError.new, () async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       _clearLocalStorage(prefs);
       emit(state.copyWith(status: const UserSessionStatusUnauthenticated()));
@@ -78,7 +78,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
   Future<void> _onUserSessionDeleteAccountEvent(
       UserSessionDeleteAccountEvent event,
       Emitter<UserSessionState> emit) async {
-    await runSafeEvent(emit, state, UserSessionStatusError.new, () async {});
+    await runSafeEvent(emit, () => state, UserSessionStatusError.new, () async {});
   }
 }
 

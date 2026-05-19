@@ -15,8 +15,10 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 import 'package:pump_progress_frontend/features/user/repository/repository.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
+import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/sync/repository/repository.dart';
 import 'package:pump_progress_frontend/features/workout/blocs/blocs.dart';
@@ -27,7 +29,7 @@ import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_event_bus.dart';
 import 'package:pump_progress_frontend/utils/helpers/route_observer.dart';
 
-import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
+// import 'package:pump_progress_frontend/screens/loading/loading_page.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -76,6 +78,9 @@ class _AppState extends State<App> {
       RepositoryProvider<RepositoryExercises>(
         create: (context) => RepositoryExercises(),
       ),
+      RepositoryProvider<ProviderMuscle>(
+        create: (context) => ProviderMuscle(),
+      ),
       RepositoryProvider<RepositorySets>(
         create: (context) => RepositorySets(),
       ),
@@ -95,7 +100,12 @@ class _AppState extends State<App> {
       BlocProvider(
           lazy: false,
           create: (context) {
-            return AiBloc()..add(const AiInitEvent());
+            return AiBloc(
+              toolDispatcher: AiToolDispatcher(
+                repositoryExercises: context.read<RepositoryExercises>(),
+                providerMuscle: context.read<ProviderMuscle>(),
+              ),
+            )..add(const AiInitEvent());
           }),
       BlocProvider(create: (context) {
         return SyncBloc(
@@ -116,20 +126,16 @@ class _AppState extends State<App> {
           child: BlocConsumer<UserSessionBloc, UserSessionState>(
             listener: (context, state) {
               if (state.status is UserSessionStatusAuthenticated) {
-                context.read<SyncBloc>().add(StartSyncEvent());
+                context.read<SyncBloc>()
+                  ..add(const StartSyncEvent())
+                  ..add(const StartPeriodicSyncEvent());
+              } else if (state.status is UserSessionStatusUnauthenticated) {
+                context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
               }
             },
             builder: (context, state) {
-              final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
-                  (bloc) => bloc.state.status);
-
-              if (syncStateStatus is SyncBlocStatusInProgress) {
-                return LoadingPage();
-              }
-
-              if (syncStateStatus is SyncBlocStatusError) {
-                return LoadingPage();
-              }
+              // final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
+              //     (bloc) => bloc.state.status);
 
               return MaterialApp(
                 scaffoldMessengerKey: messengerKey,

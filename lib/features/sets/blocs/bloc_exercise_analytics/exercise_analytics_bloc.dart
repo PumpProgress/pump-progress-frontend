@@ -21,7 +21,7 @@ class ExerciseAnalyticsBloc
     LoadExerciseAnalyticsEvent event,
     Emitter<ExerciseAnalyticsState> emit,
   ) async {
-    await runSafeEvent(emit, state, ExerciseAnalyticsStatusError.new, () async {
+    await runSafeEvent(emit, () => state, ExerciseAnalyticsStatusError.new, () async {
       emit(state.copyWith(status: const ExerciseAnalyticsStatusLoading()));
       final data = await repositorySets.getExerciseAnalytics(
         exerciseId: event.exerciseId,

@@ -11,6 +11,15 @@ Before working on this repo, read the documentation at:
 This is the authoritative guide for contributing to this repo. It covers architecture,
 folder structure, BLoC patterns, routing, and setup. Do not skip this step.
 
+## New features specs - design - plans - implementation info
+All documentation made to document or ask for approval from ANY skill should be created at
+
+`/Users/sergiocarbone/repos/pumpProgress/pump-progress-documentation/frontend`
+
+accordingly and NOT in this repository.
+
+Markdown is the main document type that needs to be created, but feel free to use HTML inside this document if it fits bets.
+
 ## Key Rules
 
 These rules are not obvious from reading the code:
