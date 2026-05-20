@@ -362,6 +362,7 @@
 				08D0E6582E2515DA00E518A5 /* Embed Foundation Extensions */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
+				06E9DE322FBDA93500308EF2 /* Fix LiteRT MinimumOSVersion */,
 				A1E5B513F9507180A57B9216 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -459,6 +460,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		06E9DE322FBDA93500308EF2 /* Fix LiteRT MinimumOSVersion */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Fix LiteRT MinimumOSVersion";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DEPLOYMENT_TARGET=\"${IPHONEOS_DEPLOYMENT_TARGET}\"\nFRAMEWORKS_DIR=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nfor FRAMEWORK in StreamProxy LiteRtMetalAccelerator GemmaModelConstraintProvider LiteRtLm; do\n  BUNDLE=\"${FRAMEWORKS_DIR}/${FRAMEWORK}.framework\"\n  PLIST=\"${BUNDLE}/Info.plist\"\n  if [ -f \"$PLIST\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :MinimumOSVersion ${DEPLOYMENT_TARGET}\" \"$PLIST\"\n    if [ -n \"${EXPANDED_CODE_SIGN_IDENTITY:-}\" ] && [ \"${EXPANDED_CODE_SIGN_IDENTITY}\" != \"-\" ]; then\n      codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" \"${BUNDLE}\"\n    fi\n  fi\ndone\n";
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
