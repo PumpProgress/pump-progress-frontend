@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/bloc_sync/sync_bloc.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
 import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
@@ -38,14 +37,6 @@ class StartDrawer extends StatelessWidget {
                 await TimerService.stopTimer();
               },
               leading: const Icon(Icons.notifications_off_rounded),
-            ),
-            ListTile(
-              title: const Text('Send Test Prompt to AI'),
-              onTap: () async {
-                BlocProvider.of<AiBloc>(context)
-                    .add(SendPromptEvent("cuanto es 2+2"));
-              },
-              leading: const Icon(Icons.notifications_active_rounded),
             ),
             ListTile(
               leading: Icon(
