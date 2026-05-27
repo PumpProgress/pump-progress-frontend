@@ -14,7 +14,10 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 // * Features
 import 'package:pump_progress_frontend/features/user/repository/repository.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
-import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_gemma_model/gemma_model_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_profile_chat/profile_chat_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_workout_builder_chat/workout_builder_chat_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/services/gemma_model_service.dart';
 import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
@@ -84,6 +87,9 @@ class _AppState extends State<App> {
       RepositoryProvider<RepositorySets>(
         create: (context) => RepositorySets(),
       ),
+      RepositoryProvider<GemmaModelService>(
+        create: (_) => GemmaModelService(),
+      ),
     ];
 
     final blocProviders = [
@@ -98,15 +104,25 @@ class _AppState extends State<App> {
                 repositoryExercises: context.read<RepositoryExercises>());
           }),
       BlocProvider(
-          lazy: false,
-          create: (context) {
-            return AiBloc(
-              toolDispatcher: AiToolDispatcher(
-                repositoryExercises: context.read<RepositoryExercises>(),
-                providerMuscle: context.read<ProviderMuscle>(),
-              ),
-            )..add(const AiInitEvent());
-          }),
+        lazy: false,
+        create: (context) => GemmaModelBloc(
+          modelService: context.read<GemmaModelService>(),
+        )..add(const GemmaModelInitEvent()),
+      ),
+      BlocProvider(
+        create: (context) => ProfileChatBloc(
+          modelService: context.read<GemmaModelService>(),
+        ),
+      ),
+      BlocProvider(
+        create: (context) => WorkoutBuilderChatBloc(
+          modelService: context.read<GemmaModelService>(),
+          toolDispatcher: AiToolDispatcher(
+            repositoryExercises: context.read<RepositoryExercises>(),
+            providerMuscle: context.read<ProviderMuscle>(),
+          ),
+        ),
+      ),
       BlocProvider(create: (context) {
         return SyncBloc(
           repositorySync: context.read<RepositorySync>(),
