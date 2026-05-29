@@ -123,28 +123,44 @@ class _AppState extends State<App> {
         },
         child: MultiBlocProvider(
           providers: blocProviders,
-          child: BlocConsumer<UserSessionBloc, UserSessionState>(
-            listener: (context, state) {
-              if (state.status is UserSessionStatusAuthenticated) {
-                context.read<SyncBloc>()
-                  ..add(const StartSyncEvent())
-                  ..add(const StartPeriodicSyncEvent());
-              } else if (state.status is UserSessionStatusUnauthenticated) {
-                context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
+          child: BlocListener<SyncBloc, SyncState>(
+            listener: (context, syncState) {
+              if (syncState.status
+                  case SyncBlocStatusSuccess(:final result)
+                  when result.hasData) {
+                final parts = [
+                  if (result.totalReceived > 0)
+                    '${result.totalReceived} received',
+                  if (result.totalSent > 0) '${result.totalSent} uploaded',
+                ];
+                messengerKey.currentState?.showSnackBar(
+                  SnackBar(content: Text('Sync complete — ${parts.join(', ')}')),
+                );
               }
             },
-            builder: (context, state) {
-              // final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
-              //     (bloc) => bloc.state.status);
+            child: BlocConsumer<UserSessionBloc, UserSessionState>(
+              listener: (context, state) {
+                if (state.status is UserSessionStatusAuthenticated) {
+                  context.read<SyncBloc>()
+                    ..add(const StartSyncEvent())
+                    ..add(const StartPeriodicSyncEvent());
+                } else if (state.status is UserSessionStatusUnauthenticated) {
+                  context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
+                }
+              },
+              builder: (context, state) {
+                // final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
+                //     (bloc) => bloc.state.status);
 
-              return MaterialApp(
-                scaffoldMessengerKey: messengerKey,
-                theme: theme,
-                onGenerateRoute: App.router.onGenerateRoute,
-                navigatorObservers: [routeObserver],
-                debugShowCheckedModeBanner: false,
-              );
-            },
+                return MaterialApp(
+                  scaffoldMessengerKey: messengerKey,
+                  theme: theme,
+                  onGenerateRoute: App.router.onGenerateRoute,
+                  navigatorObservers: [routeObserver],
+                  debugShowCheckedModeBanner: false,
+                );
+              },
+            ),
           ),
         ),
       ),
