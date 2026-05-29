@@ -20,10 +20,12 @@ class SyncBlocStatusInProgress extends SyncBlocStatus {
 }
 
 class SyncBlocStatusSuccess extends SyncBlocStatus {
-  const SyncBlocStatusSuccess();
+  const SyncBlocStatusSuccess({required this.result});
+
+  final SyncResult result;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [result];
 }
 
 class SyncBlocStatusError extends ErrorStatus

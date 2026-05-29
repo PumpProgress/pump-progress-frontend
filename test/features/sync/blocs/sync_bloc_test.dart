@@ -5,6 +5,7 @@ import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/bloc_sync/sync_bloc.dart';
+import 'package:pump_progress_frontend/features/sync/models/sync_result.dart';
 import 'package:pump_progress_frontend/features/sync/repository/repository_sync.dart';
 
 class MockRepositorySync extends Mock implements RepositorySync {}
@@ -58,7 +59,9 @@ void main() {
     blocTest<SyncBloc, SyncState>(
       'appends success attempt on manual sync success',
       build: () {
-        when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+        when(() => mockRepo.syncTables()).thenAnswer(
+          (_) async => const SyncResult(totalReceived: 0, totalSent: 0),
+        );
         return SyncBloc(repositorySync: mockRepo);
       },
       act: (bloc) => bloc.add(const StartSyncEvent()),
@@ -88,6 +91,7 @@ void main() {
         when(() => mockRepo.syncTables()).thenAnswer((_) async {
           count++;
           if (count == 2) throw Exception('transient');
+          return const SyncResult(totalReceived: 0, totalSent: 0);
         });
         return SyncBloc(repositorySync: mockRepo);
       },
@@ -110,7 +114,9 @@ void main() {
     blocTest<SyncBloc, SyncState>(
       'history caps at 50 entries',
       build: () {
-        when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+        when(() => mockRepo.syncTables()).thenAnswer(
+          (_) async => const SyncResult(totalReceived: 0, totalSent: 0),
+        );
         return SyncBloc(repositorySync: mockRepo);
       },
       act: (bloc) async {
@@ -131,7 +137,9 @@ void main() {
     blocTest<SyncBloc, SyncState>(
       'emits [InProgress, Success+history] on successful sync',
       build: () {
-        when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+        when(() => mockRepo.syncTables()).thenAnswer(
+          (_) async => const SyncResult(totalReceived: 0, totalSent: 0),
+        );
         return SyncBloc(repositorySync: mockRepo);
       },
       act: (bloc) => bloc.add(const StartSyncEvent()),
@@ -168,7 +176,7 @@ void main() {
     blocTest<SyncBloc, SyncState>(
       'does nothing when a sync is already in progress (de-dup)',
       build: () {
-        final completer = Completer<void>();
+        final completer = Completer<SyncResult>();
         when(() => mockRepo.syncTables()).thenAnswer((_) => completer.future);
         return SyncBloc(repositorySync: mockRepo);
       },
@@ -184,7 +192,7 @@ void main() {
     );
 
     test('close() while sync in progress does not throw', () async {
-      final completer = Completer<void>();
+      final completer = Completer<SyncResult>();
       when(() => mockRepo.syncTables()).thenAnswer((_) => completer.future);
       final bloc = SyncBloc(repositorySync: mockRepo);
       bloc.add(const StartSyncEvent());
@@ -192,6 +200,22 @@ void main() {
       // close() before syncTables() completes — must not throw
       await expectLater(bloc.close(), completes);
     });
+
+    blocTest<SyncBloc, SyncState>(
+      'SyncBlocStatusSuccess carries the SyncResult returned by syncTables',
+      build: () {
+        when(() => mockRepo.syncTables()).thenAnswer(
+          (_) async => const SyncResult(totalReceived: 5, totalSent: 3),
+        );
+        return SyncBloc(repositorySync: mockRepo);
+      },
+      act: (bloc) => bloc.add(const StartSyncEvent()),
+      verify: (bloc) {
+        final status = bloc.state.status as SyncBlocStatusSuccess;
+        expect(status.result.totalReceived, 5);
+        expect(status.result.totalSent, 3);
+      },
+    );
   });
 
   // ─── StartPeriodicSyncEvent ───────────────────────────────────────────────
@@ -262,7 +286,9 @@ void main() {
   group('StopPeriodicSyncEvent', () {
     test('cancels timer so no further syncs fire', () {
       fakeAsync((async) {
-        when(() => mockRepo.syncTables()).thenAnswer((_) async {});
+        when(() => mockRepo.syncTables()).thenAnswer(
+          (_) async => const SyncResult(totalReceived: 0, totalSent: 0),
+        );
         final bloc = SyncBloc(repositorySync: mockRepo);
         bloc.add(const StartPeriodicSyncEvent(interval: Duration(seconds: 5)));
         bloc.add(const StopPeriodicSyncEvent());
@@ -281,6 +307,7 @@ void main() {
         when(() => mockRepo.syncTables()).thenAnswer((_) async {
           callCount++;
           if (callCount == 1) throw Exception('fail');
+          return const SyncResult(totalReceived: 0, totalSent: 0);
         });
 
         final bloc = SyncBloc(repositorySync: mockRepo);
@@ -337,6 +364,7 @@ void main() {
           callCount++;
           if (callCount == 1) throw Exception('transient');
           // subsequent calls succeed
+          return const SyncResult(totalReceived: 0, totalSent: 0);
         });
 
         final bloc = SyncBloc(repositorySync: mockRepo);

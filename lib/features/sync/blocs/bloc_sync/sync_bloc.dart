@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/features/sync/models/sync_result.dart';
 import 'package:pump_progress_frontend/features/sync/repository/repository_sync.dart';
 import 'package:pump_progress_frontend/utils/helpers/error_status.dart';
 
@@ -38,10 +39,10 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
     await runSafeEvent(emit, () => state, SyncBlocStatusError.new, () async {
       emit(state.copyWith(status: SyncBlocStatusInProgress()));
       try {
-        await repositorySync.syncTables();
+        final result = await repositorySync.syncTables();
         _consecutiveFailures = 0;
         emit(state.copyWith(
-          status: SyncBlocStatusSuccess(),
+          status: SyncBlocStatusSuccess(result: result),
           history: _appendAttempt(state.history, success: true),
         ));
         if (_periodicTimer == null && _periodicInterval != null) {
