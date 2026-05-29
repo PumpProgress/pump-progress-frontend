@@ -36,6 +36,7 @@ class LocalSets {
       'created_at': DateTime.now().millisecondsSinceEpoch,
       'updated_at': DateTime.now().millisecondsSinceEpoch,
       'intensity': intensity,
+      'is_dirty': 1,
     });
     return SetsRow(
       id: id,
@@ -64,6 +65,7 @@ class LocalSets {
         'weight': weight,
         'intensity': intensity,
         'updated_at': now.millisecondsSinceEpoch,
+        'is_dirty': 1,
       },
       where: 'id = ?',
       whereArgs: [seriesId],
@@ -84,6 +86,7 @@ class LocalSets {
       {
         'deleted_at': now.millisecondsSinceEpoch,
         'updated_at': now.millisecondsSinceEpoch,
+        'is_dirty': 1,
       },
       where: 'id = ?',
       whereArgs: [seriesId],
