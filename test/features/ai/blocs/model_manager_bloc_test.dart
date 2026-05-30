@@ -1,4 +1,6 @@
 // test/features/ai/blocs/model_manager_bloc_test.dart
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -129,6 +131,45 @@ void main() {
       expect(item.state, ModelDownloadState.notDownloaded);
       expect(item.isActive, isFalse);
       expect(bloc.state.totalDiskBytes, 0);
+    },
+  );
+
+  blocTest<ModelManagerBloc, ModelManagerState>(
+    'ignores a second DownloadModel while one is in flight (no false success)',
+    build: () {
+      final gate = Completer<void>();
+      when(() => service.installedIds()).thenAnswer((_) async => <String>{});
+      when(() => service.totalDiskBytes()).thenAnswer((_) async => 100);
+      when(() => service.activate(any(), onProgress: any(named: 'onProgress')))
+          .thenAnswer((_) => gate.future); // first call hangs until completed
+      // Complete the gate shortly after both events are dispatched.
+      Future<void>.delayed(
+          const Duration(milliseconds: 20), () => gate.complete());
+      return ModelManagerBloc(service: service);
+    },
+    seed: () => ModelManagerState(
+      items: [
+        ModelItem(
+          model: model,
+          state: ModelDownloadState.notDownloaded,
+          progress: 0,
+          isActive: false,
+        ),
+      ],
+      totalDiskBytes: 0,
+    ),
+    act: (bloc) {
+      bloc.add(DownloadModel(model));
+      bloc.add(DownloadModel(model)); // second must be ignored by the guard
+    },
+    wait: const Duration(milliseconds: 50),
+    verify: (bloc) {
+      // activate invoked exactly once despite two events.
+      verify(() => service.activate(any(), onProgress: any(named: 'onProgress')))
+          .called(1);
+      final item =
+          bloc.state.items.firstWhere((i) => i.model.id == model.id);
+      expect(item.state, ModelDownloadState.downloaded);
     },
   );
 }

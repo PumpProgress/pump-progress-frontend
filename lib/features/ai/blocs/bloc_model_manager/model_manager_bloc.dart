@@ -21,6 +21,11 @@ class ModelManagerBloc extends Bloc<ModelManagerEvent, ModelManagerState> {
 
   final GemmaModelService _service;
 
+  /// Guards against overlapping activations (download/select). The underlying
+  /// service silently no-ops concurrent activations, which would otherwise let
+  /// a second handler emit a false "downloaded" success.
+  bool _activating = false;
+
   Future<void> _onLoad(LoadModels event, Emitter<ModelManagerState> emit) async {
     try {
       final installed = await _service.installedIds();
@@ -46,6 +51,8 @@ class ModelManagerBloc extends Bloc<ModelManagerEvent, ModelManagerState> {
     DownloadModel event,
     Emitter<ModelManagerState> emit,
   ) async {
+    if (_activating) return;
+    _activating = true;
     _patch(emit, event.model.id,
         (i) => i.copyWith(state: ModelDownloadState.downloading, progress: 0));
     try {
@@ -70,6 +77,8 @@ class ModelManagerBloc extends Bloc<ModelManagerEvent, ModelManagerState> {
       _patch(emit, event.model.id,
           (i) => i.copyWith(state: ModelDownloadState.notDownloaded, progress: 0));
       emit(state.copyWith(error: e.toString()));
+    } finally {
+      _activating = false;
     }
   }
 
@@ -77,6 +86,8 @@ class ModelManagerBloc extends Bloc<ModelManagerEvent, ModelManagerState> {
     SelectModel event,
     Emitter<ModelManagerState> emit,
   ) async {
+    if (_activating) return;
+    _activating = true;
     try {
       await _service.activate(event.model);
       emit(state.copyWith(
@@ -86,6 +97,8 @@ class ModelManagerBloc extends Bloc<ModelManagerEvent, ModelManagerState> {
       ));
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
+    } finally {
+      _activating = false;
     }
   }
 
