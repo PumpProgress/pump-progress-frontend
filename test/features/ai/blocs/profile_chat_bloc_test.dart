@@ -31,7 +31,7 @@ void main() {
     mockChat = MockInferenceChat();
     modelStreamController = StreamController<InferenceModel>.broadcast();
 
-    when(() => mockService.isReady).thenReturn(false);
+    when(() => mockService.hasActiveModel).thenReturn(false);
     when(() => mockService.modelStream)
         .thenAnswer((_) => modelStreamController.stream);
     when(
