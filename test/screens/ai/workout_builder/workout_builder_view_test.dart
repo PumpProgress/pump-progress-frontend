@@ -43,10 +43,10 @@ void main() {
     addTearDown(() => chatBloc.close());
   });
 
-  testWidgets('shows loading UI when status is GemmaModelStatusInstalling',
+  testWidgets('shows loading UI when status is GemmaModelStatusLoading',
       (tester) async {
     when(() => modelBloc.state).thenReturn(
-      const GemmaModelState(status: GemmaModelStatusInstalling()),
+      const GemmaModelState(status: GemmaModelStatusLoading()),
     );
     await tester.pumpWidget(_wrap(
       const WorkoutBuilderView(),
