@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/bloc_sync/sync_bloc.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
+import 'package:pump_progress_frontend/screens/ai/models/models_page.dart';
 import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -64,6 +65,13 @@ class StartDrawer extends StatelessWidget {
                 BlocProvider.of<SyncBloc>(context).add(const StartSyncEvent());
               },
               leading: const Icon(Icons.cloud_sync_rounded),
+            ),
+            ListTile(
+              title: const Text('AI Models'),
+              onTap: () {
+                Navigator.pushNamed(context, ModelsPage.routeName);
+              },
+              leading: const Icon(Icons.smart_toy_rounded),
             ),
             ListTile(
               title: const Text('Logout'),
