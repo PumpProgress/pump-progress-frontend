@@ -67,12 +67,12 @@ class ExerciseAnalyticsRow {
   factory ExerciseAnalyticsRow.fromMap(Map<String, dynamic> map) {
     return ExerciseAnalyticsRow(
       date: map['date'] as String,
-      sessionVolume: map['sessionVolume'] as double,
+      sessionVolume: (map['sessionVolume'] as num).toDouble(),
       totalSets: map['totalSets'] as int,
       totalReps: map['totalReps'] as int,
-      avgWeightPerRep: map['avgWeightPerRep'] as double,
-      maxWeight: map['maxWeight'] as double,
-      minWeight: map['minWeight'] as double,
+      avgWeightPerRep: (map['avgWeightPerRep'] as num).toDouble(),
+      maxWeight: (map['maxWeight'] as num).toDouble(),
+      minWeight: (map['minWeight'] as num).toDouble(),
     );
   }
 
