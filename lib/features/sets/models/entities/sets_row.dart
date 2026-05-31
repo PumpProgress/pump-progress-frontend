@@ -86,7 +86,7 @@ class SetsRow extends DbRowWrite {
           ? DateTime.parse(map['deletedAt'] as String)
           : null,
       repetitions: map['repetitions'] as int,
-      weight: map['weight'] as double,
+      weight: (map['weight'] as num).toDouble(),
       intensity: map['intensity'] as int,
       isDirty: map['isDirty'] as int? ?? 0,
     );
@@ -103,7 +103,7 @@ class SetsRow extends DbRowWrite {
           ? DateTime.fromMillisecondsSinceEpoch(map['deleted_at'] as int)
           : null,
       repetitions: map['repetitions'] as int,
-      weight: map['weight'] as double,
+      weight: (map['weight'] as num).toDouble(),
       intensity: map['intensity'] as int,
       isDirty: map['is_dirty'] as int? ?? 0,
     );
