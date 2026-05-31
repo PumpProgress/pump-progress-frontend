@@ -240,9 +240,12 @@ class _ProfileHeader extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(
             _initials,
+            textAlign: TextAlign.center,
             style: textTheme.titleLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              height: 1.0,
+              leadingDistribution: TextLeadingDistribution.even,
             ),
           ),
         ),
