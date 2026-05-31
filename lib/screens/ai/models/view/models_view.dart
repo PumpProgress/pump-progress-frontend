@@ -49,10 +49,39 @@ class _ModelTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final mutedColor = theme.colorScheme.onSurfaceVariant;
+
     return ListTile(
-      title: Text(item.model.displayName),
-      subtitle: Text(
-        '${item.model.description} · ${formatBytes(item.model.sizeBytes)}',
+      isThreeLine: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      title: Text(
+        item.model.displayName,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 4),
+          Text(
+            item.model.description,
+            style: theme.textTheme.bodySmall?.copyWith(color: mutedColor),
+          ),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.sd_storage_outlined, size: 14, color: mutedColor),
+              const SizedBox(width: 4),
+              Text(
+                formatBytes(item.model.sizeBytes),
+                style: theme.textTheme.labelSmall?.copyWith(color: mutedColor),
+              ),
+            ],
+          ),
+        ],
       ),
       trailing: _buildTrailing(context),
     );
@@ -80,23 +109,48 @@ class _ModelTile extends StatelessWidget {
           ),
         );
       case ModelDownloadState.downloaded:
+        final theme = Theme.of(context);
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (item.isActive)
-              const Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Text('Active',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check_circle,
+                        size: 14, color: theme.colorScheme.onPrimaryContainer),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Active',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               )
             else
-              TextButton(
+              FilledButton.tonal(
                 onPressed: () => bloc.add(SelectModel(item.model)),
+                style: FilledButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                ),
                 child: const Text('Use'),
               ),
-            TextButton(
+            IconButton(
               onPressed: () => _confirmDelete(context, bloc),
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              icon: const Icon(Icons.delete_outline),
+              color: theme.colorScheme.error,
+              tooltip: 'Delete',
+              visualDensity: VisualDensity.compact,
             ),
           ],
         );

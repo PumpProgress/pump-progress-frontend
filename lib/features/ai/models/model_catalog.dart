@@ -4,7 +4,7 @@ import 'package:pump_progress_frontend/features/ai/models/entities/local_model.d
 
 /// Code-defined set of downloadable on-device models.
 /// Add a model = add an entry here.
-const kModelCatalog = <LocalModel>[
+final kModelCatalog = <LocalModel>[
   LocalModel(
     id: 'gemma-4-E2B-it.litertlm',
     displayName: 'Gemma 4 E2B',
@@ -14,6 +14,6 @@ const kModelCatalog = <LocalModel>[
     modelType: ModelType.gemma4,
     fileType: ModelFileType.litertlm,
     maxTokens: 2048,
-    sizeBytes: 3 * 1024 * 1024 * 1024, // ~3 GB — set manually per model
+    sizeBytes: (2.59 * 1024 * 1024 * 1024).floor(), //
   ),
 ];

@@ -88,32 +88,36 @@ class _AiChatScaffoldState<B extends BaseChatBloc>
   }
 
   Widget _buildNoModelBody(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.download_for_offline,
-              size: 48, color: PPColors.amethyst300),
-          const SizedBox(height: 16),
-          Text('No AI model installed',
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          Text(
-            'Download a model to start chatting.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: PPColors.neutral300),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () =>
-                Navigator.pushNamed(context, ModelsPage.routeName),
-            child: const Text('Manage models'),
-          ),
-        ],
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.download_for_offline,
+                size: 48, color: PPColors.amethyst300),
+            const SizedBox(height: 16),
+            Text('No AI model installed',
+                style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Text(
+              'Download a model to start chatting.',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: PPColors.neutral300),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, ModelsPage.routeName),
+              child: const Text('Manage models'),
+            ),
+          ],
+        ),
       ),
     );
   }
