@@ -44,5 +44,29 @@ void main() {
         expect(saved['fitnessLevel'], 'Intermediate');
       },
     );
+
+    blocTest<UserSessionBloc, UserSessionState>(
+      'clears a previously set field when the event carries null',
+      build: () => UserSessionBloc(repositoryUser: MockRepositoryUser()),
+      seed: () => const UserSessionState(
+        status: UserSessionStatusAuthenticated(),
+        user: User(
+          id: '1',
+          name: 'xrok',
+          email: 'sercar88@gmail.com',
+          favoriteExercises: [],
+          age: 30,
+          gender: 'Male',
+        ),
+      ),
+      act: (bloc) => bloc.add(const UserSessionUpdateProfileEvent()),
+      verify: (bloc) async {
+        expect(bloc.state.user.age, isNull);
+        expect(bloc.state.user.gender, isNull);
+        final saved = await LocalUserProfile().load();
+        expect(saved!['age'], isNull);
+        expect(saved['gender'], isNull);
+      },
+    );
   });
 }

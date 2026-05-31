@@ -90,7 +90,15 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       UserSessionUpdateProfileEvent event,
       Emitter<UserSessionState> emit) async {
     await runSafeEvent(emit, () => state, UserSessionStatusError.new, () async {
-      final updatedUser = state.user.copyWith(
+      // The event carries the complete profile, so overwrite all five fields
+      // wholesale. Building a new User (instead of copyWith) lets the user
+      // clear a previously set field back to null.
+      final current = state.user;
+      final updatedUser = User(
+        id: current.id,
+        name: current.name,
+        email: current.email,
+        favoriteExercises: current.favoriteExercises,
         age: event.age,
         gender: event.gender,
         fitnessLevel: event.fitnessLevel,
