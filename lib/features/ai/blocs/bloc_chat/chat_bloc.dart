@@ -51,14 +51,11 @@ abstract class BaseChatBloc extends Bloc<ChatEvent, ChatState> {
   AiToolDispatcher? get toolDispatcher;
 
   void _subscribeToModel() {
-    if (_modelService.isReady) {
+    if (_modelService.hasActiveModel) {
       add(_ChatModelReadyEvent(_modelService.model!));
-      return;
     }
     _modelSub = _modelService.modelStream.listen((model) {
       add(_ChatModelReadyEvent(model));
-      _modelSub?.cancel();
-      _modelSub = null;
     });
   }
 

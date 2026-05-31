@@ -45,7 +45,7 @@ void main() {
   });
 
   group('AiChatScaffold — loading states', () {
-    testWidgets('shows indeterminate spinner when GemmaModelStatusInitial',
+    testWidgets('shows loading body when GemmaModelStatusInitial',
         (tester) async {
       when(() => modelBloc.state)
           .thenReturn(const GemmaModelState(status: GemmaModelStatusInitial()));
@@ -59,57 +59,19 @@ void main() {
       expect(find.byType(TextField), findsNothing);
     });
 
-    testWidgets(
-        'shows determinate bar and percentage when GemmaModelStatusInstalling',
-        (tester) async {
-      when(() => modelBloc.state).thenReturn(const GemmaModelState(
-        status: GemmaModelStatusInstalling(),
-        downloadProgress: 45,
-      ));
-      await tester.pumpWidget(_wrap(
-        const AiChatScaffold<ProfileChatBloc>(title: 'Test'),
-        modelBloc: modelBloc,
-        chatBloc: chatBloc,
-      ));
-      expect(find.text('Getting AI ready…'), findsOneWidget);
-      expect(find.text('45%'), findsOneWidget);
-      final indicator = tester.widget<LinearProgressIndicator>(
-        find.byType(LinearProgressIndicator),
-      );
-      expect(indicator.value, closeTo(0.45, 0.001));
-      expect(find.byType(TextField), findsNothing);
-    });
-
-    testWidgets('shows download subtitle when GemmaModelStatusInstalling',
+    testWidgets('shows NoModel body with Manage models button',
         (tester) async {
       when(() => modelBloc.state).thenReturn(
-        const GemmaModelState(status: GemmaModelStatusInstalling()),
+        const GemmaModelState(status: GemmaModelStatusNoModel()),
       );
       await tester.pumpWidget(_wrap(
         const AiChatScaffold<ProfileChatBloc>(title: 'Test'),
         modelBloc: modelBloc,
         chatBloc: chatBloc,
       ));
-      expect(
-        find.text('Downloading model for the first time. This only happens once.'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets(
-        'does not show download subtitle when GemmaModelStatusInitial',
-        (tester) async {
-      when(() => modelBloc.state)
-          .thenReturn(const GemmaModelState(status: GemmaModelStatusInitial()));
-      await tester.pumpWidget(_wrap(
-        const AiChatScaffold<ProfileChatBloc>(title: 'Test'),
-        modelBloc: modelBloc,
-        chatBloc: chatBloc,
-      ));
-      expect(
-        find.text('Downloading model for the first time. This only happens once.'),
-        findsNothing,
-      );
+      expect(find.text('No AI model installed'), findsOneWidget);
+      expect(find.text('Manage models'), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
     });
   });
 

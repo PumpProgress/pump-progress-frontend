@@ -6,6 +6,7 @@ import 'package:pump_progress_frontend/config/theme/colors.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_chat/chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_gemma_model/gemma_model_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/domain/domain.dart';
+import 'package:pump_progress_frontend/screens/ai/models/models_page.dart';
 
 class AiChatScaffold<B extends BaseChatBloc> extends StatefulWidget {
   const AiChatScaffold({super.key, required this.title});
@@ -33,8 +34,11 @@ class _AiChatScaffoldState<B extends BaseChatBloc>
       body: BlocBuilder<GemmaModelBloc, GemmaModelState>(
         builder: (context, modelState) {
           if (modelState.status is GemmaModelStatusInitial ||
-              modelState.status is GemmaModelStatusInstalling) {
-            return _buildLoadingBody(context, modelState);
+              modelState.status is GemmaModelStatusLoading) {
+            return _buildLoadingBody(context);
+          }
+          if (modelState.status is GemmaModelStatusNoModel) {
+            return _buildNoModelBody(context);
           }
           if (modelState.status is GemmaModelStatusError) {
             return _buildErrorBody(
@@ -66,7 +70,7 @@ class _AiChatScaffoldState<B extends BaseChatBloc>
     );
   }
 
-  Widget _buildLoadingBody(BuildContext context, GemmaModelState state) {
+  Widget _buildLoadingBody(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -76,31 +80,44 @@ class _AiChatScaffoldState<B extends BaseChatBloc>
           const SizedBox(height: 16),
           Text('Getting AI ready…',
               style: Theme.of(context).textTheme.titleMedium),
-          if (state.status is GemmaModelStatusInstalling) ...[
+          const SizedBox(height: 24),
+          const LinearProgressIndicator(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoModelBody(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.download_for_offline,
+                size: 48, color: PPColors.amethyst300),
+            const SizedBox(height: 16),
+            Text('No AI model installed',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             Text(
-              'Downloading model for the first time. This only happens once.',
+              'Download a model to start chatting.',
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
                   ?.copyWith(color: PPColors.neutral300),
             ),
-            const SizedBox(height: 16),
-            LinearProgressIndicator(value: state.downloadProgress / 100),
-            const SizedBox(height: 8),
-            Text(
-              '${state.downloadProgress}%',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: PPColors.neutral300),
-            ),
-          ] else ...[
             const SizedBox(height: 24),
-            const LinearProgressIndicator(),
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, ModelsPage.routeName),
+              child: const Text('Manage models'),
+            ),
           ],
-        ],
+        ),
       ),
     );
   }

@@ -52,7 +52,7 @@ void main() {
       providerMuscle: mockMuscles,
     );
 
-    when(() => mockService.isReady).thenReturn(false);
+    when(() => mockService.hasActiveModel).thenReturn(false);
     when(() => mockService.modelStream)
         .thenAnswer((_) => modelStreamController.stream);
     when(

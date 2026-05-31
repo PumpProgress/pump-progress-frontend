@@ -1,3 +1,4 @@
+// lib/features/ai/blocs/bloc_gemma_model/gemma_model_state.dart
 part of 'gemma_model_bloc.dart';
 
 sealed class GemmaModelStatus {
@@ -8,12 +9,18 @@ class GemmaModelStatusInitial implements GemmaModelStatus {
   const GemmaModelStatusInitial();
 }
 
-class GemmaModelStatusInstalling implements GemmaModelStatus {
-  const GemmaModelStatusInstalling();
+/// Restoring a persisted selection at startup.
+class GemmaModelStatusLoading implements GemmaModelStatus {
+  const GemmaModelStatusLoading();
 }
 
 class GemmaModelStatusReady implements GemmaModelStatus {
   const GemmaModelStatusReady();
+}
+
+/// No active model — user must pick/download one on the Models page.
+class GemmaModelStatusNoModel implements GemmaModelStatus {
+  const GemmaModelStatusNoModel();
 }
 
 class GemmaModelStatusError extends ErrorStatus implements GemmaModelStatus {
@@ -21,24 +28,14 @@ class GemmaModelStatusError extends ErrorStatus implements GemmaModelStatus {
 }
 
 class GemmaModelState extends Equatable {
-  const GemmaModelState({
-    this.status = const GemmaModelStatusInitial(),
-    this.downloadProgress = 0,
-  });
+  const GemmaModelState({this.status = const GemmaModelStatusInitial()});
 
   final GemmaModelStatus status;
-  final int downloadProgress;
 
   @override
-  List<Object> get props => [status, downloadProgress];
+  List<Object> get props => [status];
 
-  GemmaModelState copyWith({
-    GemmaModelStatus? status,
-    int? downloadProgress,
-  }) {
-    return GemmaModelState(
-      status: status ?? this.status,
-      downloadProgress: downloadProgress ?? this.downloadProgress,
-    );
+  GemmaModelState copyWith({GemmaModelStatus? status}) {
+    return GemmaModelState(status: status ?? this.status);
   }
 }
