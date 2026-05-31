@@ -88,7 +88,7 @@ class _ProfileViewState extends State<ProfileView> {
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) return null;
                   final parsed = int.tryParse(value.trim());
-                  if (parsed == null || parsed <= 0) {
+                  if (parsed == null || parsed <= 0 || parsed > 120) {
                     return 'Enter a valid age';
                   }
                   return null;

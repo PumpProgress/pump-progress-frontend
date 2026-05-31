@@ -69,4 +69,27 @@ void main() {
       },
     );
   });
+
+  group('UserSessionDeleteAccountEvent', () {
+    test('clears the locally-persisted profile', () async {
+      final profile = LocalUserProfile();
+      await profile.save(const User(
+        id: '1',
+        name: 'xrok',
+        email: 'sercar88@gmail.com',
+        favoriteExercises: [],
+        age: 30,
+        gender: 'Male',
+      ));
+      expect(await profile.load(), isNotNull);
+
+      final bloc = UserSessionBloc(repositoryUser: MockRepositoryUser());
+      bloc.add(const UserSessionDeleteAccountEvent());
+      // DeleteAccount emits no state; allow its async clear() to settle.
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      expect(await profile.load(), isNull);
+      await bloc.close();
+    });
+  });
 }

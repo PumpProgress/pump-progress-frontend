@@ -83,7 +83,11 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
   Future<void> _onUserSessionDeleteAccountEvent(
       UserSessionDeleteAccountEvent event,
       Emitter<UserSessionState> emit) async {
-    await runSafeEvent(emit, () => state, UserSessionStatusError.new, () async {});
+    await runSafeEvent(emit, () => state, UserSessionStatusError.new, () async {
+      // Wipe the locally-persisted profile so it cannot be merged onto a
+      // future session on this device after the account is gone.
+      await localUserProfile.clear();
+    });
   }
 
   Future<void> _onUserSessionUpdateProfileEvent(
