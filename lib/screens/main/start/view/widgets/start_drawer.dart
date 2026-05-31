@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/bloc_sync/sync_bloc.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
 import 'package:pump_progress_frontend/screens/ai/models/models_page.dart';
+import 'package:pump_progress_frontend/screens/profile/profile_page.dart';
 import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -24,6 +25,9 @@ class StartDrawer extends StatelessWidget {
               title: Text("Profile"),
               subtitle: Text("${user.name} (${user.email})"),
               leading: const Icon(Icons.person_rounded),
+              onTap: () {
+                Navigator.pushNamed(context, ProfilePage.routeName);
+              },
               onLongPress: () async {
                 await Sentry.captureException(
                   Exception(
