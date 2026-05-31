@@ -7,7 +7,7 @@ class AppLogger {
       errorMethodCount: 8, // number of method calls if stacktrace is provided
       lineLength: 120, // width of the output
       colors: true, // Colorful log messages
-      printEmojis: true, // Print an emoji for each log message
+      printEmojis: false, // Disabled: emoji bytes get mangled by the iOS console
       dateTimeFormat:
           DateTimeFormat.dateAndTime, // How should the time be formatted
     ),
