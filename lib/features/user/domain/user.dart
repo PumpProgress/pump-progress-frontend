@@ -11,7 +11,7 @@ class User {
   final String? gender;
   final String? fitnessLevel;
   final String? primaryGoal;
-  final int? availableDaysPerWeek;
+  final int? trainingDaysPerWeek;
 
   static const unknown =
       User(id: '', name: '', email: '', favoriteExercises: []);
@@ -25,7 +25,7 @@ class User {
     this.gender,
     this.fitnessLevel,
     this.primaryGoal,
-    this.availableDaysPerWeek,
+    this.trainingDaysPerWeek,
   });
 
   User copyWith({
@@ -37,7 +37,7 @@ class User {
     String? gender,
     String? fitnessLevel,
     String? primaryGoal,
-    int? availableDaysPerWeek,
+    int? trainingDaysPerWeek,
   }) {
     return User(
       id: id ?? this.id,
@@ -48,7 +48,7 @@ class User {
       gender: gender ?? this.gender,
       fitnessLevel: fitnessLevel ?? this.fitnessLevel,
       primaryGoal: primaryGoal ?? this.primaryGoal,
-      availableDaysPerWeek: availableDaysPerWeek ?? this.availableDaysPerWeek,
+      trainingDaysPerWeek: trainingDaysPerWeek ?? this.trainingDaysPerWeek,
     );
   }
 
@@ -62,7 +62,7 @@ class User {
       'gender': gender,
       'fitnessLevel': fitnessLevel,
       'primaryGoal': primaryGoal,
-      'availableDaysPerWeek': availableDaysPerWeek,
+      'trainingDaysPerWeek': trainingDaysPerWeek,
     };
   }
 
@@ -77,7 +77,7 @@ class User {
       gender: map['gender'] as String?,
       fitnessLevel: map['fitnessLevel'] as String?,
       primaryGoal: map['primaryGoal'] as String?,
-      availableDaysPerWeek: map['availableDaysPerWeek'] as int?,
+      trainingDaysPerWeek: map['trainingDaysPerWeek'] as int?,
     );
   }
 
@@ -91,7 +91,7 @@ class User {
     return 'User(id: $id, name: $name, email: $email, '
         'favoriteExercises: $favoriteExercises, age: $age, gender: $gender, '
         'fitnessLevel: $fitnessLevel, primaryGoal: $primaryGoal, '
-        'availableDaysPerWeek: $availableDaysPerWeek)';
+        'trainingDaysPerWeek: $trainingDaysPerWeek)';
   }
 
   @override
@@ -107,7 +107,7 @@ class User {
         other.gender == gender &&
         other.fitnessLevel == fitnessLevel &&
         other.primaryGoal == primaryGoal &&
-        other.availableDaysPerWeek == availableDaysPerWeek;
+        other.trainingDaysPerWeek == trainingDaysPerWeek;
   }
 
   @override
@@ -120,6 +120,6 @@ class User {
         gender.hashCode ^
         fitnessLevel.hashCode ^
         primaryGoal.hashCode ^
-        availableDaysPerWeek.hashCode;
+        trainingDaysPerWeek.hashCode;
   }
 }

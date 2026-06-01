@@ -24,7 +24,7 @@ void main() {
       gender: 'Male',
       fitnessLevel: 'Intermediate',
       primaryGoal: 'Build muscle',
-      availableDaysPerWeek: 4,
+      trainingDaysPerWeek: 4,
     );
 
     await local.save(user);
@@ -35,7 +35,7 @@ void main() {
     expect(loaded['gender'], 'Male');
     expect(loaded['fitnessLevel'], 'Intermediate');
     expect(loaded['primaryGoal'], 'Build muscle');
-    expect(loaded['availableDaysPerWeek'], 4);
+    expect(loaded['trainingDaysPerWeek'], 4);
   });
 
   test('clear removes the stored profile', () async {

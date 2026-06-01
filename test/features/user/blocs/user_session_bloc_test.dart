@@ -32,13 +32,13 @@ void main() {
         gender: 'Male',
         fitnessLevel: 'Intermediate',
         primaryGoal: 'Build muscle',
-        availableDaysPerWeek: 4,
+        trainingDaysPerWeek: 4,
       )),
       verify: (bloc) async {
         expect(bloc.state.user.age, 30);
         expect(bloc.state.user.gender, 'Male');
         expect(bloc.state.user.fitnessLevel, 'Intermediate');
-        expect(bloc.state.user.availableDaysPerWeek, 4);
+        expect(bloc.state.user.trainingDaysPerWeek, 4);
         final saved = await LocalUserProfile().load();
         expect(saved!['primaryGoal'], 'Build muscle');
         expect(saved['fitnessLevel'], 'Intermediate');

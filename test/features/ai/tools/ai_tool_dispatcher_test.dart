@@ -2,6 +2,7 @@ import 'package:flutter_gemma/flutter_gemma.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/ai/tools/resolved_tool_use.dart';
 import 'package:pump_progress_frontend/features/exercise/domain/exercise.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
@@ -24,7 +25,7 @@ void main() {
           Muscle(id: 1, name: 'chest', code: 'chest'),
           Muscle(id: 2, name: 'biceps', code: 'biceps'),
         ]);
-    dispatcher = AiToolDispatcher(
+    dispatcher = ExerciseToolDispatcher(
       repositoryExercises: mockRepo,
       providerMuscle: mockMuscles,
     );

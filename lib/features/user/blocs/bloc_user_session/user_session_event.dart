@@ -25,16 +25,16 @@ class UserSessionUpdateProfileEvent extends UserSessionEvent {
     this.gender,
     this.fitnessLevel,
     this.primaryGoal,
-    this.availableDaysPerWeek,
+    this.trainingDaysPerWeek,
   });
 
   final int? age;
   final String? gender;
   final String? fitnessLevel;
   final String? primaryGoal;
-  final int? availableDaysPerWeek;
+  final int? trainingDaysPerWeek;
 
   @override
   List<Object?> get props =>
-      [age, gender, fitnessLevel, primaryGoal, availableDaysPerWeek];
+      [age, gender, fitnessLevel, primaryGoal, trainingDaysPerWeek];
 }

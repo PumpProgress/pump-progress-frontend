@@ -2,16 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/config/theme/colors.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
-
-const _genderOptions = ['Male', 'Female', 'Other', 'Prefer not to say'];
-const _fitnessLevelOptions = ['Beginner', 'Intermediate', 'Advanced'];
-const _primaryGoalOptions = [
-  'Build muscle',
-  'Lose weight',
-  'Gain strength',
-  'Improve endurance',
-  'General fitness',
-];
+import 'package:pump_progress_frontend/features/user/domain/domain.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -36,7 +27,7 @@ class _ProfileViewState extends State<ProfileView> {
     _gender = user.gender;
     _fitnessLevel = user.fitnessLevel;
     _primaryGoal = user.primaryGoal;
-    _availableDays = user.availableDaysPerWeek;
+    _availableDays = user.trainingDaysPerWeek;
   }
 
   @override
@@ -54,7 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
             gender: _gender,
             fitnessLevel: _fitnessLevel,
             primaryGoal: _primaryGoal,
-            availableDaysPerWeek: _availableDays,
+            trainingDaysPerWeek: _availableDays,
           ),
         );
     ScaffoldMessenger.of(context).showSnackBar(
@@ -101,7 +92,7 @@ class _ProfileViewState extends State<ProfileView> {
                       label: 'Gender',
                       icon: Icons.wc_rounded,
                       value: _gender,
-                      options: _genderOptions,
+                      options: genderOptions,
                       labelOf: (o) => o,
                       onChanged: (v) => setState(() => _gender = v),
                     ),
@@ -110,7 +101,7 @@ class _ProfileViewState extends State<ProfileView> {
                       label: 'Fitness level',
                       icon: Icons.fitness_center_rounded,
                       value: _fitnessLevel,
-                      options: _fitnessLevelOptions,
+                      options: fitnessLevelOptions,
                       labelOf: (o) => o,
                       onChanged: (v) => setState(() => _fitnessLevel = v),
                     ),
@@ -119,7 +110,7 @@ class _ProfileViewState extends State<ProfileView> {
                       label: 'Primary goal',
                       icon: Icons.flag_rounded,
                       value: _primaryGoal,
-                      options: _primaryGoalOptions,
+                      options: primaryGoalOptions,
                       labelOf: (o) => o,
                       onChanged: (v) => setState(() => _primaryGoal = v),
                     ),
@@ -189,8 +180,12 @@ class _ProfileViewState extends State<ProfileView> {
     required String Function(T) labelOf,
     required ValueChanged<T?> onChanged,
   }) {
+    // Guard against a stored value that is no longer (or never was) one of the
+    // options — e.g. free-text written by the AI profile flow. Passing an
+    // unmatched value to DropdownButtonFormField throws at build time.
+    final safeValue = options.contains(value) ? value : null;
     return DropdownButtonFormField<T>(
-      initialValue: value,
+      initialValue: safeValue,
       isExpanded: true,
       dropdownColor: PPColors.neutral500,
       borderRadius: BorderRadius.circular(12),
@@ -263,7 +258,8 @@ class _ProfileHeader extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 email,
-                style: textTheme.bodyMedium?.copyWith(color: PPColors.neutral300),
+                style:
+                    textTheme.bodyMedium?.copyWith(color: PPColors.neutral300),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

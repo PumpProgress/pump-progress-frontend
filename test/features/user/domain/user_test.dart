@@ -12,7 +12,7 @@ void main() {
       gender: 'Male',
       fitnessLevel: 'Intermediate',
       primaryGoal: 'Build muscle',
-      availableDaysPerWeek: 4,
+      trainingDaysPerWeek: 4,
     );
 
     test('toMap/fromMap round-trip preserves profile fields', () {
@@ -32,7 +32,7 @@ void main() {
       expect(user.gender, isNull);
       expect(user.fitnessLevel, isNull);
       expect(user.primaryGoal, isNull);
-      expect(user.availableDaysPerWeek, isNull);
+      expect(user.trainingDaysPerWeek, isNull);
     });
 
     test('copyWith overrides profile fields', () {
@@ -45,7 +45,7 @@ void main() {
       expect(updated.email, User.unknown.email);
       expect(updated.fitnessLevel, isNull);
       expect(updated.primaryGoal, isNull);
-      expect(updated.availableDaysPerWeek, isNull);
+      expect(updated.trainingDaysPerWeek, isNull);
     });
   });
 }

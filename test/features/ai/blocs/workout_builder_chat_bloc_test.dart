@@ -9,6 +9,7 @@ import 'package:pump_progress_frontend/features/ai/blocs/bloc_chat/chat_bloc.dar
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_workout_builder_chat/workout_builder_chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/services/gemma_model_service.dart';
 import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/domain/muscle.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
@@ -47,7 +48,7 @@ void main() {
     when(() => mockMuscles.getMuscles()).thenAnswer((_) async => [
           Muscle(id: 1, name: 'chest', code: 'chest'),
         ]);
-    dispatcher = AiToolDispatcher(
+    dispatcher = ExerciseToolDispatcher(
       repositoryExercises: mockRepo,
       providerMuscle: mockMuscles,
     );
