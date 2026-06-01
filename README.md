@@ -40,6 +40,7 @@ FutureOr<void> main() async {
 }
 ```
 
+```
 data/
  ├── workout/
  │     ├── remote/
@@ -67,9 +68,10 @@ data/
  │     │     remote.dart          <-- exports all API files
  │     ├── local/
  │     │     local.dart           <-- exports local datasource
+ ```
 
 ## Summary (to review)
-
+```
 lib/
  ├── core/                 # Reusable core utilities (network, database helpers)
  │     ├── network/        # API client, Dio interceptors, request config
@@ -97,7 +99,7 @@ lib/
  │     ├── calendar_tab.dart      # Widget for calendar tab
  │     └── dashboard_tab.dart     # Widget for dashboard tab
  └── repository/          # Optional: abstract repositories coordinating data sources
-
+```
 Folder / File
 Responsibility
 core

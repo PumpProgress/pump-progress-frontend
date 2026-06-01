@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/bloc_sync/sync_bloc.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
+import 'package:pump_progress_frontend/screens/ai/models/models_page.dart';
+import 'package:pump_progress_frontend/screens/profile/profile_page.dart';
 import 'package:pump_progress_frontend/utils/services/native_service/timer_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -24,6 +25,9 @@ class StartDrawer extends StatelessWidget {
               title: Text("Profile"),
               subtitle: Text("${user.name} (${user.email})"),
               leading: const Icon(Icons.person_rounded),
+              onTap: () {
+                Navigator.pushNamed(context, ProfilePage.routeName);
+              },
               onLongPress: () async {
                 await Sentry.captureException(
                   Exception(
@@ -38,14 +42,6 @@ class StartDrawer extends StatelessWidget {
                 await TimerService.stopTimer();
               },
               leading: const Icon(Icons.notifications_off_rounded),
-            ),
-            ListTile(
-              title: const Text('Send Test Prompt to AI'),
-              onTap: () async {
-                BlocProvider.of<AiBloc>(context)
-                    .add(SendPromptEvent("cuanto es 2+2"));
-              },
-              leading: const Icon(Icons.notifications_active_rounded),
             ),
             ListTile(
               leading: Icon(
@@ -73,6 +69,13 @@ class StartDrawer extends StatelessWidget {
                 BlocProvider.of<SyncBloc>(context).add(const StartSyncEvent());
               },
               leading: const Icon(Icons.cloud_sync_rounded),
+            ),
+            ListTile(
+              title: const Text('AI Models'),
+              onTap: () {
+                Navigator.pushNamed(context, ModelsPage.routeName);
+              },
+              leading: const Icon(Icons.smart_toy_rounded),
             ),
             ListTile(
               title: const Text('Logout'),

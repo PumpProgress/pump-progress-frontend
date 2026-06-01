@@ -14,8 +14,12 @@ import 'package:pump_progress_frontend/config/routes/router.dart';
 // * Features
 import 'package:pump_progress_frontend/features/user/repository/repository.dart';
 import 'package:pump_progress_frontend/features/user/blocs/blocs.dart';
-import 'package:pump_progress_frontend/features/ai/blocs/bloc_ai/ai_bloc.dart';
-import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_gemma_model/gemma_model_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_profile_chat/profile_chat_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/blocs/bloc_workout_builder_chat/workout_builder_chat_bloc.dart';
+import 'package:pump_progress_frontend/features/ai/services/gemma_model_service.dart';
+import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/profile_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
@@ -84,6 +88,9 @@ class _AppState extends State<App> {
       RepositoryProvider<RepositorySets>(
         create: (context) => RepositorySets(),
       ),
+      RepositoryProvider<GemmaModelService>(
+        create: (_) => GemmaModelService(),
+      ),
     ];
 
     final blocProviders = [
@@ -98,15 +105,28 @@ class _AppState extends State<App> {
                 repositoryExercises: context.read<RepositoryExercises>());
           }),
       BlocProvider(
-          lazy: false,
-          create: (context) {
-            return AiBloc(
-              toolDispatcher: AiToolDispatcher(
-                repositoryExercises: context.read<RepositoryExercises>(),
-                providerMuscle: context.read<ProviderMuscle>(),
-              ),
-            )..add(const AiInitEvent());
-          }),
+        lazy: false,
+        create: (context) => GemmaModelBloc(
+          modelService: context.read<GemmaModelService>(),
+        )..add(const GemmaModelInitEvent()),
+      ),
+      BlocProvider(
+        create: (context) => ProfileChatBloc(
+          modelService: context.read<GemmaModelService>(),
+          toolDispatcher: ProfileToolDispatcher(
+            userSessionBloc: context.read<UserSessionBloc>(),
+          ),
+        ),
+      ),
+      BlocProvider(
+        create: (context) => WorkoutBuilderChatBloc(
+          modelService: context.read<GemmaModelService>(),
+          toolDispatcher: ExerciseToolDispatcher(
+            repositoryExercises: context.read<RepositoryExercises>(),
+            providerMuscle: context.read<ProviderMuscle>(),
+          ),
+        ),
+      ),
       BlocProvider(create: (context) {
         return SyncBloc(
           repositorySync: context.read<RepositorySync>(),
@@ -123,28 +143,44 @@ class _AppState extends State<App> {
         },
         child: MultiBlocProvider(
           providers: blocProviders,
-          child: BlocConsumer<UserSessionBloc, UserSessionState>(
-            listener: (context, state) {
-              if (state.status is UserSessionStatusAuthenticated) {
-                context.read<SyncBloc>()
-                  ..add(const StartSyncEvent())
-                  ..add(const StartPeriodicSyncEvent());
-              } else if (state.status is UserSessionStatusUnauthenticated) {
-                context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
+          child: BlocListener<SyncBloc, SyncState>(
+            listener: (context, syncState) {
+              if (syncState.status
+                  case SyncBlocStatusSuccess(:final result)
+                  when result.hasData) {
+                final parts = [
+                  if (result.totalReceived > 0)
+                    '${result.totalReceived} received',
+                  if (result.totalSent > 0) '${result.totalSent} uploaded',
+                ];
+                messengerKey.currentState?.showSnackBar(
+                  SnackBar(content: Text('Sync complete — ${parts.join(', ')}')),
+                );
               }
             },
-            builder: (context, state) {
-              // final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
-              //     (bloc) => bloc.state.status);
+            child: BlocConsumer<UserSessionBloc, UserSessionState>(
+              listener: (context, state) {
+                if (state.status is UserSessionStatusAuthenticated) {
+                  context.read<SyncBloc>()
+                    ..add(const StartSyncEvent())
+                    ..add(const StartPeriodicSyncEvent());
+                } else if (state.status is UserSessionStatusUnauthenticated) {
+                  context.read<SyncBloc>().add(const StopPeriodicSyncEvent());
+                }
+              },
+              builder: (context, state) {
+                // final syncStateStatus = context.select<SyncBloc, SyncBlocStatus>(
+                //     (bloc) => bloc.state.status);
 
-              return MaterialApp(
-                scaffoldMessengerKey: messengerKey,
-                theme: theme,
-                onGenerateRoute: App.router.onGenerateRoute,
-                navigatorObservers: [routeObserver],
-                debugShowCheckedModeBanner: false,
-              );
-            },
+                return MaterialApp(
+                  scaffoldMessengerKey: messengerKey,
+                  theme: theme,
+                  onGenerateRoute: App.router.onGenerateRoute,
+                  navigatorObservers: [routeObserver],
+                  debugShowCheckedModeBanner: false,
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -18,7 +18,7 @@ class Series {
       userId: map['userId'] as String,
       exerciseId: map['exerciseId'] as int,
       repetitions: map['repetitions'] as int,
-      weight: map['weight'] as double,
+      weight: (map['weight'] as num).toDouble(),
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
