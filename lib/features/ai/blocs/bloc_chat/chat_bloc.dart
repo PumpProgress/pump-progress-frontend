@@ -39,6 +39,7 @@ abstract class BaseChatBloc extends Bloc<ChatEvent, ChatState> {
   final GemmaModelService _modelService;
   InferenceChat? _chat;
   StreamSubscription<InferenceModel>? _modelSub;
+  bool _systemPromptSent = false;
 
   /// System prompt sent to the model before the first user message.
   /// Not shown in the UI message list.
@@ -71,17 +72,10 @@ abstract class BaseChatBloc extends Bloc<ChatEvent, ChatState> {
         modelType: ModelType.gemma4,
       );
 
-      // Inject system prompt as invisible model-role context if non-empty.
-      // flutter_gemma injects this before any user turn without requiring
-      // a generated response. Verify behaviour against the installed version:
-      // if Message.text(isUser: false) is not supported as a system role,
-      // send as isUser: true and consume (discard) the model response here.
-      if (systemPrompt.isNotEmpty) {
-        await _chat!.addQueryChunk(
-          Message.text(text: systemPrompt, isUser: false),
-        );
-      }
-
+      // The system prompt is folded into the first user turn (see
+      // _onSendMessage) rather than sent as a standalone leading model turn:
+      // gemma's chat template expects the conversation to start with a user
+      // turn, and a leading model turn degrades instruction-following.
       emit(state.copyWith(isReady: true));
     } catch (e, st) {
       AppLogger.error('Chat init failed: $e', stackTrace: st, error: e);
@@ -107,8 +101,15 @@ abstract class BaseChatBloc extends Bloc<ChatEvent, ChatState> {
     emit(state.copyWith(messages: currentMessages));
 
     try {
+      // Fold the system prompt into the first user message so the model gets
+      // it as part of a proper opening user turn. Only the raw prompt is shown
+      // in the UI (added above); the model sees prompt + system text.
+      final modelText = !_systemPromptSent && systemPrompt.isNotEmpty
+          ? '$systemPrompt\n\n${event.prompt}'
+          : event.prompt;
+      _systemPromptSent = true;
       await _chat!.addQueryChunk(
-        Message.text(text: event.prompt, isUser: true),
+        Message.text(text: modelText, isUser: true),
       );
 
       String rawAccumulated = '';
@@ -149,6 +150,22 @@ abstract class BaseChatBloc extends Bloc<ChatEvent, ChatState> {
             toolName: response.name,
             response: toolResult,
           ));
+
+          // A tool may hand back a ready-to-show message (e.g. a completion
+          // summary). Display it verbatim and skip the model follow-up turn,
+          // which small models render unreliably after a tool call.
+          final displayMessage = toolResult['display_message'];
+          if (displayMessage is String && displayMessage.isNotEmpty) {
+            currentMessages = [
+              ...msgsWithChip,
+              ChatMessage(text: displayMessage, isUser: false),
+            ];
+            emit(state.copyWith(
+              messages: currentMessages,
+              isGenerating: false,
+            ));
+            continue;
+          }
 
           currentMessages = [
             ...msgsWithChip,

@@ -107,7 +107,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
         gender: event.gender,
         fitnessLevel: event.fitnessLevel,
         primaryGoal: event.primaryGoal,
-        availableDaysPerWeek: event.availableDaysPerWeek,
+        trainingDaysPerWeek: event.trainingDaysPerWeek,
       );
       await localUserProfile.save(updatedUser);
       emit(state.copyWith(user: updatedUser));
@@ -122,7 +122,7 @@ class UserSessionBloc extends Bloc<UserSessionEvent, UserSessionState> {
       gender: profile['gender'] as String?,
       fitnessLevel: profile['fitnessLevel'] as String?,
       primaryGoal: profile['primaryGoal'] as String?,
-      availableDaysPerWeek: profile['availableDaysPerWeek'] as int?,
+      trainingDaysPerWeek: profile['trainingDaysPerWeek'] as int?,
     );
   }
 }

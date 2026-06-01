@@ -18,7 +18,8 @@ import 'package:pump_progress_frontend/features/ai/blocs/bloc_gemma_model/gemma_
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_profile_chat/profile_chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_workout_builder_chat/workout_builder_chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/services/gemma_model_service.dart';
-import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/profile_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
@@ -112,12 +113,15 @@ class _AppState extends State<App> {
       BlocProvider(
         create: (context) => ProfileChatBloc(
           modelService: context.read<GemmaModelService>(),
+          toolDispatcher: ProfileToolDispatcher(
+            userSessionBloc: context.read<UserSessionBloc>(),
+          ),
         ),
       ),
       BlocProvider(
         create: (context) => WorkoutBuilderChatBloc(
           modelService: context.read<GemmaModelService>(),
-          toolDispatcher: AiToolDispatcher(
+          toolDispatcher: ExerciseToolDispatcher(
             repositoryExercises: context.read<RepositoryExercises>(),
             providerMuscle: context.read<ProviderMuscle>(),
           ),

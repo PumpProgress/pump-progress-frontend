@@ -15,7 +15,7 @@ class LocalUserProfile {
       'gender': user.gender,
       'fitnessLevel': user.fitnessLevel,
       'primaryGoal': user.primaryGoal,
-      'availableDaysPerWeek': user.availableDaysPerWeek,
+      'trainingDaysPerWeek': user.trainingDaysPerWeek,
     };
     await prefs.setString(userProfileKey, json.encode(map));
   }
