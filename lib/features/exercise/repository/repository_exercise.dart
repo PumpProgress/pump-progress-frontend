@@ -39,4 +39,9 @@ class RepositoryExercises {
         .map((exerciseRow) => Exercise.fromMap(exerciseRow.toMap()))
         .toList();
   }
+
+  Future<List<Exercise>> getAllExercises() async {
+    final maps = await localExercise.getAllExercisesEnriched();
+    return maps.map(Exercise.fromMap).toList();
+  }
 }
