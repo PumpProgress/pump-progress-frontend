@@ -13,14 +13,17 @@ class ExerciseSearcher {
 
   List<Exercise> search(String rawQuery, {int limit = 15}) {
     final query = _normalize(rawQuery);
-    if (query.isEmpty) return [];
+    if (query.isEmpty || query.length < 2) return [];
 
     final scored = _exercises
         .map((ex) => (exercise: ex, score: _score(query, ex)))
         .where((r) => r.score > 40)
         .toList();
 
-    scored.sort((a, b) => b.score.compareTo(a.score));
+    scored.sort((a, b) {
+      final cmp = b.score.compareTo(a.score);
+      return cmp != 0 ? cmp : a.exercise.id.compareTo(b.exercise.id);
+    });
     return scored.take(limit).map((r) => r.exercise).toList();
   }
 
@@ -59,23 +62,20 @@ class ExerciseSearcher {
     final mechanicScore =
         (partialRatio(query, _normalize(ex.mechanic ?? '')) * 0.2).round();
 
-    // Substring bonus — "bench" inside "barbell bench press".
+    // Substring bonus applies only to strong (name/code/alias) signals.
     final containsBonus = name.contains(query) ? 15 : 0;
+    final strongScore =
+        [nameScore, codeScore, aliasScore].reduce((a, b) => a > b ? a : b) +
+            containsBonus;
+    final weakScore = [muscleScore, equipScore, mechanicScore]
+        .reduce((a, b) => a > b ? a : b);
 
-    return [
-          nameScore,
-          codeScore,
-          aliasScore,
-          muscleScore,
-          equipScore,
-          mechanicScore,
-        ].reduce((a, b) => a > b ? a : b) +
-        containsBonus;
+    return strongScore > weakScore ? strongScore : weakScore;
   }
 
   String _normalize(String s) => s
       .toLowerCase()
-      .replaceAll(RegExp(r'[^\w\s]'), '')
+      .replaceAll(RegExp(r'[^\p{L}\p{N}\s]', unicode: true), ' ')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
 }

@@ -71,4 +71,83 @@ void main() {
     final results = searcher.search('barbell', limit: 1);
     expect(results.length, 1);
   });
+
+  // ── New tests ─────────────────────────────────────────────────────────────
+
+  group('Fix 1 – minimum query length', () {
+    test('single-character queries return empty', () {
+      expect(searcher.search('a'), isEmpty);
+      expect(searcher.search('b'), isEmpty);
+    });
+  });
+
+  group('Fix 2 – no false positives from weak signals', () {
+    test("'zz' returns empty (noise below threshold)", () {
+      expect(searcher.search('zz'), isEmpty);
+    });
+
+    test('purely equipment-brushing query does not flood irrelevant results',
+        () {
+      // "bb" is not a substring of any exercise name and only weakly matches
+      // 'Barbell' via partialRatio. With Fix 2, the weak equipScore (capped at
+      // partialRatio*0.3) cannot combine with containsBonus to exceed threshold.
+      // All three exercises should be absent.
+      final results = searcher.search('bb');
+      expect(results, isEmpty);
+    });
+  });
+
+  group('Fix 3 – hyphen normalization', () {
+    test("'dead lift' matches a hyphenated exercise name", () {
+      const deadlift = Exercise(
+        id: 10,
+        code: 'barbell_romanian_deadlift',
+        name: 'Romanian Dead-Lift',
+        category: 'Legs',
+        muscles: ['Hamstrings'],
+        equipment: 'Barbell',
+      );
+      final localSearcher = ExerciseSearcher([deadlift]);
+      final results = localSearcher.search('dead lift');
+      expect(results, contains(deadlift));
+    });
+  });
+
+  group('Fix 4 – deterministic sort', () {
+    test("'bench' returns benchPress before other results", () {
+      final results = searcher.search('bench');
+      expect(results.first, benchPress);
+    });
+  });
+
+  group('Alias match', () {
+    test('alias exact match returns the exercise first', () {
+      const flatPressExercise = Exercise(
+        id: 20,
+        code: 'barbell_flat_press',
+        name: 'Barbell Flat Press',
+        category: 'Chest',
+        muscles: ['Chest'],
+        equipment: 'Barbell',
+        aliases: ['flat press'],
+      );
+      final localSearcher = ExerciseSearcher([flatPressExercise, squat]);
+      final results = localSearcher.search('flat press');
+      expect(results.first, flatPressExercise);
+    });
+  });
+
+  group('Ranking order', () {
+    test("'bench' ranks benchPress before squat", () {
+      final results = searcher.search('bench');
+      expect(results, contains(benchPress));
+      // benchPress must come before squat (or squat may not appear at all).
+      final benchIdx = results.indexOf(benchPress);
+      final squatIdx = results.indexOf(squat);
+      expect(benchIdx, 0);
+      if (squatIdx != -1) {
+        expect(benchIdx, lessThan(squatIdx));
+      }
+    });
+  });
 }
