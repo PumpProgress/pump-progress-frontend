@@ -28,18 +28,6 @@ class LocalExercise {
     return ExerciseRow.fromDB(exerciseResult.first);
   }
 
-  Future<List<ExerciseRow>> searchExercises(
-      {required String searchTerm}) async {
-    final database = await db;
-    final exercisesResult = await database.rawQuery('''SELECT * FROM exercises
-        WHERE name LIKE '%$searchTerm%'
-        AND deleted_at IS NULL
-        ''');
-    return exercisesResult
-        .map((exercise) => ExerciseRow.fromDB(exercise))
-        .toList();
-  }
-
   Future<List<ExerciseRow>> getExercisesByMuscle({
     required String muscleName,
     int limit = 10,

@@ -87,4 +87,28 @@ void main() {
       verify(() => repo.getAllExercises()).called(1);
     },
   );
+
+  blocTest<ExerciseSearchBloc, ExerciseSearchState>(
+    'emits error on failed load, then retries and succeeds on next event',
+    build: () {
+      var calls = 0;
+      when(() => repo.getAllExercises()).thenAnswer((_) async {
+        calls++;
+        if (calls == 1) throw Exception('db error');
+        return [benchPress, squat];
+      });
+      return ExerciseSearchBloc(repositoryExercises: repo);
+    },
+    act: (bloc) async {
+      bloc.add(const UpdateSearchTermEvent('bench'));
+      await Future<void>.delayed(Duration.zero);
+      bloc.add(const UpdateSearchTermEvent('bench'));
+    },
+    verify: (bloc) {
+      // First load threw and reset the cache; the second event retried.
+      verify(() => repo.getAllExercises()).called(2);
+      expect(bloc.state.status, isA<ExerciseSearchSuccess>());
+      expect(bloc.state.exercises.first, benchPress);
+    },
+  );
 }

@@ -18,15 +18,6 @@ class RepositoryExercises {
     return Exercise.fromMap(exerciseRow.toMap());
   }
 
-  Future<List<Exercise>> searchExercises(String searchTerm) async {
-    final exerciseRows =
-        await localExercise.searchExercises(searchTerm: searchTerm);
-    final exercises = exerciseRows
-        .map((exerciseRow) => Exercise.fromMap(exerciseRow.toMap()))
-        .toList();
-    return exercises;
-  }
-
   Future<List<Exercise>> getExercisesByMuscle(
     String muscleName, {
     int limit = 10,
