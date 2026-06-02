@@ -140,6 +140,7 @@ class RepositorySets {
       final setRows = grouped[exerciseId]!;
       final exercise = Exercise(
         id: exerciseId,
+        code: '',
         name: setRows.first['exercise_name'] as String,
         category: setRows.first['category_name'] as String? ?? '',
         muscles: muscleMap[exerciseId] ?? [],

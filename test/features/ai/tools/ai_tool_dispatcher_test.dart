@@ -78,6 +78,7 @@ void main() {
           .thenAnswer((_) async => [
                 const Exercise(
                   id: 1,
+                  code: 'bench_press',
                   name: 'Bench Press',
                   category: 'Compound',
                   muscles: ['chest'],

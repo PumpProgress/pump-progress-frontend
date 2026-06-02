@@ -5,6 +5,7 @@ import 'package:pump_progress_frontend/features/sets/domain/domain.dart';
 void main() {
   const exercise = Exercise(
     id: 1,
+    code: 'bench_press',
     name: 'Bench Press',
     category: 'Chest',
     muscles: ['Chest'],
