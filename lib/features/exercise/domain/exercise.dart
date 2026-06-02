@@ -27,12 +27,16 @@ class Exercise {
   final String? force;
   final String? mechanic;
   final String? level;
+
+  /// Alternate names for the exercise. Not yet sourced from the database;
+  /// defaults to an empty list and is reserved for future alias data.
   final List<String> aliases;
   final bool isFavorite;
 
   /// Pre-tokenized, noise-free search terms derived from the machine code.
   /// "barbell_bench_press" -> ["barbell", "bench", "press"]
-  List<String> get codeTokens => code.split('_');
+  /// Returns an empty list when [code] is empty (avoids a spurious '' token).
+  List<String> get codeTokens => code.isEmpty ? const [] : code.split('_');
 
   const Exercise.empty({
     this.id = 0,

@@ -19,8 +19,30 @@ void main() {
       expect(ex.codeTokens, ['barbell', 'bench', 'press']);
     });
 
+    test('codeTokens returns an empty list for empty code', () {
+      expect(const Exercise.empty().codeTokens, isEmpty);
+    });
+
     test('aliases defaults to an empty list', () {
       expect(ex.aliases, isEmpty);
+    });
+
+    test('aliases round-trip through toMap/fromMap', () {
+      const withAliases = Exercise(
+        id: 2,
+        code: 'barbell_bench_press',
+        name: 'Barbell Bench Press',
+        category: 'Chest',
+        muscles: ['Chest'],
+        aliases: ['flat press', 'bench'],
+      );
+      final restored = Exercise.fromMap(withAliases.toMap());
+      expect(restored.aliases, ['flat press', 'bench']);
+      expect(restored, withAliases);
+    });
+
+    test('equal instances share the same hashCode', () {
+      expect(ex.hashCode, ex.copyWith().hashCode);
     });
 
     test('copyWith overrides only provided fields', () {
