@@ -64,4 +64,27 @@ void main() {
       verify(() => repo.getAllExercises()).called(1);
     },
   );
+
+  blocTest<ExerciseSearchBloc, ExerciseSearchState>(
+    'loads the catalog once even when events arrive before the load resolves',
+    build: () {
+      when(() => repo.getAllExercises()).thenAnswer(
+        (_) async {
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+          return [benchPress, squat];
+        },
+      );
+      return ExerciseSearchBloc(repositoryExercises: repo);
+    },
+    act: (bloc) {
+      // No intervening yield: both events are dispatched while the first
+      // getAllExercises() call is still pending.
+      bloc.add(const UpdateSearchTermEvent('bench'));
+      bloc.add(const UpdateSearchTermEvent('squat'));
+    },
+    wait: const Duration(milliseconds: 100),
+    verify: (bloc) {
+      verify(() => repo.getAllExercises()).called(1);
+    },
+  );
 }

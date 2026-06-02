@@ -16,13 +16,20 @@ class ExerciseSearchBloc
 
   final RepositoryExercises repositoryExercises;
 
-  ExerciseSearcher? _searcher;
+  Future<ExerciseSearcher>? _searcherFuture;
 
-  Future<ExerciseSearcher> _ensureSearcher() async {
-    final existing = _searcher;
-    if (existing != null) return existing;
-    final exercises = await repositoryExercises.getAllExercises();
-    return _searcher = ExerciseSearcher(exercises);
+  Future<ExerciseSearcher> _ensureSearcher() {
+    return _searcherFuture ??= _buildSearcher();
+  }
+
+  Future<ExerciseSearcher> _buildSearcher() async {
+    try {
+      final exercises = await repositoryExercises.getAllExercises();
+      return ExerciseSearcher(exercises);
+    } catch (_) {
+      _searcherFuture = null; // allow a retry on the next event
+      rethrow;
+    }
   }
 
   Future<void> _onUpdateSearchTermEvent(
@@ -30,7 +37,9 @@ class ExerciseSearchBloc
     Emitter<ExerciseSearchState> emit,
   ) async {
     await runSafeEvent(emit, () => state, ExerciseSearchError.new, () async {
-      emit(state.copyWith(status: const ExerciseSearchLoading()));
+      if (_searcherFuture == null) {
+        emit(state.copyWith(status: const ExerciseSearchLoading()));
+      }
 
       final searcher = await _ensureSearcher();
       final exercises = searcher.search(event.searchTerm);
