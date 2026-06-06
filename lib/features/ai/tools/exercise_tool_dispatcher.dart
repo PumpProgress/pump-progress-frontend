@@ -25,6 +25,8 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
 
   /// Cached snapshot of the current user, loaded in [init]. Used by the chat
   /// bloc to tailor the prompt and by [_saveWeeklyPlan] for the user id.
+  /// The snapshot is refreshed only when [init] re-runs (on model-ready), so a
+  /// profile edit made mid-chat is not reflected until the chat reinitializes.
   User? _user;
 
   // Sync profile getters seeded from [_user] in [init]; read by the chat
@@ -154,12 +156,18 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
               const <String>[];
 
       final matched = <Exercise>[];
+      final seenIds = <int>{};
       for (final exerciseName in exerciseNames) {
         final results = await repositoryExercises.searchExercises(exerciseName);
         if (results.isEmpty) {
           unmatched.add(exerciseName);
-        } else {
-          matched.add(results.first);
+          continue;
+        }
+        final exercise = results.first;
+        // De-dup within a day: a small model may repeat an exercise name; add
+        // each resolved exercise at most once per workout.
+        if (seenIds.add(exercise.id)) {
+          matched.add(exercise);
         }
       }
       // Skip days with no resolvable exercises: a day whose exercises were all

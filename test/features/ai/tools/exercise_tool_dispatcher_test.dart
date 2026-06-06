@@ -224,5 +224,69 @@ void main() {
       verifyNever(() => workouts.createWorkout(
           userId: any(named: 'userId'), name: any(named: 'name')));
     });
+
+    test('skips a rest day that has no exercises', () async {
+      stubAuthedUser();
+      when(() => workouts.createWorkout(
+              userId: any(named: 'userId'), name: any(named: 'name')))
+          .thenAnswer((inv) async => Workout.empty(
+              id: 'w1', name: inv.namedArguments[#name] as String, userId: 'u1'));
+      final dispatcher = build();
+      await dispatcher.init();
+      final result = await dispatcher
+          .resolve(FunctionCallResponse(name: 'save_weekly_plan', args: {
+        'workouts': [
+          {'name': 'Rest Day', 'exercises': <String>[]},
+        ],
+      })).execute();
+      expect(result['status'], 'error');
+      verifyNever(() => workouts.createWorkout(userId: 'u1', name: 'Rest Day'));
+    });
+
+    test('skips a workout whose name is blank', () async {
+      stubAuthedUser();
+      when(() => exercises.searchExercises('Bench Press'))
+          .thenAnswer((_) async => [ex(10, 'Bench Press')]);
+      when(() => workouts.createWorkout(
+              userId: any(named: 'userId'), name: any(named: 'name')))
+          .thenAnswer((inv) async => Workout.empty(
+              id: 'w1', name: inv.namedArguments[#name] as String, userId: 'u1'));
+      final dispatcher = build();
+      await dispatcher.init();
+      final result = await dispatcher
+          .resolve(FunctionCallResponse(name: 'save_weekly_plan', args: {
+        'workouts': [
+          {'name': '   ', 'exercises': ['Bench Press']},
+        ],
+      })).execute();
+      expect(result['status'], 'error');
+      verifyNever(() => workouts.createWorkout(
+          userId: any(named: 'userId'), name: any(named: 'name')));
+    });
+
+    test('adds a duplicated exercise within a day only once', () async {
+      stubAuthedUser();
+      when(() => exercises.searchExercises('Bench Press'))
+          .thenAnswer((_) async => [ex(10, 'Bench Press')]);
+      when(() => workouts.createWorkout(
+              userId: any(named: 'userId'), name: any(named: 'name')))
+          .thenAnswer((inv) async => Workout.empty(
+              id: 'w1', name: inv.namedArguments[#name] as String, userId: 'u1'));
+      when(() => workouts.addExerciseToWorkout(
+            workoutId: any(named: 'workoutId'),
+            exerciseId: any(named: 'exerciseId'),
+            userId: any(named: 'userId'),
+          )).thenAnswer((_) async => const Workout.empty());
+      final dispatcher = build();
+      await dispatcher.init();
+      await dispatcher
+          .resolve(FunctionCallResponse(name: 'save_weekly_plan', args: {
+        'workouts': [
+          {'name': 'Push Day', 'exercises': ['Bench Press', 'Bench Press']},
+        ],
+      })).execute();
+      verify(() => workouts.addExerciseToWorkout(
+          workoutId: 'w1', exerciseId: 10, userId: 'u1')).called(1);
+    });
   });
 }
