@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_chat/chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_workout_builder_chat/workout_builder_chat_bloc.dart';
+import 'package:pump_progress_frontend/features/user/domain/domain.dart';
 import 'package:pump_progress_frontend/features/ai/services/gemma_model_service.dart';
 import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
@@ -99,6 +100,29 @@ void main() {
       );
       expect(bloc.toolDispatcher, isNotNull);
       bloc.close();
+    });
+
+    test('systemPrompt reflects the user snapshot after dispatcher init', () async {
+      when(() => mockUserService.getCurrentUser()).thenAnswer((_) async => const User(
+            id: 'u1',
+            name: '',
+            email: '',
+            favoriteExercises: [],
+            fitnessLevel: 'Advanced',
+            primaryGoal: 'Build muscle',
+            trainingDaysPerWeek: 5,
+          ));
+      await dispatcher.init();
+      final bloc = WorkoutBuilderChatBloc(
+        modelService: mockService,
+        toolDispatcher: dispatcher,
+      );
+      final prompt = bloc.systemPrompt;
+      expect(prompt, contains('5'));
+      expect(prompt, contains('Advanced'));
+      expect(prompt, contains('Build muscle'));
+      expect(prompt, contains('save_weekly_plan'));
+      await bloc.close();
     });
 
     blocTest<WorkoutBuilderChatBloc, ChatState>(
