@@ -92,6 +92,9 @@ class _AppState extends State<App> {
       RepositoryProvider<GemmaModelService>(
         create: (_) => GemmaModelService(),
       ),
+      RepositoryProvider<CurrentUserService>(
+        create: (_) => CurrentUserService(),
+      ),
     ];
 
     final blocProviders = [
@@ -126,7 +129,7 @@ class _AppState extends State<App> {
             repositoryExercises: context.read<RepositoryExercises>(),
             providerMuscle: context.read<ProviderMuscle>(),
             repositoryWorkout: context.read<RepositoryWorkout>(),
-            currentUserService: CurrentUserService(),
+            currentUserService: context.read<CurrentUserService>(),
           ),
         ),
       ),

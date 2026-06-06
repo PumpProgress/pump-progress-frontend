@@ -72,7 +72,10 @@ void main() {
   test('profile getters are null when there is no user', () async {
     final dispatcher = build();
     await dispatcher.init();
-    expect(dispatcher.trainingDaysPerWeek, isNull);
+    expect(dispatcher.age, isNull);
+    expect(dispatcher.gender, isNull);
     expect(dispatcher.fitnessLevel, isNull);
+    expect(dispatcher.primaryGoal, isNull);
+    expect(dispatcher.trainingDaysPerWeek, isNull);
   });
 }

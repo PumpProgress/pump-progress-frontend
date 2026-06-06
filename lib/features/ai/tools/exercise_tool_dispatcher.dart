@@ -26,6 +26,8 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
   /// bloc to tailor the prompt and by [_saveWeeklyPlan] for the user id.
   User? _user;
 
+  // Sync profile getters seeded from [_user] in [init]; read by the chat
+  // bloc to tailor the system prompt. Null until init() runs / when unauthenticated.
   int? get age => _user?.age;
   String? get gender => _user?.gender;
   String? get fitnessLevel => _user?.fitnessLevel;
