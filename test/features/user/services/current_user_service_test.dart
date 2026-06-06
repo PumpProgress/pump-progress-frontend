@@ -60,4 +60,12 @@ void main() {
     expect(user.primaryGoal, 'Build muscle');
     expect(user.trainingDaysPerWeek, 5);
   });
+
+  test('returns null when custom:userID is empty', () async {
+    SharedPreferences.setMockInitialValues({
+      idTokenKey: fakeIdToken({'custom:userID': ''}),
+    });
+    final user = await CurrentUserService().getCurrentUser();
+    expect(user, isNull);
+  });
 }

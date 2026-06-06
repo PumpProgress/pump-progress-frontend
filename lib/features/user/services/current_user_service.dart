@@ -18,6 +18,9 @@ class CurrentUserService {
     final idToken = prefs.getString(idTokenKey);
     if (idToken == null) return null;
 
+    // Intentionally uses CognitoAccessToken on the id token to stay identical
+    // to UserSessionBloc's session-restore path; the decoder base64-decodes the
+    // payload regardless of token type. Keep in sync with that bloc.
     final userId =
         CognitoAccessToken(idToken).payload['custom:userID'] as String?;
     if (userId == null || userId.isEmpty) return null;
