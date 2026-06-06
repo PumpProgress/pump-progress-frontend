@@ -8,11 +8,12 @@ import 'package:mocktail/mocktail.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_chat/chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/blocs/bloc_workout_builder_chat/workout_builder_chat_bloc.dart';
 import 'package:pump_progress_frontend/features/ai/services/gemma_model_service.dart';
-import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/domain/muscle.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
+import 'package:pump_progress_frontend/features/user/services/current_user_service.dart';
+import 'package:pump_progress_frontend/features/workout/repository/repository.dart';
 
 class MockGemmaModelService extends Mock implements GemmaModelService {}
 
@@ -24,14 +25,20 @@ class MockRepositoryExercises extends Mock implements RepositoryExercises {}
 
 class MockProviderMuscle extends Mock implements ProviderMuscle {}
 
+class MockRepositoryWorkout extends Mock implements RepositoryWorkout {}
+
+class MockCurrentUserService extends Mock implements CurrentUserService {}
+
 void main() {
   late MockGemmaModelService mockService;
   late MockInferenceModel mockModel;
   late MockInferenceChat mockChat;
   late StreamController<InferenceModel> modelStreamController;
-  late AiToolDispatcher dispatcher;
+  late ExerciseToolDispatcher dispatcher;
   late MockRepositoryExercises mockRepo;
   late MockProviderMuscle mockMuscles;
+  late MockRepositoryWorkout mockWorkout;
+  late MockCurrentUserService mockUserService;
 
   setUpAll(() {
     registerFallbackValue(const Message(text: ''));
@@ -45,12 +52,17 @@ void main() {
     mockRepo = MockRepositoryExercises();
     mockMuscles = MockProviderMuscle();
 
+    mockWorkout = MockRepositoryWorkout();
+    mockUserService = MockCurrentUserService();
     when(() => mockMuscles.getMuscles()).thenAnswer((_) async => [
           Muscle(id: 1, name: 'chest', code: 'chest'),
         ]);
+    when(() => mockUserService.getCurrentUser()).thenAnswer((_) async => null);
     dispatcher = ExerciseToolDispatcher(
       repositoryExercises: mockRepo,
       providerMuscle: mockMuscles,
+      repositoryWorkout: mockWorkout,
+      currentUserService: mockUserService,
     );
 
     when(() => mockService.hasActiveModel).thenReturn(false);

@@ -3,20 +3,38 @@ import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart
 import 'package:pump_progress_frontend/features/ai/tools/tool_definition.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
+import 'package:pump_progress_frontend/features/user/domain/domain.dart';
+import 'package:pump_progress_frontend/features/user/services/current_user_service.dart';
+import 'package:pump_progress_frontend/features/workout/repository/repository.dart';
 
 /// Dispatcher for the workout-builder chat: lets the model look up exercises by
-/// muscle group.
+/// muscle group and create the user's workouts for the week.
 class ExerciseToolDispatcher extends AiToolDispatcher {
   ExerciseToolDispatcher({
     required this.repositoryExercises,
     required this.providerMuscle,
+    required this.repositoryWorkout,
+    required this.currentUserService,
   });
 
   final RepositoryExercises repositoryExercises;
   final ProviderMuscle providerMuscle;
+  final RepositoryWorkout repositoryWorkout;
+  final CurrentUserService currentUserService;
+
+  /// Cached snapshot of the current user, loaded in [init]. Used by the chat
+  /// bloc to tailor the prompt and by [_saveWeeklyPlan] for the user id.
+  User? _user;
+
+  int? get age => _user?.age;
+  String? get gender => _user?.gender;
+  String? get fitnessLevel => _user?.fitnessLevel;
+  String? get primaryGoal => _user?.primaryGoal;
+  int? get trainingDaysPerWeek => _user?.trainingDaysPerWeek;
 
   @override
   Future<void> init() async {
+    _user = await currentUserService.getCurrentUser();
     final muscles = await providerMuscle.getMuscles();
     final muscleNames = muscles.map((m) => m.name).toList();
     definitions = [
