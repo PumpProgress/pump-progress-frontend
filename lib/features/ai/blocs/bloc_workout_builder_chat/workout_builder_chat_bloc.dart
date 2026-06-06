@@ -33,9 +33,11 @@ Design rules:
 - Create exactly $days workouts (one per training day).
 - Choose the split by fitness level: Beginner = full-body workouts;
   Intermediate = upper/lower split; Advanced = push / pull / legs.
-- Match volume and intensity to the goal: Strength = >=85% 1RM, 3-6 sets,
+- Match volume and intensity to the goal: Gain strength = >=85% 1RM, 3-6 sets,
   2-5 min rest; Build muscle / Hypertrophy = 65-85% 1RM, 3-5 sets, 1-2 min
-  rest; Improve endurance = <60% 1RM, 2-4 sets, <90 s rest.
+  rest; Improve endurance = <60% 1RM, 2-4 sets, <90 s rest; Lose weight or
+  General fitness = use the hypertrophy range (65-85% 1RM, 3-4 sets) with short
+  rest (45-90 s).
 - Put compound, large-muscle exercises first in each workout.
 - Cover push, pull and legs across the week and train each muscle about twice.
 

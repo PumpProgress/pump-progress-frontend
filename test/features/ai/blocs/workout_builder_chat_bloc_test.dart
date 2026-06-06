@@ -118,7 +118,8 @@ void main() {
         toolDispatcher: dispatcher,
       );
       final prompt = bloc.systemPrompt;
-      expect(prompt, contains('5'));
+      expect(prompt, contains('Training days per week: 5'));
+      expect(prompt, contains('exactly 5 workouts'));
       expect(prompt, contains('Advanced'));
       expect(prompt, contains('Build muscle'));
       expect(prompt, contains('save_weekly_plan'));
