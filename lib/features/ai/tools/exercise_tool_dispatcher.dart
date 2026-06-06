@@ -162,6 +162,9 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
           matched.add(results.first);
         }
       }
+      // Skip days with no resolvable exercises: a day whose exercises were all
+      // unmatched, or that arrived with an empty list (e.g. a rest day), is not
+      // persisted as a workout.
       if (matched.isEmpty) continue;
 
       final workout =

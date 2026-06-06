@@ -211,5 +211,18 @@ void main() {
           .execute();
       expect(result['status'], 'error');
     });
+
+    test('returns an error when workouts is not a list', () async {
+      stubAuthedUser();
+      final dispatcher = build();
+      await dispatcher.init();
+      final result = await dispatcher
+          .resolve(FunctionCallResponse(
+              name: 'save_weekly_plan', args: {'workouts': 'nope'}))
+          .execute();
+      expect(result['status'], 'error');
+      verifyNever(() => workouts.createWorkout(
+          userId: any(named: 'userId'), name: any(named: 'name')));
+    });
   });
 }
