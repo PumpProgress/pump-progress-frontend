@@ -85,7 +85,7 @@ void main() {
       expect(resolved.message, contains('chest'));
     });
 
-    test('execute calls repository and returns exercises map', () async {
+    test('execute calls repository and returns exercise names', () async {
       when(() => mockRepo.getExercisesByMuscle('chest',
               limit: any(named: 'limit')))
           .thenAnswer((_) async => [
@@ -104,7 +104,7 @@ void main() {
       final resolved = dispatcher.resolve(call);
       final result = await resolved.execute();
       expect(result['exercises'], isA<List>());
-      expect((result['exercises'] as List).first['name'], 'Bench Press');
+      expect((result['exercises'] as List).first, 'Bench Press');
     });
 
     test('throws StateError for unknown tool name', () {

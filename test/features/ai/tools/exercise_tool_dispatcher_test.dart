@@ -289,4 +289,43 @@ void main() {
           workoutId: 'w1', exerciseId: 10, userId: 'u1')).called(1);
     });
   });
+
+  group('get_exercises_by_muscle', () {
+    Exercise ex(int id, String name) =>
+        Exercise(id: id, name: name, category: 'push', muscles: const ['chest']);
+
+    test('returns exercise names only, dropping ids to keep responses small',
+        () async {
+      when(() => exercises.getExercisesByMuscle('chest',
+              limit: any(named: 'limit')))
+          .thenAnswer((_) async => [ex(10, 'Bench Press'), ex(11, 'Push Up')]);
+      final dispatcher = build();
+      await dispatcher.init();
+
+      final result = await dispatcher
+          .resolve(FunctionCallResponse(
+            name: 'get_exercises_by_muscle',
+            args: {'muscle': 'chest'},
+          ))
+          .execute();
+
+      expect(result['exercises'], ['Bench Press', 'Push Up']);
+    });
+
+    test('defaults to a small limit when the model omits one', () async {
+      when(() => exercises.getExercisesByMuscle('chest',
+          limit: any(named: 'limit'))).thenAnswer((_) async => const <Exercise>[]);
+      final dispatcher = build();
+      await dispatcher.init();
+
+      await dispatcher
+          .resolve(FunctionCallResponse(
+            name: 'get_exercises_by_muscle',
+            args: {'muscle': 'chest'},
+          ))
+          .execute();
+
+      verify(() => exercises.getExercisesByMuscle('chest', limit: 5)).called(1);
+    });
+  });
 }

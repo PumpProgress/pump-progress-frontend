@@ -59,7 +59,7 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
               'limit': {
                 'type': 'integer',
                 'description':
-                    'Maximum number of exercises to return. Defaults to 10.',
+                    'Maximum number of exercises to return. Defaults to 5.',
               },
             },
             'required': ['muscle'],
@@ -112,14 +112,16 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
     Map<String, dynamic> args,
   ) async {
     final muscle = args['muscle'] as String? ?? '';
-    final limit = (args['limit'] as num?)?.toInt() ?? 10;
+    final limit = (args['limit'] as num?)?.toInt() ?? 5;
     final exercises = await repositoryExercises.getExercisesByMuscle(
       muscle,
       limit: limit,
     );
+    // Return names only. The model picks exercises by name (save_weekly_plan
+    // takes name strings), and ids just bloat the tool response — costly in a
+    // 2048-token context where several lookups precede the final save call.
     return {
-      'exercises':
-          exercises.map((e) => {'id': e.id, 'name': e.name}).toList(),
+      'exercises': exercises.map((e) => e.name).toList(),
     };
   }
 
@@ -216,7 +218,7 @@ class ExerciseToolDispatcher extends AiToolDispatcher {
     if (unmatched.isNotEmpty) {
       buffer.writeln("\nI couldn't add: ${unmatched.join(', ')}.");
     }
-    buffer.writeln('\nSets, reps and rest are in my notes above.');
+    buffer.writeln('\nSaved to your workouts.');
     return buffer.toString();
   }
 }
