@@ -7,12 +7,12 @@ import 'package:pump_progress_frontend/features/sets/repositories/repositories.d
 
 import 'package:pump_progress_frontend/screens/main/start/view/widgets/start_drawer.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/start_calendar_view.dart';
-import 'package:pump_progress_frontend/screens/main/tabs/home/view/start_home_view.dart';
+// import 'package:pump_progress_frontend/screens/main/tabs/home/view/start_home_view.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/ai/ai_tab_page.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/workouts/view/start_workouts_view.dart';
 
 List<String> _titles = [
-  'Home',
+  // 'Home',
   // 'Community',
   'Calendar',
   // 'Exercises',
@@ -20,7 +20,7 @@ List<String> _titles = [
   'AI Assistant',
 ];
 
-const int _defaultIndex = 1;
+const int _defaultIndex = 0;
 
 class PageStart extends StatefulWidget {
   const PageStart({super.key});
@@ -88,6 +88,14 @@ class _PageStartState extends State<PageStart>
               enableFeedback: true,
               unselectedLabelColor: PPColors.amethyst300,
               labelColor: PPColors.coral300,
+              labelStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
               indicator: const BoxDecoration(),
               indicatorColor: Colors.transparent,
               indicatorWeight: 0.0,
@@ -97,7 +105,7 @@ class _PageStartState extends State<PageStart>
             body: TabBarView(
               controller: _tabController,
               children: const [
-                StartHomeView(), // * Home View
+                // StartHomeView(), // * Home View
                 // ComingSoonPage(), // * Community View
                 StartCalendarView(), // * Calendar View
                 // StartExercises(), // * Exercises View
@@ -113,42 +121,20 @@ class _PageStartState extends State<PageStart>
 }
 
 List<Tab> _tabs() {
-  return const [
-    Tab(
-      icon: Icon(
-        Icomoon.icon_home,
-        size: 32,
+  const items = <(IconData, String)>[
+    // (Icomoon.icon_home, 'Home'),
+    // (Icomoon.icon_community, 'Community'),
+    (Icomoon.icon_calendar, 'Calendar'),
+    // (Icomoon.icon_dumbell, 'Exercises'),
+    (Icomoon.icon_thunder, 'Workouts'),
+    (Icons.auto_awesome, 'AI'),
+  ];
+
+  return [
+    for (final (icon, label) in items)
+      Tab(
+        text: label,
+        icon: Icon(icon, size: 26),
       ),
-    ),
-    // Tab(
-    //   icon: Icon(
-    //     Icomoon.icon_community,
-    //     size: 32,
-    //   ),
-    // ),
-    Tab(
-      icon: Icon(
-        Icomoon.icon_calendar,
-        size: 32,
-      ),
-    ),
-    // Tab(
-    //   icon: Icon(
-    //     Icomoon.icon_dumbell,
-    //     size: 32,
-    //   ),
-    // ),
-    Tab(
-      icon: Icon(
-        Icomoon.icon_thunder,
-        size: 32,
-      ),
-    ),
-    Tab(
-      icon: Icon(
-        Icons.auto_awesome,
-        size: 32,
-      ),
-    ),
   ];
 }
