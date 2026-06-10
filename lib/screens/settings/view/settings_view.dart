@@ -53,7 +53,10 @@ class SettingsView extends StatelessWidget {
               return ListTile(
                 leading: const Icon(Icons.info_outline_rounded),
                 title: const Text('Version'),
-                subtitle: Text(snapshot.data ?? '—'),
+                subtitle: switch (snapshot.connectionState) {
+                  ConnectionState.done => Text(snapshot.data ?? 'Unknown'),
+                  _ => const Text('…'),
+                },
               );
             },
           ),

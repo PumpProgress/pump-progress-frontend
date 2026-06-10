@@ -45,8 +45,30 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Privacy Policy'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     verify(() => repo.openPrivacyPolicy()).called(1);
+  });
+
+  testWidgets('tapping Rate app calls rateApp', (tester) async {
+    when(() => repo.rateApp()).thenAnswer((_) async {});
+    await tester.pumpWidget(wrap());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Rate app'));
+    await tester.pump();
+
+    verify(() => repo.rateApp()).called(1);
+  });
+
+  testWidgets('tapping Share app calls shareApp', (tester) async {
+    when(() => repo.shareApp()).thenAnswer((_) async {});
+    await tester.pumpWidget(wrap());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Share app'));
+    await tester.pump();
+
+    verify(() => repo.shareApp()).called(1);
   });
 }
