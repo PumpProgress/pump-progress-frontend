@@ -23,6 +23,7 @@ import 'package:pump_progress_frontend/features/ai/tools/profile_tool_dispatcher
 import 'package:pump_progress_frontend/features/exercise/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
+import 'package:pump_progress_frontend/features/user/services/current_user_service.dart';
 import 'package:pump_progress_frontend/features/sync/blocs/blocs.dart';
 import 'package:pump_progress_frontend/features/sync/repository/repository.dart';
 import 'package:pump_progress_frontend/features/workout/blocs/blocs.dart';
@@ -91,6 +92,9 @@ class _AppState extends State<App> {
       RepositoryProvider<GemmaModelService>(
         create: (_) => GemmaModelService(),
       ),
+      RepositoryProvider<CurrentUserService>(
+        create: (_) => CurrentUserService(),
+      ),
     ];
 
     final blocProviders = [
@@ -124,6 +128,8 @@ class _AppState extends State<App> {
           toolDispatcher: ExerciseToolDispatcher(
             repositoryExercises: context.read<RepositoryExercises>(),
             providerMuscle: context.read<ProviderMuscle>(),
+            repositoryWorkout: context.read<RepositoryWorkout>(),
+            currentUserService: context.read<CurrentUserService>(),
           ),
         ),
       ),
