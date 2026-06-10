@@ -50,11 +50,12 @@ class _SettingsViewState extends State<SettingsView> {
               'Could not open privacy policy',
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.star_rounded),
-            title: const Text('Rate app'),
-            onTap: () => _run(context, repo.rateApp, 'Could not open review'),
-          ),
+          // Rate app option hidden for now.
+          // ListTile(
+          //   leading: const Icon(Icons.star_rounded),
+          //   title: const Text('Rate app'),
+          //   onTap: () => _run(context, repo.rateApp, 'Could not open review'),
+          // ),
           ListTile(
             leading: const Icon(Icons.share_rounded),
             title: const Text('Share app'),
