@@ -8,26 +8,39 @@ import 'package:pump_progress_frontend/features/exercise/domain/exercise.dart';
 import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
 import 'package:pump_progress_frontend/features/muscle/domain/muscle.dart';
 import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
+import 'package:pump_progress_frontend/features/user/services/current_user_service.dart';
+import 'package:pump_progress_frontend/features/workout/repository/repository.dart';
 
 class MockRepositoryExercises extends Mock implements RepositoryExercises {}
 
 class MockProviderMuscle extends Mock implements ProviderMuscle {}
 
+class MockRepositoryWorkout extends Mock implements RepositoryWorkout {}
+
+class MockCurrentUserService extends Mock implements CurrentUserService {}
+
 void main() {
   late MockRepositoryExercises mockRepo;
   late MockProviderMuscle mockMuscles;
+  late MockRepositoryWorkout mockWorkout;
+  late MockCurrentUserService mockUserService;
   late AiToolDispatcher dispatcher;
 
   setUp(() async {
     mockRepo = MockRepositoryExercises();
     mockMuscles = MockProviderMuscle();
+    mockWorkout = MockRepositoryWorkout();
+    mockUserService = MockCurrentUserService();
     when(() => mockMuscles.getMuscles()).thenAnswer((_) async => [
           Muscle(id: 1, name: 'chest', code: 'chest'),
           Muscle(id: 2, name: 'biceps', code: 'biceps'),
         ]);
+    when(() => mockUserService.getCurrentUser()).thenAnswer((_) async => null);
     dispatcher = ExerciseToolDispatcher(
       repositoryExercises: mockRepo,
       providerMuscle: mockMuscles,
+      repositoryWorkout: mockWorkout,
+      currentUserService: mockUserService,
     );
     await dispatcher.init();
   });
@@ -72,7 +85,7 @@ void main() {
       expect(resolved.message, contains('chest'));
     });
 
-    test('execute calls repository and returns exercises map', () async {
+    test('execute calls repository and returns exercise names', () async {
       when(() => mockRepo.getExercisesByMuscle('chest',
               limit: any(named: 'limit')))
           .thenAnswer((_) async => [
@@ -91,7 +104,7 @@ void main() {
       final resolved = dispatcher.resolve(call);
       final result = await resolved.execute();
       expect(result['exercises'], isA<List>());
-      expect((result['exercises'] as List).first['name'], 'Bench Press');
+      expect((result['exercises'] as List).first, 'Bench Press');
     });
 
     test('throws StateError for unknown tool name', () {

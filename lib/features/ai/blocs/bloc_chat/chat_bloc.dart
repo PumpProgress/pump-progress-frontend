@@ -112,107 +112,108 @@ abstract class BaseChatBloc extends Bloc<ChatEvent, ChatState> {
         Message.text(text: modelText, isUser: true),
       );
 
-      String rawAccumulated = '';
-      bool handledToolCall = false;
+      // Agentic tool-use loop. Each iteration streams one model turn into the
+      // trailing placeholder message. If the turn ends with a tool call we run
+      // it, feed the result back, and loop so the model can call another tool
+      // or produce its final answer. Small models build a plan across several
+      // tool calls (e.g. looking up exercises one muscle at a time), so a
+      // single tool call per user turn is not enough.
+      while (true) {
+        String accumulated = '';
+        final pendingCalls = <FunctionCallResponse>[];
 
-      await for (final response in _chat!.generateChatResponseAsync()) {
-        if (response is TextResponse) {
-          final token = response.token;
-          if (token.isEmpty) continue;
-          rawAccumulated += token;
-          currentMessages = List<ChatMessage>.from(currentMessages);
-          currentMessages[currentMessages.length - 1] =
-              currentMessages.last.copyWith(
-            text: _decodeEscapes(rawAccumulated),
-          );
-          emit(state.copyWith(messages: currentMessages));
-        } else if (response is FunctionCallResponse) {
-          handledToolCall = true;
-
-          final msgsBeforeTool = List<ChatMessage>.from(currentMessages)
-            ..removeLast();
-          final toolUse = toolDispatcher!.resolve(response);
-          final msgsWithChip = [
-            ...msgsBeforeTool,
-            ChatMessage(
-              text: toolUse.message,
-              isUser: false,
-              isSystemMessage: true,
-            ),
-          ];
-          currentMessages = msgsWithChip;
-          emit(state.copyWith(messages: currentMessages));
-
-          final toolResult = await toolUse.execute();
-          AppLogger.debug('Tool result: $toolResult');
-
-          await _chat!.addQueryChunk(Message.toolResponse(
-            toolName: response.name,
-            response: toolResult,
-          ));
-
-          // A tool may hand back a ready-to-show message (e.g. a completion
-          // summary). Display it verbatim and skip the model follow-up turn,
-          // which small models render unreliably after a tool call.
-          final displayMessage = toolResult['display_message'];
-          if (displayMessage is String && displayMessage.isNotEmpty) {
-            currentMessages = [
-              ...msgsWithChip,
-              ChatMessage(text: displayMessage, isUser: false),
-            ];
-            emit(state.copyWith(
-              messages: currentMessages,
-              isGenerating: false,
-            ));
-            continue;
-          }
-
-          currentMessages = [
-            ...msgsWithChip,
-            const ChatMessage(text: '', isUser: false, isStreaming: true),
-          ];
-          emit(state.copyWith(messages: currentMessages));
-
-          String finalAccumulated = '';
-          await for (final finalResponse
-              in _chat!.generateChatResponseAsync()) {
-            if (finalResponse is! TextResponse) continue;
-            final token = finalResponse.token;
+        await for (final response in _chat!.generateChatResponseAsync()) {
+          if (response is TextResponse) {
+            final token = response.token;
             if (token.isEmpty) continue;
-            finalAccumulated += token;
+            accumulated += token;
             currentMessages = List<ChatMessage>.from(currentMessages);
             currentMessages[currentMessages.length - 1] =
                 currentMessages.last.copyWith(
-              text: _decodeEscapes(finalAccumulated),
+              text: _decodeEscapes(accumulated),
             );
             emit(state.copyWith(messages: currentMessages));
+          } else if (response is FunctionCallResponse) {
+            pendingCalls.add(response);
+            break;
+          } else if (response is ParallelFunctionCallResponse) {
+            // gemma4 batches several calls from one turn into a single
+            // response. Dispatch them all, not just the first.
+            pendingCalls.addAll(response.calls);
+            break;
           }
+        }
 
+        // No tool call this turn: the model is done. Finalize the streaming
+        // placeholder with the text it produced and stop.
+        if (pendingCalls.isEmpty) {
           currentMessages = List<ChatMessage>.from(currentMessages);
           currentMessages[currentMessages.length - 1] =
               currentMessages.last.copyWith(
-            text: _decodeEscapes(finalAccumulated),
+            text: _decodeEscapes(accumulated),
             isStreaming: false,
           );
           emit(state.copyWith(
             messages: currentMessages,
             isGenerating: false,
           ));
+          AppLogger.debug('Chat stream completed');
+          break;
         }
-      }
 
-      if (!handledToolCall) {
-        currentMessages = List<ChatMessage>.from(currentMessages);
-        currentMessages[currentMessages.length - 1] =
-            currentMessages.last.copyWith(
-          text: _decodeEscapes(rawAccumulated),
-          isStreaming: false,
-        );
-        emit(state.copyWith(
-          messages: currentMessages,
-          isGenerating: false,
-        ));
-        AppLogger.debug('Chat stream completed');
+        // Drop the streaming placeholder: for gemma4 it holds the raw tool-call
+        // JSON that leaked onto the text channel, which must never be shown.
+        currentMessages = List<ChatMessage>.from(currentMessages)..removeLast();
+
+        // Run each requested tool, showing a chip and feeding its result back.
+        // A tool may hand back a ready-to-show message (e.g. a completion
+        // summary); capture it and stop after the batch rather than letting the
+        // model take another (unreliable) follow-up turn.
+        String? terminalMessage;
+        for (final call in pendingCalls) {
+          final toolUse = toolDispatcher!.resolve(call);
+          currentMessages = [
+            ...currentMessages,
+            ChatMessage(
+              text: toolUse.message,
+              isUser: false,
+              isSystemMessage: true,
+            ),
+          ];
+          emit(state.copyWith(messages: currentMessages));
+
+          final toolResult = await toolUse.execute();
+          AppLogger.debug('Tool result: $toolResult');
+
+          await _chat!.addQueryChunk(Message.toolResponse(
+            toolName: call.name,
+            response: toolResult,
+          ));
+
+          final displayMessage = toolResult['display_message'];
+          if (displayMessage is String && displayMessage.isNotEmpty) {
+            terminalMessage = displayMessage;
+          }
+        }
+
+        if (terminalMessage != null) {
+          currentMessages = [
+            ...currentMessages,
+            ChatMessage(text: terminalMessage, isUser: false),
+          ];
+          emit(state.copyWith(
+            messages: currentMessages,
+            isGenerating: false,
+          ));
+          break;
+        }
+
+        // Open a fresh streaming placeholder and loop for the next model turn.
+        currentMessages = [
+          ...currentMessages,
+          const ChatMessage(text: '', isUser: false, isStreaming: true),
+        ];
+        emit(state.copyWith(messages: currentMessages));
       }
     } catch (e, st) {
       AppLogger.error('SendMessage error: $e', stackTrace: st, error: e);
