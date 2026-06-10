@@ -7,12 +7,12 @@ import 'package:pump_progress_frontend/features/sets/repositories/repositories.d
 
 import 'package:pump_progress_frontend/screens/main/start/view/widgets/start_drawer.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/calendar/view/start_calendar_view.dart';
-import 'package:pump_progress_frontend/screens/main/tabs/home/view/start_home_view.dart';
+// import 'package:pump_progress_frontend/screens/main/tabs/home/view/start_home_view.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/ai/ai_tab_page.dart';
 import 'package:pump_progress_frontend/screens/main/tabs/workouts/view/start_workouts_view.dart';
 
 List<String> _titles = [
-  'Home',
+  // 'Home',
   // 'Community',
   'Calendar',
   // 'Exercises',
@@ -20,7 +20,7 @@ List<String> _titles = [
   'AI Assistant',
 ];
 
-const int _defaultIndex = 1;
+const int _defaultIndex = 0;
 
 class PageStart extends StatefulWidget {
   const PageStart({super.key});
@@ -105,7 +105,7 @@ class _PageStartState extends State<PageStart>
             body: TabBarView(
               controller: _tabController,
               children: const [
-                StartHomeView(), // * Home View
+                // StartHomeView(), // * Home View
                 // ComingSoonPage(), // * Community View
                 StartCalendarView(), // * Calendar View
                 // StartExercises(), // * Exercises View
@@ -122,7 +122,7 @@ class _PageStartState extends State<PageStart>
 
 List<Tab> _tabs() {
   const items = <(IconData, String)>[
-    (Icomoon.icon_home, 'Home'),
+    // (Icomoon.icon_home, 'Home'),
     // (Icomoon.icon_community, 'Community'),
     (Icomoon.icon_calendar, 'Calendar'),
     // (Icomoon.icon_dumbell, 'Exercises'),
