@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/auth/repository/repository.dart';
 import 'package:pump_progress_frontend/features/sets/repositories/repositories.dart';
+import 'package:pump_progress_frontend/features/settings/repository/repository.dart';
 
 import 'package:pump_progress_frontend/flavors.dart';
 
@@ -88,6 +89,9 @@ class _AppState extends State<App> {
       ),
       RepositoryProvider<RepositorySets>(
         create: (context) => RepositorySets(),
+      ),
+      RepositoryProvider<RepositorySettings>(
+        create: (context) => RepositorySettings(),
       ),
       RepositoryProvider<GemmaModelService>(
         create: (_) => GemmaModelService(),
