@@ -11,6 +11,7 @@ import 'package:pump_progress_frontend/screens/ai/profile_chat/profile_chat_page
 import 'package:pump_progress_frontend/screens/ai/workout_builder/workout_builder_page.dart';
 import 'package:pump_progress_frontend/screens/ai/models/models_page.dart';
 import 'package:pump_progress_frontend/screens/profile/profile_page.dart';
+import 'package:pump_progress_frontend/screens/settings/settings_page.dart';
 import 'package:pump_progress_frontend/screens/workout/workout_page.dart';
 import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 
@@ -88,6 +89,12 @@ class PumpProgressRouter {
         return MaterialPageRoute<void>(
           settings: const RouteSettings(name: ProfilePage.routeName),
           builder: (_) => const ProtectedRoute(child: ProfilePage()),
+        );
+
+      case SettingsPage.routeName:
+        return MaterialPageRoute<void>(
+          settings: const RouteSettings(name: SettingsPage.routeName),
+          builder: (_) => const ProtectedRoute(child: SettingsPage()),
         );
 
       default:
