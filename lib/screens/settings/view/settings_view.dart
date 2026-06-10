@@ -2,8 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pump_progress_frontend/features/settings/repository/repository.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  late final Future<String> _versionFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _versionFuture = context.read<RepositorySettings>().appVersion();
+  }
 
   Future<void> _run(
     BuildContext context,
@@ -48,15 +61,20 @@ class SettingsView extends StatelessWidget {
             onTap: () => _run(context, repo.shareApp, 'Could not share'),
           ),
           FutureBuilder<String>(
-            future: repo.appVersion(),
+            future: _versionFuture,
             builder: (context, snapshot) {
+              final String subtitle;
+              if (snapshot.connectionState != ConnectionState.done) {
+                subtitle = '…';
+              } else if (snapshot.hasError || snapshot.data == null) {
+                subtitle = '—';
+              } else {
+                subtitle = snapshot.data!;
+              }
               return ListTile(
                 leading: const Icon(Icons.info_outline_rounded),
                 title: const Text('Version'),
-                subtitle: switch (snapshot.connectionState) {
-                  ConnectionState.done => Text(snapshot.data ?? 'Unknown'),
-                  _ => const Text('…'),
-                },
+                subtitle: Text(subtitle),
               );
             },
           ),

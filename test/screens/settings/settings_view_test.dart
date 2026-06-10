@@ -56,7 +56,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Rate app'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     verify(() => repo.rateApp()).called(1);
   });
@@ -67,8 +67,20 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Share app'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     verify(() => repo.shareApp()).called(1);
+  });
+
+  testWidgets('shows a SnackBar when an action fails', (tester) async {
+    when(() => repo.openPrivacyPolicy())
+        .thenThrow(Exception('no browser'));
+    await tester.pumpWidget(wrap());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Privacy Policy'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Could not open privacy policy'), findsOneWidget);
   });
 }
