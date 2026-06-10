@@ -41,15 +41,10 @@ Design rules:
 - Put compound, large-muscle exercises first in each workout.
 - Cover push, pull and legs across the week and train each muscle about twice.
 
-Looking up exercises is optional. You already know common exercises, so prefer
-going straight to the plan. If you do call get_exercises_by_muscle, use it for
-at most two muscles total — each lookup eats into a small context budget and
-leaves no room to finish the plan.
-
 The only way to deliver the plan is to call save_weekly_plan with the full
 week. Do not write the workouts as a chat message and do not describe them in
 prose — a written plan is NOT saved and does not count. Make exactly one
-save_weekly_plan call, using common, simple exercise names so they match the
+save_weekly_plan call, using common exercise names so they match the
 catalog.''';
   }
 
