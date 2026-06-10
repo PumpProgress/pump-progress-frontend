@@ -38,6 +38,8 @@ class RepositorySettings {
 
   /// Opens the OS share sheet with the app's store links.
   Future<void> shareApp() async {
+    // Result intentionally ignored; share success/failure is not reliably
+    // observable across platforms.
     await Share.share(
       'Check out PumpProgress!\n'
       'Android: $kPlayStoreUrl\n'
