@@ -88,6 +88,14 @@ class _PageStartState extends State<PageStart>
               enableFeedback: true,
               unselectedLabelColor: PPColors.amethyst300,
               labelColor: PPColors.coral300,
+              labelStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
               indicator: const BoxDecoration(),
               indicatorColor: Colors.transparent,
               indicatorWeight: 0.0,
@@ -113,42 +121,20 @@ class _PageStartState extends State<PageStart>
 }
 
 List<Tab> _tabs() {
-  return const [
-    Tab(
-      icon: Icon(
-        Icomoon.icon_home,
-        size: 32,
+  const items = <(IconData, String)>[
+    (Icomoon.icon_home, 'Home'),
+    // (Icomoon.icon_community, 'Community'),
+    (Icomoon.icon_calendar, 'Calendar'),
+    // (Icomoon.icon_dumbell, 'Exercises'),
+    (Icomoon.icon_thunder, 'Workouts'),
+    (Icons.auto_awesome, 'AI'),
+  ];
+
+  return [
+    for (final (icon, label) in items)
+      Tab(
+        text: label,
+        icon: Icon(icon, size: 26),
       ),
-    ),
-    // Tab(
-    //   icon: Icon(
-    //     Icomoon.icon_community,
-    //     size: 32,
-    //   ),
-    // ),
-    Tab(
-      icon: Icon(
-        Icomoon.icon_calendar,
-        size: 32,
-      ),
-    ),
-    // Tab(
-    //   icon: Icon(
-    //     Icomoon.icon_dumbell,
-    //     size: 32,
-    //   ),
-    // ),
-    Tab(
-      icon: Icon(
-        Icomoon.icon_thunder,
-        size: 32,
-      ),
-    ),
-    Tab(
-      icon: Icon(
-        Icons.auto_awesome,
-        size: 32,
-      ),
-    ),
   ];
 }
