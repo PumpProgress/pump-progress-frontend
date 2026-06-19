@@ -28,8 +28,7 @@ class UsersPoolService {
 
   static const COGNITO_POOL_URL = 'pump-progress.auth.us-east-1';
   static const COGNITO_CLIENT_ID = '3pb5p2itq4hn3310n248uisj1';
-  static const CLIENT_SECRET =
-      'q1qv2u4pd4ivq2hljpdk40pf4bbjv6h04etk7el1hthvjks3il0';
+  static const CLIENT_SECRET = String.fromEnvironment('COGNITO_CLIENT_SECRET');
   static const USER_POOL_ID = 'us-east-1_nCqvFmutS';
   static const REDIRECT_URI = "myapp://pumpprogress";
   static const SCOPES = ["email", "openid", "profile"];

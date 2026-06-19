@@ -61,6 +61,9 @@ app.*.map.json
 
 sentry.properties
 
+# Build-time secrets injected via --dart-define-from-file (see secrets.local.example.json)
+secrets.local.json
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/flutter,dart,macos,linux,windows,xcode,android,androidstudio,cocoapods,gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=flutter,dart,macos,linux,windows,xcode,android,androidstudio,cocoapods,gradle
