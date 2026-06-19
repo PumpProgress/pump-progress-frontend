@@ -19,10 +19,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   ]);
 
   FlutterGemma.initialize(
-    huggingFaceToken: const String.fromEnvironment(
-      'HUGGING_FACE_TOKEN',
-      defaultValue: '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',
-    ),
+    huggingFaceToken: const String.fromEnvironment('HUGGING_FACE_TOKEN'),
     maxDownloadRetries: 10,
   );
 

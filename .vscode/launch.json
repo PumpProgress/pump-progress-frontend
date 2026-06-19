@@ -6,7 +6,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",
-      "args": ["--flavor", "local"],
+      "args": ["--flavor", "local", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_local.dart"
     },
     {
@@ -14,7 +14,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile",
-      "args": ["--flavor", "local"],
+      "args": ["--flavor", "local", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_local.dart"
     },
     {
@@ -22,7 +22,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
-      "args": ["--flavor", "local"],
+      "args": ["--flavor", "local", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_local.dart"
     },
     {
@@ -30,7 +30,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",
-      "args": ["--flavor", "dev"],
+      "args": ["--flavor", "dev", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_dev.dart"
       // "toolArgs": ["-v"]
     },
@@ -39,7 +39,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile",
-      "args": ["--flavor", "dev"],
+      "args": ["--flavor", "dev", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_dev.dart"
     },
     {
@@ -47,7 +47,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
-      "args": ["--flavor", "dev"],
+      "args": ["--flavor", "dev", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_dev.dart"
     },
     {
@@ -55,7 +55,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug",
-      "args": ["--flavor", "prod"],
+      "args": ["--flavor", "prod", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_prod.dart"
     },
     {
@@ -63,7 +63,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile",
-      "args": ["--flavor", "prod"],
+      "args": ["--flavor", "prod", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_prod.dart"
     },
     {
@@ -71,7 +71,7 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
-      "args": ["--flavor", "prod"],
+      "args": ["--flavor", "prod", "--dart-define-from-file=secrets.local.json"],
       "program": "lib/main_prod.dart"
     }
   ]
