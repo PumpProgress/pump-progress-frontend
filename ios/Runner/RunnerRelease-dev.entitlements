@@ -7,6 +7,7 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.xrok.pumpProgress</string>
+		<string>group.com.xrok.pumpProgress.group</string>
 	</array>
 </dict>
 </plist>

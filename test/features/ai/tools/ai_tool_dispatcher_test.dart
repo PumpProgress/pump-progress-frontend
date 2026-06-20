@@ -1,0 +1,118 @@
+import 'package:flutter_gemma/flutter_gemma.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:pump_progress_frontend/features/ai/tools/ai_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/exercise_tool_dispatcher.dart';
+import 'package:pump_progress_frontend/features/ai/tools/resolved_tool_use.dart';
+import 'package:pump_progress_frontend/features/exercise/domain/exercise.dart';
+import 'package:pump_progress_frontend/features/exercise/repository/repository.dart';
+import 'package:pump_progress_frontend/features/muscle/domain/muscle.dart';
+import 'package:pump_progress_frontend/features/muscle/repository/repository_muscle.dart';
+import 'package:pump_progress_frontend/features/user/services/current_user_service.dart';
+import 'package:pump_progress_frontend/features/workout/repository/repository.dart';
+
+class MockRepositoryExercises extends Mock implements RepositoryExercises {}
+
+class MockProviderMuscle extends Mock implements ProviderMuscle {}
+
+class MockRepositoryWorkout extends Mock implements RepositoryWorkout {}
+
+class MockCurrentUserService extends Mock implements CurrentUserService {}
+
+void main() {
+  late MockRepositoryExercises mockRepo;
+  late MockProviderMuscle mockMuscles;
+  late MockRepositoryWorkout mockWorkout;
+  late MockCurrentUserService mockUserService;
+  late AiToolDispatcher dispatcher;
+
+  setUp(() async {
+    mockRepo = MockRepositoryExercises();
+    mockMuscles = MockProviderMuscle();
+    mockWorkout = MockRepositoryWorkout();
+    mockUserService = MockCurrentUserService();
+    when(() => mockMuscles.getMuscles()).thenAnswer((_) async => [
+          Muscle(id: 1, name: 'chest', code: 'chest'),
+          Muscle(id: 2, name: 'biceps', code: 'biceps'),
+        ]);
+    when(() => mockUserService.getCurrentUser()).thenAnswer((_) async => null);
+    dispatcher = ExerciseToolDispatcher(
+      repositoryExercises: mockRepo,
+      providerMuscle: mockMuscles,
+      repositoryWorkout: mockWorkout,
+      currentUserService: mockUserService,
+    );
+    await dispatcher.init();
+  });
+
+  group('AiToolDispatcher.init', () {
+    test('populates tool enum with muscle names from provider', () {
+      final muscleEnum =
+          ((dispatcher.tools.first.parameters['properties']
+                  as Map<String, dynamic>)['muscle']
+              as Map<String, dynamic>)['enum'] as List;
+      expect(muscleEnum, equals(['chest', 'biceps']));
+    });
+  });
+
+  group('AiToolDispatcher.tools', () {
+    test('returns a non-empty list of Tool objects', () {
+      expect(dispatcher.tools, isNotEmpty);
+    });
+
+    test('includes get_exercises_by_muscle', () {
+      final names = dispatcher.tools.map((t) => t.name).toList();
+      expect(names, contains('get_exercises_by_muscle'));
+    });
+  });
+
+  group('AiToolDispatcher.resolve', () {
+    test('returns ResolvedToolUse for get_exercises_by_muscle', () {
+      final call = FunctionCallResponse(
+        name: 'get_exercises_by_muscle',
+        args: {'muscle': 'chest'},
+      );
+      final resolved = dispatcher.resolve(call);
+      expect(resolved, isA<ResolvedToolUse>());
+    });
+
+    test('message interpolates muscle arg', () {
+      final call = FunctionCallResponse(
+        name: 'get_exercises_by_muscle',
+        args: {'muscle': 'chest'},
+      );
+      final resolved = dispatcher.resolve(call);
+      expect(resolved.message, contains('chest'));
+    });
+
+    test('execute calls repository and returns exercise names', () async {
+      when(() => mockRepo.getExercisesByMuscle('chest',
+              limit: any(named: 'limit')))
+          .thenAnswer((_) async => [
+                const Exercise(
+                  id: 1,
+                  name: 'Bench Press',
+                  category: 'Compound',
+                  muscles: ['chest'],
+                ),
+              ]);
+
+      final call = FunctionCallResponse(
+        name: 'get_exercises_by_muscle',
+        args: {'muscle': 'chest', 'limit': 5},
+      );
+      final resolved = dispatcher.resolve(call);
+      final result = await resolved.execute();
+      expect(result['exercises'], isA<List>());
+      expect((result['exercises'] as List).first, 'Bench Press');
+    });
+
+    test('throws StateError for unknown tool name', () {
+      final call = FunctionCallResponse(
+        name: 'non_existent_tool',
+        args: {},
+      );
+      expect(() => dispatcher.resolve(call), throwsStateError);
+    });
+  });
+}

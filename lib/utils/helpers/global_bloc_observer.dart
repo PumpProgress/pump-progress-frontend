@@ -1,27 +1,32 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pump_progress_frontend/utils/helpers/app_logger.dart';
 
 class GlobalObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    print('${bloc.runtimeType} $event');
+    AppLogger.debug('${bloc.runtimeType}\n$event');
   }
 
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    print('${bloc.runtimeType} $change');
+    AppLogger.debug('${bloc.runtimeType}\n$change');
   }
 
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-    print('${bloc.runtimeType} $transition');
+    AppLogger.debug('${bloc.runtimeType}\n$transition');
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    print('${bloc.runtimeType} $error $stackTrace');
+    AppLogger.error(
+      bloc.runtimeType,
+      error: error,
+      stackTrace: stackTrace,
+    );
     super.onError(bloc, error, stackTrace);
   }
 }
